@@ -27,6 +27,7 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-cozinha}?schema=public
       - PORT=3001
       - JWT_SECRET=${JWT_SECRET:-supersecret}
+      - SEED_SECRET=${SEED_SECRET:-cozinha2026}
     volumes:
       - ./backend:/app
       - /app/node_modules
