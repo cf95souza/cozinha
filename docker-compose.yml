@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: cozinha-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-cozinha}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - cozinha-network
+
+  backend:
+    build: 
+      context: ./backend
+    container_name: cozinha-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-cozinha}?schema=public
+      - PORT=3001
+      - JWT_SECRET=${JWT_SECRET:-supersecret}
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    networks:
+      - cozinha-network
+
+  frontend:
+    build: 
+      context: ./frontend
+    container_name: cozinha-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:3001/api
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - cozinha-network
+
+networks:
+  cozinha-network:
+    driver: bridge
+
+volumes:
+  pgdata:
