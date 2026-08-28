@@ -1,6 +1,6 @@
 cozinhaplus.duckdns.org {
-    # Redireciona tudo que começa com /api para o backend
-    handle_path /api* {
+    # Redireciona tudo que começa com /api para o backend sem remover o /api
+    handle /api/* {
         reverse_proxy backend:3001
     }
 

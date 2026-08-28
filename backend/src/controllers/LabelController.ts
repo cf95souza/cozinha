@@ -67,4 +67,50 @@ export class LabelController {
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  async findAll(req: Request, res: Response) {
+    try {
+      const branchId = req.query.branchId as string;
+      const skip = Number(req.query.skip) || 0;
+      const take = Number(req.query.take) || 20;
+
+      // Se branchId não vier na query, pegamos do usuário logado (BOLA mitigation)
+      // Como a rota /labels não tem branchGuard explícito no index (usa global?), pegamos o que der
+      // Na verdade, labels estão ligadas a Product que está em Company/Branch.
+      // O modelo Label não tem branchId. Vamos buscar labels baseadas nos produtos da branch.
+
+      const filter: any = {};
+      if (branchId) {
+        filter.product = { branchId };
+      } else if (req.user?.companyId) {
+        // Fallback pra company se branchId faltar
+        filter.product = { companyId: req.user.companyId };
+      }
+
+      const [labels, total] = await Promise.all([
+        prisma.label.findMany({
+          where: filter,
+          include: {
+            product: {
+              include: {
+                category: true,
+              }
+            },
+            user: {
+              select: { name: true }
+            }
+          },
+          orderBy: { generatedAt: 'desc' },
+          skip,
+          take,
+        }),
+        prisma.label.count({ where: filter })
+      ]);
+
+      return res.status(200).json({ data: labels, total });
+    } catch (error: any) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }

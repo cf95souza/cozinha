@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { QRCodeSVG } from 'qrcode.react';
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 export default function Labels() {
   const { activeBranch, user } = useAuth();
@@ -11,12 +12,26 @@ export default function Labels() {
   const [readQrCode, setReadQrCode] = useState('');
   const [readLabelInfo, setReadLabelInfo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [historicalLabels, setHistoricalLabels] = useState<any[]>([]);
+  const [showScanner, setShowScanner] = useState(false);
 
   useEffect(() => {
     if (activeBranch) {
       api.get(`/products?branchId=${activeBranch.id}`).then(res => setProducts(res.data.data || res.data));
+      fetchHistoricalLabels();
     }
   }, [activeBranch]);
+
+  const fetchHistoricalLabels = async () => {
+    try {
+      if (activeBranch) {
+        const res = await api.get(`/labels?branchId=${activeBranch.id}`);
+        setHistoricalLabels(res.data.data || []);
+      }
+    } catch (err) {
+      console.error('Erro ao buscar histórico de etiquetas', err);
+    }
+  };
 
   const generateLabel = async () => {
     if (!selectedProduct) return;
@@ -47,6 +62,7 @@ export default function Labels() {
         manipulationDate: new Date().toLocaleString('pt-BR'),
         expirationDate: new Date(new Date().setDate(new Date().getDate() + 3)).toLocaleString('pt-BR'),
       });
+      fetchHistoricalLabels();
     } catch (err) {
       alert('Erro ao gerar etiqueta');
     } finally {
@@ -146,6 +162,37 @@ export default function Labels() {
                   Buscar
                 </button>
               </div>
+              <button
+                onClick={() => setShowScanner(!showScanner)}
+                className="w-full mt-3 flex items-center justify-center gap-2 py-2.5 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors font-semibold border border-outline-variant text-sm"
+              >
+                <span className="material-symbols-outlined notranslate text-[18px]">
+                  {showScanner ? 'videocam_off' : 'photo_camera'}
+                </span>
+                {showScanner ? 'Desligar Câmera' : 'Ligar Câmera para Escanear'}
+              </button>
+              
+              {showScanner && (
+                <div className="mt-4 rounded-xl overflow-hidden border border-outline-variant">
+                  <Scanner 
+                    onScan={(result) => {
+                      if (result && result.length > 0) {
+                        setReadQrCode(result[0].rawValue);
+                        setShowScanner(false);
+                        // Chama readLabel() mas passando o valor lido diretamente
+                        const scannedCode = result[0].rawValue;
+                        setLoading(true);
+                        api.get(`/labels/${scannedCode}`).then(res => {
+                          setReadLabelInfo(res.data);
+                        }).catch(() => {
+                          alert('Etiqueta não encontrada');
+                          setReadLabelInfo(null);
+                        }).finally(() => setLoading(false));
+                      }
+                    }} 
+                  />
+                </div>
+              )}
             </div>
 
             {readLabelInfo && (
@@ -166,6 +213,74 @@ export default function Labels() {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* HISTÓRICO DE ETIQUETAS */}
+      <div className="mt-8 bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant print:hidden">
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-semibold text-on-surface text-lg flex items-center gap-2">
+            <span className="material-symbols-outlined notranslate text-primary">history</span>
+            Últimas Etiquetas Geradas
+          </h3>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-outline-variant text-on-surface-variant font-medium">
+                <th className="py-3 px-4">Produto</th>
+                <th className="py-3 px-4">Código QR</th>
+                <th className="py-3 px-4">Data / Hora</th>
+                <th className="py-3 px-4">Responsável</th>
+                <th className="py-3 px-4 text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {historicalLabels.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-on-surface-variant">Nenhuma etiqueta gerada recentemente.</td>
+                </tr>
+              ) : (
+                historicalLabels.map((label) => (
+                  <tr key={label.id} className="border-b border-outline-variant/50 hover:bg-surface-container-lowest transition-colors">
+                    <td className="py-3 px-4 font-semibold text-on-surface">{label.product?.name}</td>
+                    <td className="py-3 px-4 font-mono text-xs">{label.qrCode}</td>
+                    <td className="py-3 px-4">{new Date(label.generatedAt).toLocaleString('pt-BR')}</td>
+                    <td className="py-3 px-4 text-on-surface-variant">{label.user?.name}</td>
+                    <td className="py-3 px-4 text-right">
+                      <button 
+                        onClick={() => {
+                          const productInfo = label.product;
+                          setGeneratedLabel({
+                            ...label,
+                            product: productInfo,
+                            companyName: user?.company || 'COZINHA+ RESTAURANTE',
+                            cnpj: '00.000.000/0001-00',
+                            cep: '00000-000',
+                            address: 'Rua Exemplo, 123',
+                            city: 'São Paulo - SP',
+                            userName: label.user?.name || 'Responsável',
+                            sif: productInfo?.sif || 'N/A',
+                            brand: productInfo?.brand || 'Própria',
+                            preservation: 'Resfriado',
+                            weight: '1kg',
+                            originalVal: '10/12/2026',
+                            manipulationDate: new Date(label.generatedAt).toLocaleString('pt-BR'),
+                            expirationDate: new Date(new Date(label.generatedAt).setDate(new Date(label.generatedAt).getDate() + 3)).toLocaleString('pt-BR'),
+                          });
+                          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        }}
+                        className="text-primary hover:text-primary-hover font-semibold px-3 py-1.5 rounded-lg hover:bg-primary/10 transition-colors"
+                      >
+                        Reimprimir
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 
