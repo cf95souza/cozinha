@@ -9,6 +9,8 @@ import crypto from 'crypto';
 const JWT_SECRET = process.env.JWT_SECRET || 'development_secret_key';
 const REFRESH_SECRET = process.env.REFRESH_SECRET || 'development_refresh_key';
 
+import { sendTelegramAlert } from '../lib/telegram';
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
@@ -48,13 +50,19 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       const newAttempts = anyUser.failedLoginAttempts + 1;
       let lockedUntil = null;
       if (newAttempts >= 5) {
-        // Lock for 15 minutes
-        lockedUntil = new Date(Date.now() + 15 * 60 * 1000);
+        lockedUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+        
+        // Disparar Alerta de Segurança no Telegram
+        const companyName = user.company?.name || 'Sistema';
+        await sendTelegramAlert(`🚨 *Alerta de Segurança*\nForam detectadas 5 tentativas incorretas de senha para o e-mail \`${email}\` na empresa *${companyName}*.\nA conta foi temporariamente bloqueada por 15 minutos.`);
       }
-      
+
       await prisma.user.update({
         where: { id: user.id },
-        data: { failedLoginAttempts: newAttempts, lockedUntil } as any
+        data: { 
+          failedLoginAttempts: newAttempts,
+          lockedUntil
+        } as any
       });
 
       res.status(401).json({ error: 'Credenciais inválidas' });

@@ -252,35 +252,16 @@ export default function Layout() {
         </div>
       </div>
 
-      {/* Footer: User Info + Logout */}
-      <div className={`py-4 border-t border-outline-variant mt-auto ${isSidebarCollapsed ? 'flex flex-col items-center px-2' : 'px-4'}`}>
-        <div className={`flex items-center gap-3 mb-3 ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-          <div className="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm shrink-0">
-            {user?.name?.charAt(0)}
-          </div>
-          {!isSidebarCollapsed && (
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-on-surface truncate">{user?.name}</p>
-              <p className="text-xs text-on-surface-variant">{user?.role}</p>
-            </div>
-          )}
-        </div>
-        <div className={`flex ${isSidebarCollapsed ? 'flex-col items-center gap-1' : 'flex-col gap-1 w-full'}`}>
-          <button 
-            onClick={() => setIsChangePasswordOpen(true)}
-            title={isSidebarCollapsed ? "Alterar Senha" : undefined}
-            className={`${isSidebarCollapsed ? collapsedItemClass : 'flex items-center justify-center gap-2 w-full py-2 rounded-xl text-sm'} text-on-surface hover:bg-surface-container transition-colors font-semibold`}
-          >
-            <span className="material-symbols-outlined notranslate text-[18px]">key</span>
-            {!isSidebarCollapsed && "Alterar Senha"}
-          </button>
+      {/* Footer: Logout */}
+      <div className={`py-4 mt-auto ${isSidebarCollapsed ? 'flex flex-col items-center px-2' : 'px-4'}`}>
+        <div className={`flex ${isSidebarCollapsed ? 'flex-col items-center' : 'flex-col w-full'}`}>
           <button 
             onClick={logout}
             title={isSidebarCollapsed ? "Sair" : undefined}
-            className={`${isSidebarCollapsed ? collapsedItemClass : 'flex items-center justify-center gap-2 w-full py-2 rounded-xl text-sm'} text-on-surface-variant hover:bg-error-container hover:text-error transition-colors`}
+            className={`${isSidebarCollapsed ? collapsedItemClass : 'flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-bold'} bg-surface-container border border-outline-variant text-on-surface hover:bg-error-container hover:text-error hover:border-error-container transition-colors`}
           >
             <span className="material-symbols-outlined notranslate text-[18px]">logout</span>
-            {!isSidebarCollapsed && "Sair"}
+            {!isSidebarCollapsed && "Sair do Sistema"}
           </button>
         </div>
       </div>
@@ -288,7 +269,7 @@ export default function Layout() {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background font-body text-on-background">
+    <div className="flex h-[100dvh] overflow-hidden bg-background font-body text-on-background">
       
       {/* Mobile Overlay */}
       {sidebarOpen && (
@@ -296,20 +277,20 @@ export default function Layout() {
       )}
 
       {/* Sidebar Desktop */}
-      <nav className={`hidden md:flex flex-col h-screen bg-surface border-r border-outline-variant fixed left-0 top-0 z-20 transition-all duration-300 ${isSidebarCollapsed ? 'w-[80px]' : 'w-[260px]'}`}>
+      <nav className={`hidden md:flex flex-col h-[100dvh] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] bg-surface border-r border-outline-variant fixed left-0 top-0 z-20 transition-all duration-300 ${isSidebarCollapsed ? 'w-[80px]' : 'w-[260px]'}`}>
         {SidebarContent()}
       </nav>
 
       {/* Sidebar Mobile */}
-      <nav className={`md:hidden fixed left-0 top-0 h-screen w-[260px] bg-surface border-r border-outline-variant z-40 flex flex-col transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <nav className={`md:hidden fixed left-0 top-0 h-[100dvh] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] w-[260px] bg-surface border-r border-outline-variant z-40 flex flex-col transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {SidebarContent()}
       </nav>
 
       {/* Main Content Area */}
-      <main className={`flex-1 ml-0 flex flex-col min-h-screen relative overflow-y-auto bg-surface-container-low transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[260px]'}`}>
+      <main className={`flex-1 ml-0 flex flex-col min-h-[100dvh] pb-[env(safe-area-inset-bottom)] relative overflow-y-auto bg-surface-container-low transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[260px]'}`}>
         
         {/* Topbar */}
-        <header className="flex justify-between items-center w-full px-5 py-3 bg-surface border-b border-outline-variant sticky top-0 z-10">
+        <header className="flex justify-between items-center w-full px-5 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] bg-surface border-b border-outline-variant sticky top-0 z-10">
           <div className="flex items-center gap-3">
             {/* Hamburger Mobile */}
             <button className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-surface-container" onClick={() => setSidebarOpen(true)}>

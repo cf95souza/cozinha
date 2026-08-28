@@ -389,7 +389,7 @@ export default function Reports() {
                   {activeTab === 'productions' && (
                     <>
                       <div className="col-span-2">{new Date(item.startedAt || item.finishedAt).toLocaleDateString()}</div>
-                      <div className="col-span-4 font-bold">{item.product.name}</div>
+                      <div className="col-span-4 font-bold">{item.product?.name || '-'}</div>
                       <div className="col-span-2 text-right">{item.plannedQuantity}</div>
                       <div className="col-span-2 text-right font-bold text-primary">{item.producedQuantity}</div>
                       <div className="col-span-2 text-right font-bold text-on-surface-variant">
