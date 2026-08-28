@@ -89,7 +89,7 @@ export default function Labels() {
         <div className="bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant h-fit">
           <div className="flex items-center justify-between mb-5">
             <h3 className="font-semibold text-on-surface text-sm flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px] text-primary">label</span>
+              <span className="material-symbols-outlined notranslate text-[18px] text-primary">label</span>
               Gerar Nova Etiqueta
             </h3>
           </div>
@@ -122,7 +122,7 @@ export default function Labels() {
         <div className="bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant h-fit">
           <div className="flex items-center justify-between mb-5">
             <h3 className="font-semibold text-on-surface text-sm flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px] text-secondary">qr_code_scanner</span>
+              <span className="material-symbols-outlined notranslate text-[18px] text-secondary">qr_code_scanner</span>
               Ler Etiqueta
             </h3>
           </div>
@@ -151,7 +151,7 @@ export default function Labels() {
             {readLabelInfo && (
               <div className="mt-4 p-4 bg-surface-container-low border border-outline-variant rounded-xl">
                 <div className="flex items-center gap-2 mb-3 pb-3 border-b border-outline-variant">
-                  <span className="material-symbols-outlined text-secondary text-2xl">check_circle</span>
+                  <span className="material-symbols-outlined notranslate text-secondary text-2xl">check_circle</span>
                   <div>
                     <h3 className="font-bold text-sm text-on-surface">{readLabelInfo.product.name}</h3>
                     <p className="text-xs text-on-surface-variant">Lido com sucesso</p>
@@ -178,7 +178,7 @@ export default function Labels() {
               onClick={printLabel}
               className="flex items-center gap-2 px-5 py-2.5 bg-secondary text-on-secondary rounded-xl text-sm font-semibold hover:opacity-90 transition-colors"
             >
-              <span className="material-symbols-outlined text-[18px]">print</span>
+              <span className="material-symbols-outlined notranslate text-[18px]">print</span>
               Imprimir
             </button>
           </div>

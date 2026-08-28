@@ -65,7 +65,7 @@ export default function ReceivingList() {
           onClick={() => navigate('/recebimento/novo')}
           className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-hover transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">add_circle</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">add_circle</span>
           Novo Recebimento
         </button>
       </div>
@@ -74,13 +74,13 @@ export default function ReceivingList() {
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <div className="text-on-surface-variant flex items-center gap-2">
-              <span className="material-symbols-outlined animate-spin text-primary">sync</span>
+              <span className="material-symbols-outlined notranslate animate-spin text-primary">sync</span>
               <span className="text-sm">Carregando...</span>
             </div>
           </div>
         ) : receivings.length === 0 ? (
           <div className="p-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-            <span className="material-symbols-outlined text-3xl text-secondary">check_circle</span>
+            <span className="material-symbols-outlined notranslate text-3xl text-secondary">check_circle</span>
             Nenhum recebimento cadastrado.
           </div>
         ) : (
@@ -102,7 +102,7 @@ export default function ReceivingList() {
               >
                 <div className="col-span-1 md:col-span-3 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                    <span className="material-symbols-outlined text-[20px]">receipt_long</span>
+                    <span className="material-symbols-outlined notranslate text-[20px]">receipt_long</span>
                   </div>
                   <div>
                     <p className="font-semibold text-sm text-on-surface">{r.invoice ? `NF ${r.invoice}` : 'S/N'}</p>
@@ -116,7 +116,7 @@ export default function ReceivingList() {
 
                 <div className="col-span-1 md:col-span-2 flex md:justify-center">
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full text-xs font-semibold text-on-surface-variant">
-                    <span className="material-symbols-outlined text-[14px]">format_list_numbered</span>
+                    <span className="material-symbols-outlined notranslate text-[14px]">format_list_numbered</span>
                     {r._count.items}
                   </div>
                 </div>
@@ -128,7 +128,7 @@ export default function ReceivingList() {
                 <div className="col-span-1 md:col-span-2 flex justify-end">
                   <button className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
                     {r.status === 'APROVADO' || r.status === 'APROVADO_RESSALVA' ? 'Visualizar' : 'Conferir'}
-                    <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <span className="material-symbols-outlined notranslate text-[16px]">chevron_right</span>
                   </button>
                 </div>
               </div>

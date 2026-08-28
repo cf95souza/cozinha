@@ -67,7 +67,7 @@ export default function ProductDetail() {
         <div className="bg-surface rounded-xl p-6 shadow-sm border border-outline-variant flex flex-col justify-between">
           <div className="flex items-start justify-between">
             <span className="text-xs uppercase font-bold text-on-surface-variant tracking-wider">Custo em Estoque</span>
-            <span className="material-symbols-outlined text-secondary text-xl">payments</span>
+            <span className="material-symbols-outlined notranslate text-secondary text-xl">payments</span>
           </div>
           <div className="mt-4">
             <span className="text-4xl font-black text-secondary">

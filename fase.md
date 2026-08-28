@@ -249,5 +249,28 @@ Este documento é o guia definitivo de execução do projeto. Cada funcionalidad
 
 ---
 
-🚀 **Todas as Fases do MVP e Melhorias foram concluídas com sucesso!**
+### Fase 14: Financeiro - Lançamento de Notas de Consumo
+**Objetivo:** Criar módulo para lançamento de notas fiscais de consumo e despesas, vinculado a centros de custos.
 
+- [x] Criar entidades no banco: `Invoice`, `CostCenter`, `InvoiceType`, `InvoiceOrigin`.
+- [x] Implementar Backend (Rotas e Controllers CRUD).
+- [x] Implementar Interface de Parametrização nas configurações da Empresa.
+- [x] Tela de Lançamento de Nota (Filtros por Filial/Centro de Custo, Totais).
+- [x] Cadastro rápido de Fornecedor (Modal integrado).
+- [x] Ajustes de usabilidade: Fornecedores compartilhados, Autocomplete customizado, correção do menu lateral.
+
+---
+
+### Fase 15: Virada de Chave - Relatórios Financeiros e Operacionais
+**Objetivo:** Criar um módulo de relatórios analíticos, permitindo extrair visões gerais dos lançamentos financeiros (notas de consumo) por dia e por período.
+
+- [ ] Desenvolver tela "Relatórios".
+- [ ] Implementar filtros de período (Data Inicial e Final).
+- [ ] Implementar visualização "Multi-unidades" (consolidado da Empresa) x "Unidade específica".
+- [ ] Implementar filtro por Centro de Custo.
+- [ ] Exportação/Visão totalizadora para análise rápida.
+- [ ] (Opcional) Exportação para Excel / PDF.
+
+---
+
+🚀 **Todas as Fases do MVP e Fase 14 foram concluídas com sucesso!**

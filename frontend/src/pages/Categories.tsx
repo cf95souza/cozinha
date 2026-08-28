@@ -98,7 +98,7 @@ export default function Categories() {
           }}
           className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">add</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">add</span>
           Nova Categoria
         </button>
       </div>
@@ -116,7 +116,7 @@ export default function Categories() {
           </div>
         ) : categories.length === 0 ? (
           <div className="px-6 py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-            <span className="material-symbols-outlined text-4xl text-outline mb-2">style</span>
+            <span className="material-symbols-outlined notranslate text-4xl text-outline mb-2">style</span>
             Nenhuma categoria cadastrada.
           </div>
         ) : (
@@ -131,7 +131,7 @@ export default function Categories() {
                 <div key={cat.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center">
                   <div className="col-span-1 md:col-span-10 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                      <span className="material-symbols-outlined text-[20px]">sell</span>
+                      <span className="material-symbols-outlined notranslate text-[20px]">sell</span>
                     </div>
                     <p className="font-semibold text-sm text-on-surface">{cat.name}</p>
                   </div>
@@ -142,14 +142,14 @@ export default function Categories() {
                       className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors"
                       title="Editar"
                     >
-                      <span className="material-symbols-outlined text-[20px]">edit</span>
+                      <span className="material-symbols-outlined notranslate text-[20px]">edit</span>
                     </button>
                     <button 
                       onClick={() => handleDelete(cat.id)}
                       className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors"
                       title="Remover"
                     >
-                      <span className="material-symbols-outlined text-[20px]">delete</span>
+                      <span className="material-symbols-outlined notranslate text-[20px]">delete</span>
                     </button>
                   </div>
                 </div>
@@ -168,11 +168,11 @@ export default function Categories() {
           <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
               <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">{editingId ? 'edit_square' : 'add_box'}</span>
+                <span className="material-symbols-outlined notranslate text-primary">{editingId ? 'edit_square' : 'add_box'}</span>
                 {editingId ? 'Editar Categoria' : 'Nova Categoria'}
               </h3>
               <button onClick={() => setIsModalOpen(false)} className="text-on-surface-variant hover:bg-surface-container p-1 rounded-full transition-colors">
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined notranslate">close</span>
               </button>
             </div>
             

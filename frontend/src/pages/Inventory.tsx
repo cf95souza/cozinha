@@ -165,7 +165,7 @@ export default function Inventory() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <button onClick={() => setIsCounting(false)} className="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors">
-              <span className="material-symbols-outlined text-[24px]">arrow_back</span>
+              <span className="material-symbols-outlined notranslate text-[24px]">arrow_back</span>
             </button>
             <div>
               <h1 className="text-2xl font-bold text-on-surface">Inventário Ativo</h1>
@@ -177,7 +177,7 @@ export default function Inventory() {
               onClick={() => setIsScannerOpen(!isScannerOpen)} 
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-colors ${isScannerOpen ? 'bg-error text-on-error hover:bg-error/90' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-container'}`}
             >
-              <span className="material-symbols-outlined text-[18px]">{isScannerOpen ? 'close' : 'qr_code_scanner'}</span>
+              <span className="material-symbols-outlined notranslate text-[18px]">{isScannerOpen ? 'close' : 'qr_code_scanner'}</span>
               {isScannerOpen ? 'Fechar Leitor' : 'Ler Código (Fast Count)'}
             </button>
           </div>
@@ -244,7 +244,7 @@ export default function Inventory() {
               onClick={submitCount}
               className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-hover transition-colors"
             >
-              <span className="material-symbols-outlined text-[20px]">task_alt</span>
+              <span className="material-symbols-outlined notranslate text-[20px]">task_alt</span>
               Finalizar e Ajustar Estoque
             </button>
           </div>
@@ -264,7 +264,7 @@ export default function Inventory() {
           onClick={startInventory}
           className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">rule</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">rule</span>
           Iniciar Inventário
         </button>
       </div>
@@ -308,7 +308,7 @@ export default function Inventory() {
           
           {inventories.length === 0 && (
             <div className="px-6 py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-3">
-              <span className="material-symbols-outlined text-4xl text-on-surface-variant">rule</span>
+              <span className="material-symbols-outlined notranslate text-4xl text-on-surface-variant">rule</span>
               Nenhum inventário registrado na filial.
             </div>
           )}

@@ -33,6 +33,8 @@ import Recipes from './pages/Recipes';
 import Production from './pages/Production';
 import ProductDetail from './pages/ProductDetail';
 import PurchaseSuggestion from './pages/PurchaseSuggestion';
+import Invoices from './pages/Invoices';
+import FinanceSettings from './pages/FinanceSettings';
 
 import ResetPassword from './pages/ResetPassword';
 
@@ -80,6 +82,8 @@ function AppRoutes() {
         <Route path="pdv" element={<PDV />} />
         <Route path="transferencias" element={<Transfers />} />
         <Route path="unidades" element={<Branches />} />
+        <Route path="notas-fiscais" element={<Invoices />} />
+        <Route path="financeiro-config" element={<FinanceSettings />} />
       </Route>
       
       {/* Rota padrão */}

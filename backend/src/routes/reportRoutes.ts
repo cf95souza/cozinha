@@ -18,5 +18,6 @@ router.get('/cmv', reportController.getCmv);
 router.get('/abc', reportController.getAbcCurve);
 router.get('/inventories', reportController.getInventories);
 router.get('/productions', reportController.getProductions);
+router.get('/invoices', reportController.getInvoices);
 
 export default router;

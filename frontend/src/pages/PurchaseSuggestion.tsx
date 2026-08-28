@@ -22,7 +22,7 @@ export default function PurchaseSuggestion() {
   if (loading) {
     return (
       <div className="p-12 text-center text-on-surface-variant flex flex-col items-center gap-3">
-        <span className="material-symbols-outlined animate-spin text-4xl">sync</span>
+        <span className="material-symbols-outlined notranslate animate-spin text-4xl">sync</span>
         <span className="font-semibold text-sm">Analisando inteligência de compras...</span>
       </div>
     );
@@ -44,7 +44,7 @@ export default function PurchaseSuggestion() {
       {suggestions.length === 0 ? (
         <div className="bg-surface rounded-2xl p-12 shadow-sm border border-outline-variant text-center border-dashed">
           <div className="bg-primary-container text-primary w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-[32px]">check_circle</span>
+            <span className="material-symbols-outlined notranslate text-[32px]">check_circle</span>
           </div>
           <h3 className="text-lg font-bold text-on-surface">Estoque Saudável!</h3>
           <p className="text-sm text-on-surface-variant mt-2 max-w-md mx-auto">
@@ -79,7 +79,7 @@ export default function PurchaseSuggestion() {
                   <div key={item.productId} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center text-sm">
                     <div className="col-span-1 md:col-span-4 flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full bg-error-container text-error flex items-center justify-center shrink-0">
-                        <span className="material-symbols-outlined text-[20px]">trending_down</span>
+                        <span className="material-symbols-outlined notranslate text-[20px]">trending_down</span>
                       </div>
                       <div>
                         <p className="font-bold text-on-surface">{item.productName}</p>
@@ -109,7 +109,7 @@ export default function PurchaseSuggestion() {
                         className="p-2 text-primary hover:bg-primary-container rounded-full transition-colors flex items-center justify-center"
                         title="Ver Raio-X"
                       >
-                        <span className="material-symbols-outlined text-[20px]">visibility</span>
+                        <span className="material-symbols-outlined notranslate text-[20px]">visibility</span>
                       </button>
                     </div>
                   </div>

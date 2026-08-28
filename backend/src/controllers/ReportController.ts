@@ -186,4 +186,30 @@ export class ReportController {
       res.status(500).json({ error: 'Erro ao buscar curva ABC' });
     }
   }
+
+  async getInvoices(req: AuthRequest, res: Response) {
+    try {
+      const branchId = req.query.branchId as string;
+      const { companyId } = req.user!;
+      
+      const invoices = await prisma.invoice.findMany({
+        where: {
+          companyId,
+          ...(branchId ? { branchId } : {})
+        },
+        include: {
+          supplier: true,
+          costCenter: true,
+          invoiceType: true,
+          branch: true,
+          user: true
+        },
+        orderBy: { issueDate: 'desc' },
+        take: 1000
+      });
+      res.json(invoices);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao buscar relatório de notas' });
+    }
+  }
 }

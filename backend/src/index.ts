@@ -25,6 +25,7 @@ import recipeRoutes from './routes/recipeRoutes';
 import productionRoutes from './routes/productionRoutes';
 import suggestionRoutes from './routes/suggestionRoutes';
 import saleRoutes from './routes/saleRoutes';
+import financeRoutes from './routes/financeRoutes';
 import { auditMiddleware } from './middlewares/auditMiddleware';
 
 dotenv.config();
@@ -58,6 +59,7 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/productions', productionRoutes);
 app.use('/api/suggestions', suggestionRoutes);
 app.use('/api/sales', saleRoutes);
+app.use('/api/finance', financeRoutes);
 
 app.get('/health', async (req, res) => {
   try {

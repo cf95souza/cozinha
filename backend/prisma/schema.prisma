@@ -34,6 +34,10 @@ model Company {
   suppliers  Supplier[]
   users      User[]
   stockSnapshots StockSnapshot[]
+  costCenters   CostCenter[]
+  invoiceTypes  InvoiceType[]
+  invoiceOrigins InvoiceOrigin[]
+  invoices      Invoice[]
 }
 
 model Branch {
@@ -70,6 +74,7 @@ model Branch {
   productions          Production[]
   stockSnapshots       StockSnapshot[]
   sales                Sale[]
+  invoices             Invoice[]
 }
 
 model User {
@@ -97,6 +102,7 @@ model User {
   auditLogs      AuditLog[]
   productions    Production[]
   sales          Sale[]
+  invoices       Invoice[]
 }
 
 model Category {
@@ -161,6 +167,7 @@ model Supplier {
   receivings Receiving[]
   branch     Branch?     @relation(fields: [branchId], references: [id])
   company    Company     @relation(fields: [companyId], references: [id])
+  invoices   Invoice[]
 }
 
 model Product {
@@ -478,4 +485,69 @@ model SaleItem {
 
   sale      Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
   product   Product @relation(fields: [productId], references: [id])
+}
+
+model CostCenter {
+  id        String    @id @default(uuid())
+  name      String
+  status    String    @default("ATIVO")
+  companyId String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  company   Company   @relation(fields: [companyId], references: [id])
+  invoices  Invoice[]
+}
+
+model InvoiceType {
+  id        String    @id @default(uuid())
+  name      String
+  status    String    @default("ATIVO")
+  companyId String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  company   Company   @relation(fields: [companyId], references: [id])
+  invoices  Invoice[]
+}
+
+model InvoiceOrigin {
+  id        String    @id @default(uuid())
+  name      String
+  status    String    @default("ATIVO")
+  companyId String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  company   Company   @relation(fields: [companyId], references: [id])
+  invoices  Invoice[]
+}
+
+model Invoice {
+  id              String         @id @default(uuid())
+  invoiceNumber   String
+  invoiceKey      String?
+  issueDate       DateTime
+  dueDate         DateTime
+  totalAmount     Float
+  interestAmount  Float          @default(0)
+  freightAmount   Float          @default(0)
+  discountAmount  Float          @default(0)
+  finalAmount     Float
+  status          String         @default("ATIVO")
+  
+  supplierId      String
+  costCenterId    String
+  invoiceTypeId   String
+  invoiceOriginId String
+  branchId        String
+  companyId       String
+  userId          String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  supplier        Supplier       @relation(fields: [supplierId], references: [id])
+  costCenter      CostCenter     @relation(fields: [costCenterId], references: [id])
+  invoiceType     InvoiceType    @relation(fields: [invoiceTypeId], references: [id])
+  invoiceOrigin   InvoiceOrigin  @relation(fields: [invoiceOriginId], references: [id])
+  branch          Branch         @relation(fields: [branchId], references: [id])
+  company         Company        @relation(fields: [companyId], references: [id])
+  user            User           @relation(fields: [userId], references: [id])
 }

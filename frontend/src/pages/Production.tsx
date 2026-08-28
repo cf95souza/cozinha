@@ -52,7 +52,7 @@ export default function Production() {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-on-surface-variant flex flex-col items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-4xl text-primary">sync</span>
+          <span className="material-symbols-outlined notranslate animate-spin text-4xl text-primary">sync</span>
           <p className="text-sm">Carregando módulo de produção...</p>
         </div>
       </div>
@@ -75,7 +75,7 @@ export default function Production() {
         <div className="lg:col-span-1 bg-surface border border-outline-variant p-6 rounded-2xl h-fit">
           <div className="flex items-center justify-between mb-5">
             <h3 className="font-semibold text-on-surface text-sm flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px] text-primary">skillet</span>
+              <span className="material-symbols-outlined notranslate text-[18px] text-primary">skillet</span>
               Registrar Produção
             </h3>
           </div>
@@ -145,7 +145,7 @@ export default function Production() {
         <div className="lg:col-span-2 bg-surface border border-outline-variant rounded-2xl overflow-hidden flex flex-col">
           <div className="px-5 py-4 border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
             <h3 className="font-semibold text-on-surface text-sm flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
+              <span className="material-symbols-outlined notranslate text-[18px] text-on-surface-variant">history</span>
               Produzidos Hoje
             </h3>
             <span className="text-xs bg-primary-container text-primary px-2 py-0.5 rounded-full font-semibold">
@@ -156,7 +156,7 @@ export default function Production() {
           <div className="p-6">
             {productions.length === 0 ? (
               <div className="py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-                <span className="material-symbols-outlined text-3xl text-secondary">check_circle</span>
+                <span className="material-symbols-outlined notranslate text-3xl text-secondary">check_circle</span>
                 Nenhuma produção registrada hoje.
               </div>
             ) : (

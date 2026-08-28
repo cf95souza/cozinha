@@ -18,7 +18,7 @@ export default function ResetPassword() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface-container-lowest">
         <div className="bg-surface p-8 rounded-2xl border border-outline-variant shadow-sm max-w-sm w-full text-center">
-          <span className="material-symbols-outlined text-error text-5xl mb-4">error</span>
+          <span className="material-symbols-outlined notranslate text-error text-5xl mb-4">error</span>
           <h2 className="text-xl font-bold text-on-surface mb-2">Token ausente</h2>
           <p className="text-on-surface-variant text-sm mb-6">O link de recuperação de senha está inválido ou incompleto.</p>
           <Link to="/login" className="px-5 py-2.5 bg-primary text-on-primary font-bold rounded-xl inline-block hover:bg-primary-hover">
@@ -59,7 +59,7 @@ export default function ResetPassword() {
         
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary-container text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-3xl">lock_reset</span>
+            <span className="material-symbols-outlined notranslate text-3xl">lock_reset</span>
           </div>
           <h1 className="text-2xl font-bold text-on-surface">Criar Nova Senha</h1>
           <p className="text-sm text-on-surface-variant mt-2">Digite sua nova senha abaixo para restaurar o acesso à sua conta.</p>

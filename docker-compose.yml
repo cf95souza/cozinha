@@ -21,8 +21,6 @@ services:
       context: ./backend
     container_name: cozinha-backend
     restart: unless-stopped
-    ports:
-      - "3001:3001"
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-cozinha}?schema=public
       - PORT=3001
@@ -41,10 +39,8 @@ services:
       context: ./frontend
     container_name: cozinha-frontend
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     environment:
-      - VITE_API_URL=http://137.131.151.125:3001/api
+      - VITE_API_URL=https://cozinhaplus.duckdns.org/api
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -53,9 +49,28 @@ services:
     networks:
       - cozinha-network
 
+  caddy:
+    image: caddy:2-alpine
+    container_name: cozinha-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - cozinha-network
+    depends_on:
+      - frontend
+      - backend
+
 networks:
   cozinha-network:
     driver: bridge
 
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:

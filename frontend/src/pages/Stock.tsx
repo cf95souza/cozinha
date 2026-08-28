@@ -133,7 +133,7 @@ export default function Stock() {
           <p className="text-sm text-on-surface-variant mt-0.5">Gerencie os itens físicos da filial: {activeBranch.name}</p>
         </div>
         <button onClick={exportCSV} className="flex items-center gap-2 px-5 py-2.5 bg-surface text-on-surface rounded-xl text-sm font-semibold border border-outline-variant hover:bg-surface-container transition-colors">
-          <span className="material-symbols-outlined text-[18px]">download</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">download</span>
           Exportar CSV
         </button>
       </div>
@@ -166,7 +166,7 @@ export default function Stock() {
       {/* Filter Bar */}
       <div className="bg-surface p-5 rounded-2xl border border-outline-variant flex flex-wrap gap-4 items-center">
         <div className="relative flex-1 min-w-[200px]">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant">search</span>
+          <span className="material-symbols-outlined notranslate absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant">search</span>
           <input 
             type="text" 
             placeholder="Buscar produto ou SKU..." 
@@ -202,13 +202,13 @@ export default function Stock() {
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <div className="text-on-surface-variant flex items-center gap-2">
-              <span className="material-symbols-outlined animate-spin text-primary">sync</span>
+              <span className="material-symbols-outlined notranslate animate-spin text-primary">sync</span>
               <span className="text-sm">Carregando saldos...</span>
             </div>
           </div>
         ) : filteredBalances.length === 0 ? (
           <div className="p-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-3">
-            <span className="material-symbols-outlined text-4xl text-on-surface-variant">inventory_2</span>
+            <span className="material-symbols-outlined notranslate text-4xl text-on-surface-variant">inventory_2</span>
             Nenhum saldo encontrado para os filtros atuais.
           </div>
         ) : (
@@ -235,7 +235,7 @@ export default function Stock() {
                     onClick={() => toggleLocation(locId)}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={`material-symbols-outlined text-[20px] text-on-surface-variant transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+                      <span className={`material-symbols-outlined notranslate text-[20px] text-on-surface-variant transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
                         expand_more
                       </span>
                       <span className="font-semibold text-primary">{loc.name}</span>
@@ -262,7 +262,7 @@ export default function Stock() {
                           </div>
                           
                           <div className="col-span-1 md:col-span-2 flex md:justify-end items-center gap-2">
-                            {balance.quantity < balance.product.minStock && <span className="material-symbols-outlined text-[16px] text-error" title="Abaixo do Mínimo">warning</span>}
+                            {balance.quantity < balance.product.minStock && <span className="material-symbols-outlined notranslate text-[16px] text-error" title="Abaixo do Mínimo">warning</span>}
                             <div className="flex items-baseline gap-1">
                               <span className={`font-bold text-base ${balance.quantity < balance.product.minStock ? 'text-error' : 'text-on-surface'}`}>
                                 {balance.quantity}

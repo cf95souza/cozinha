@@ -16,6 +16,7 @@ export default function Layout() {
   const [searchResults, setSearchResults] = useState<{products: any[], lots: any[], suppliers: any[], receivings: any[]}>({products: [], lots: [], suppliers: [], receivings: []});
   const [showSearch, setShowSearch] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   
   // Change password states
@@ -117,6 +118,7 @@ export default function Layout() {
   // Menu items com agrupamento
   const mainItems = [
     { path: '/dashboard', label: 'Início', icon: 'home', roles: ['ADMIN', 'GESTOR', 'ESTOQUISTA', 'COZINHEIRO', 'VISUALIZACAO'] },
+    { path: '/notas-fiscais', label: 'Notas (Consumo)', icon: 'receipt_long', roles: ['ADMIN', 'GESTOR'] },
     { path: '/etiquetas', label: 'Etiquetas', icon: 'label', roles: ['ADMIN', 'GESTOR', 'ESTOQUISTA', 'COZINHEIRO'] },
     { path: '/validades', label: 'Validades', icon: 'event_busy', roles: ['ADMIN', 'GESTOR', 'ESTOQUISTA', 'COZINHEIRO'] },
     { path: '/producao', label: 'Produção', icon: 'skillet', roles: ['ADMIN', 'GESTOR', 'COZINHEIRO'] },
@@ -142,30 +144,36 @@ export default function Layout() {
     { path: '/usuarios', label: 'Equipe e Acessos', icon: 'group', roles: ['ADMIN', 'GESTOR'] },
     { path: '/unidades', label: 'Unidades', icon: 'store', roles: ['ADMIN'] },
     { path: '/auditoria', label: 'Auditoria', icon: 'security', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/financeiro-config', label: 'Params. Financeiro', icon: 'account_balance', roles: ['ADMIN', 'GESTOR'] },
     { path: '/configuracoes', label: 'Configurações', icon: 'settings', roles: ['ADMIN'] },
   ];
+
+  // Classe compartilhada para TODOS os itens do menu quando colapsado
+  const collapsedItemClass = 'flex items-center justify-center w-10 h-10 rounded-xl mx-auto';
+  const expandedItemClass = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] mx-2';
 
   const renderMenuItem = (item: typeof mainItems[0]) => {
     if (!item.roles.includes(user?.role || '')) return null;
     const isActive = location.pathname === item.path;
+    const activeClass = isActive
+      ? 'bg-primary-container text-primary font-semibold'
+      : 'text-on-surface-variant hover:bg-surface-container';
+
     return (
       <Link
         key={item.path}
         to={item.path}
         onClick={() => setSidebarOpen(false)}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] transition-all duration-150 ${
-          isActive
-            ? 'bg-primary-container text-primary font-semibold'
-            : 'text-on-surface-variant hover:bg-surface-container'
-        }`}
+        title={isSidebarCollapsed ? item.label : undefined}
+        className={`${isSidebarCollapsed ? collapsedItemClass : expandedItemClass} ${activeClass} transition-all duration-150`}
       >
         <span
-          className="material-symbols-outlined text-[20px]"
+          className="material-symbols-outlined notranslate text-[20px] shrink-0"
           style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
         >
           {item.icon}
         </span>
-        <span>{item.label}</span>
+        {!isSidebarCollapsed && <span>{item.label}</span>}
       </Link>
     );
   };
@@ -175,28 +183,44 @@ export default function Layout() {
     if (visibleItems.length === 0) return null;
     const isOpen = openGroups[groupKey] ?? false;
     const hasActiveChild = visibleItems.some(i => location.pathname === i.path);
+    const groupIcon = groupKey === 'cadastros' ? 'folder_open' : 'settings';
+    const activeClass = hasActiveChild
+      ? 'text-primary font-semibold'
+      : 'text-on-surface-variant hover:bg-surface-container';
 
     return (
       <div key={groupKey}>
         <button
-          onClick={() => toggleGroup(groupKey)}
-          className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-[14px] transition-all duration-150 ${
-            hasActiveChild ? 'text-primary font-semibold' : 'text-on-surface-variant hover:bg-surface-container'
-          }`}
+          onClick={() => {
+            if (isSidebarCollapsed) {
+              setIsSidebarCollapsed(false);
+              setOpenGroups(prev => ({ ...prev, [groupKey]: true }));
+            } else {
+              toggleGroup(groupKey);
+            }
+          }}
+          title={isSidebarCollapsed ? label : undefined}
+          className={`${isSidebarCollapsed ? collapsedItemClass : expandedItemClass + ' justify-between w-[calc(100%-16px)]'} ${activeClass} transition-all duration-150`}
         >
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[20px]"
-              style={{ fontVariationSettings: hasActiveChild ? "'FILL' 1" : "'FILL' 0" }}
-            >
-              {groupKey === 'cadastros' ? 'folder_open' : 'settings'}
+          {isSidebarCollapsed ? (
+            <span className="material-symbols-outlined notranslate text-[20px] shrink-0" style={{ fontVariationSettings: hasActiveChild ? "'FILL' 1" : "'FILL' 0" }}>
+              {groupIcon}
             </span>
-            <span>{label}</span>
-          </div>
-          <span className={`material-symbols-outlined text-[18px] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
-            expand_more
-          </span>
+          ) : (
+            <>
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined notranslate text-[20px] shrink-0" style={{ fontVariationSettings: hasActiveChild ? "'FILL' 1" : "'FILL' 0" }}>
+                  {groupIcon}
+                </span>
+                <span>{label}</span>
+              </div>
+              <span className={`material-symbols-outlined notranslate text-[18px] transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                expand_more
+              </span>
+            </>
+          )}
         </button>
-        {isOpen && (
+        {isOpen && !isSidebarCollapsed && (
           <div className="ml-4 pl-3 border-l-2 border-outline-variant space-y-0.5 mt-1">
             {visibleItems.map(renderMenuItem)}
           </div>
@@ -208,42 +232,55 @@ export default function Layout() {
   const SidebarContent = () => (
     <>
       {/* Logo */}
-      <div className="px-5 pt-6 pb-4">
-        <h1 className="text-xl font-extrabold text-primary tracking-tight">cozinha+</h1>
+      <div className={`px-5 pt-6 pb-4 flex items-center ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+        {!isSidebarCollapsed && <h1 className="text-xl font-extrabold text-primary tracking-tight">cozinha+</h1>}
+        <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant hidden md:block">
+          <span className="material-symbols-outlined notranslate">{isSidebarCollapsed ? 'menu' : 'menu_open'}</span>
+        </button>
       </div>
       
       {/* Menu Principal */}
-      <div className="flex-1 overflow-y-auto px-3 space-y-0.5">
-        {mainItems.map(renderMenuItem)}
-        {renderGroup('Cadastros', cadastrosItems, 'cadastros')}
-        {renderGroup('Configurações', configItems, 'config')}
+      <div className="flex-1 overflow-y-auto space-y-1 pb-4">
+        <div className="space-y-0.5">
+          {mainItems.map(renderMenuItem)}
+        </div>
+        <div className="space-y-0.5">
+          {renderGroup('Cadastros', cadastrosItems, 'cadastros')}
+        </div>
+        <div className="space-y-0.5">
+          {renderGroup('Configurações', configItems, 'config')}
+        </div>
       </div>
 
       {/* Footer: User Info + Logout */}
-      <div className="px-4 py-4 border-t border-outline-variant mt-auto">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">
+      <div className={`py-4 border-t border-outline-variant mt-auto ${isSidebarCollapsed ? 'flex flex-col items-center px-2' : 'px-4'}`}>
+        <div className={`flex items-center gap-3 mb-3 ${isSidebarCollapsed ? 'justify-center' : ''}`}>
+          <div className="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm shrink-0">
             {user?.name?.charAt(0)}
           </div>
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-on-surface truncate">{user?.name}</p>
-            <p className="text-xs text-on-surface-variant">{user?.role}</p>
-          </div>
+          {!isSidebarCollapsed && (
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-on-surface truncate">{user?.name}</p>
+              <p className="text-xs text-on-surface-variant">{user?.role}</p>
+            </div>
+          )}
         </div>
-        <div className="flex flex-col gap-1">
+        <div className={`flex ${isSidebarCollapsed ? 'flex-col items-center gap-1' : 'flex-col gap-1 w-full'}`}>
           <button 
             onClick={() => setIsChangePasswordOpen(true)}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm text-on-surface hover:bg-surface-container transition-colors font-semibold"
+            title={isSidebarCollapsed ? "Alterar Senha" : undefined}
+            className={`${isSidebarCollapsed ? collapsedItemClass : 'flex items-center justify-center gap-2 w-full py-2 rounded-xl text-sm'} text-on-surface hover:bg-surface-container transition-colors font-semibold`}
           >
-            <span className="material-symbols-outlined text-[18px]">key</span>
-            Alterar Senha
+            <span className="material-symbols-outlined notranslate text-[18px]">key</span>
+            {!isSidebarCollapsed && "Alterar Senha"}
           </button>
           <button 
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm text-on-surface-variant hover:bg-error-container hover:text-error transition-colors"
+            title={isSidebarCollapsed ? "Sair" : undefined}
+            className={`${isSidebarCollapsed ? collapsedItemClass : 'flex items-center justify-center gap-2 w-full py-2 rounded-xl text-sm'} text-on-surface-variant hover:bg-error-container hover:text-error transition-colors`}
           >
-            <span className="material-symbols-outlined text-[18px]">logout</span>
-            Sair
+            <span className="material-symbols-outlined notranslate text-[18px]">logout</span>
+            {!isSidebarCollapsed && "Sair"}
           </button>
         </div>
       </div>
@@ -259,24 +296,24 @@ export default function Layout() {
       )}
 
       {/* Sidebar Desktop */}
-      <nav className="hidden md:flex flex-col h-screen bg-surface border-r border-outline-variant fixed left-0 top-0 w-[220px] z-20">
-        <SidebarContent />
+      <nav className={`hidden md:flex flex-col h-screen bg-surface border-r border-outline-variant fixed left-0 top-0 z-20 transition-all duration-300 ${isSidebarCollapsed ? 'w-[80px]' : 'w-[260px]'}`}>
+        {SidebarContent()}
       </nav>
 
       {/* Sidebar Mobile */}
       <nav className={`md:hidden fixed left-0 top-0 h-screen w-[260px] bg-surface border-r border-outline-variant z-40 flex flex-col transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <SidebarContent />
+        {SidebarContent()}
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 ml-0 md:ml-[220px] flex flex-col min-h-screen relative overflow-y-auto bg-surface-container-low">
+      <main className={`flex-1 ml-0 flex flex-col min-h-screen relative overflow-y-auto bg-surface-container-low transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[260px]'}`}>
         
         {/* Topbar */}
         <header className="flex justify-between items-center w-full px-5 py-3 bg-surface border-b border-outline-variant sticky top-0 z-10">
           <div className="flex items-center gap-3">
             {/* Hamburger Mobile */}
             <button className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-surface-container" onClick={() => setSidebarOpen(true)}>
-              <span className="material-symbols-outlined text-on-surface">menu</span>
+              <span className="material-symbols-outlined notranslate text-on-surface">menu</span>
             </button>
 
             {/* Restaurante + Badge Unidade */}
@@ -309,7 +346,7 @@ export default function Layout() {
           <div className="flex items-center gap-2">
             {/* Busca */}
             <div className="relative hidden lg:block w-56">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+              <span className="material-symbols-outlined notranslate absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
               <input 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -377,7 +414,7 @@ export default function Layout() {
               className="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors"
               title="Alternar tema"
             >
-              <span className="material-symbols-outlined text-[20px]">
+              <span className="material-symbols-outlined notranslate text-[20px]">
                 {isDarkMode ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
@@ -385,7 +422,7 @@ export default function Layout() {
             {/* Notificações */}
             <div className="relative group">
               <button className="relative p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors">
-                <span className="material-symbols-outlined text-[20px]">notifications</span>
+                <span className="material-symbols-outlined notranslate text-[20px]">notifications</span>
                 {(kpis?.expiredLots > 0 || kpis?.belowMinCount > 0) && (
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
                 )}
@@ -397,13 +434,13 @@ export default function Layout() {
                 </div>
                 {kpis?.expiredLots > 0 && (
                   <Link to="/validades" className="p-3 border-b border-outline-variant flex gap-2 items-center text-error hover:bg-surface-container transition-colors text-sm">
-                    <span className="material-symbols-outlined text-[18px]">warning</span>
+                    <span className="material-symbols-outlined notranslate text-[18px]">warning</span>
                     {kpis.expiredLots} lote(s) vencido(s)
                   </Link>
                 )}
                 {kpis?.belowMinCount > 0 && (
                   <Link to="/estoque" className="p-3 border-b border-outline-variant flex gap-2 items-center text-primary hover:bg-surface-container transition-colors text-sm">
-                    <span className="material-symbols-outlined text-[18px]">info</span>
+                    <span className="material-symbols-outlined notranslate text-[18px]">info</span>
                     {kpis.belowMinCount} abaixo do mínimo
                   </Link>
                 )}
@@ -437,11 +474,11 @@ export default function Layout() {
           <div className="bg-surface w-full max-w-sm rounded-2xl shadow-xl flex flex-col animate-in zoom-in-95 overflow-hidden border border-outline-variant">
             <div className="p-5 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
               <h2 className="text-lg font-bold text-on-surface flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">key</span>
+                <span className="material-symbols-outlined notranslate text-primary">key</span>
                 Alterar Senha
               </h2>
               <button onClick={() => setIsChangePasswordOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined notranslate text-[20px]">close</span>
               </button>
             </div>
             

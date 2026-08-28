@@ -27,7 +27,7 @@ export default function Dashboard() {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="text-on-surface-variant flex flex-col items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-4xl text-primary">sync</span>
+          <span className="material-symbols-outlined notranslate animate-spin text-4xl text-primary">sync</span>
           <p className="text-sm">Carregando dashboard...</p>
         </div>
       </div>
@@ -56,28 +56,28 @@ export default function Dashboard() {
           onClick={() => navigate('/recebimentos')}
           className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-hover transition-colors"
         >
-          <span className="material-symbols-outlined text-[18px]">add_circle</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">add_circle</span>
           Receber Mercadoria
         </button>
         <button 
           onClick={() => navigate('/etiquetas')}
           className="flex items-center gap-2 px-5 py-2.5 bg-surface text-on-surface rounded-xl text-sm font-semibold border border-outline-variant hover:bg-surface-container transition-colors"
         >
-          <span className="material-symbols-outlined text-[18px]">label</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">label</span>
           Gerar Etiqueta
         </button>
         <button 
           onClick={() => navigate('/producao')}
           className="flex items-center gap-2 px-5 py-2.5 bg-surface text-on-surface rounded-xl text-sm font-semibold border border-outline-variant hover:bg-surface-container transition-colors"
         >
-          <span className="material-symbols-outlined text-[18px]">skillet</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">skillet</span>
           Produzir
         </button>
         <button 
           onClick={() => navigate('/inventario')}
           className="flex items-center gap-2 px-5 py-2.5 bg-surface text-on-surface rounded-xl text-sm font-semibold border border-outline-variant hover:bg-surface-container transition-colors"
         >
-          <span className="material-symbols-outlined text-[18px]">rule</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">rule</span>
           Auditar Estoque
         </button>
       </section>
@@ -231,7 +231,7 @@ export default function Dashboard() {
           <div className="overflow-y-auto h-64">
             {kpis.criticalProducts?.length === 0 ? (
               <div className="p-8 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-                <span className="material-symbols-outlined text-3xl text-secondary">check_circle</span>
+                <span className="material-symbols-outlined notranslate text-3xl text-secondary">check_circle</span>
                 Estoque saudável
               </div>
             ) : (
@@ -261,7 +261,7 @@ export default function Dashboard() {
           <div className="overflow-y-auto h-64">
             {kpis.expiringLotsDetails?.length === 0 ? (
               <div className="p-8 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-                <span className="material-symbols-outlined text-3xl text-secondary">check_circle</span>
+                <span className="material-symbols-outlined notranslate text-3xl text-secondary">check_circle</span>
                 Nenhum lote crítico
               </div>
             ) : (
@@ -298,7 +298,7 @@ export default function Dashboard() {
               <div className="divide-y divide-outline-variant">
                 {kpis.recentMovements?.map((mov: any) => (
                   <div key={mov.id} className="px-5 py-3 flex items-center gap-3 hover:bg-surface-container-low transition-colors">
-                    <span className={`material-symbols-outlined text-[18px] ${
+                    <span className={`material-symbols-outlined notranslate text-[18px] ${
                       mov.type.includes('ENTRADA') ? 'text-secondary' : 
                       mov.type.includes('SAIDA') || mov.type.includes('PERDA') ? 'text-error' : 'text-primary'
                     }`}>

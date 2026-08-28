@@ -62,7 +62,7 @@ export default function Losses() {
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 px-5 py-2.5 bg-error text-on-error rounded-xl text-sm font-bold hover:opacity-90 transition-opacity shadow-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">delete_forever</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">delete_forever</span>
           Registrar Perda
         </button>
       </div>
@@ -86,7 +86,7 @@ export default function Losses() {
               
               <div className="col-span-1 md:col-span-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                  <span className="material-symbols-outlined text-[20px]">inventory</span>
+                  <span className="material-symbols-outlined notranslate text-[20px]">inventory</span>
                 </div>
                 <span className="font-semibold text-sm text-on-surface">{loss.product.name}</span>
               </div>
@@ -109,7 +109,7 @@ export default function Losses() {
           
           {losses.length === 0 && (
             <div className="px-6 py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-              <span className="material-symbols-outlined text-3xl text-secondary">check_circle</span>
+              <span className="material-symbols-outlined notranslate text-3xl text-secondary">check_circle</span>
               Nenhuma perda registrada.
             </div>
           )}
@@ -122,11 +122,11 @@ export default function Losses() {
           <div className="bg-surface rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
               <h2 className="text-lg font-bold text-error flex items-center gap-2">
-                <span className="material-symbols-outlined">delete_forever</span>
+                <span className="material-symbols-outlined notranslate">delete_forever</span>
                 Registrar Nova Perda
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="text-on-surface-variant hover:bg-surface-container p-1 rounded-full transition-colors">
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined notranslate">close</span>
               </button>
             </div>
             

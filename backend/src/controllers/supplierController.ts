@@ -12,9 +12,6 @@ export const getSuppliers = async (req: AuthRequest, res: Response): Promise<voi
     const skip = (pageNumber - 1) * limitNumber;
 
     const where: any = { companyId, status: 'ATIVO' };
-    if (branchId) {
-      where.branchId = branchId as string;
-    }
 
     const [suppliers, total] = await Promise.all([
       prisma.supplier.findMany({ where, skip, take: limitNumber }),
@@ -41,12 +38,13 @@ export const createSupplier = async (req: AuthRequest, res: Response): Promise<v
     const { name, tradeName, document, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder, notes, rating, status, branchId } = req.body;
 
     const supplier = await prisma.supplier.create({
-      data: { name, tradeName, document, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder, notes, rating, status, companyId, branchId }
+      data: { name, tradeName, document: document || null, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder: minimumOrder ? Number(minimumOrder) : null, notes, rating: rating ? Number(rating) : null, status, companyId, branchId: null }
     });
 
     res.status(201).json(supplier);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao criar fornecedor' });
+  } catch (error: any) {
+    console.error('Error creating supplier:', error);
+    res.status(500).json({ error: 'Erro ao criar fornecedor', details: error.message || error });
   }
 };
 
@@ -57,7 +55,7 @@ export const updateSupplier = async (req: AuthRequest, res: Response): Promise<v
 
     const supplier = await prisma.supplier.update({
       where: { id },
-      data: { name, tradeName, document, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder, notes, rating, status }
+      data: { name, tradeName, document: document || null, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder: minimumOrder ? Number(minimumOrder) : null, notes, rating: rating ? Number(rating) : null, status }
     });
 
     res.json(supplier);

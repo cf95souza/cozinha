@@ -147,7 +147,7 @@ export default function ReceivingFlow() {
   if (loading) return (
     <div className="flex justify-center items-center h-64">
       <div className="text-on-surface-variant flex flex-col items-center gap-3">
-        <span className="material-symbols-outlined animate-spin text-4xl text-primary">sync</span>
+        <span className="material-symbols-outlined notranslate animate-spin text-4xl text-primary">sync</span>
         <p className="text-sm">Carregando dados da nota...</p>
       </div>
     </div>
@@ -158,7 +158,7 @@ export default function ReceivingFlow() {
       <div className="max-w-4xl mx-auto space-y-6 pb-12">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate('/recebimentos')} className="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors">
-            <span className="material-symbols-outlined text-[24px]">arrow_back</span>
+            <span className="material-symbols-outlined notranslate text-[24px]">arrow_back</span>
           </button>
           <div>
             <h1 className="text-2xl font-bold text-on-surface">Iniciar Recebimento</h1>
@@ -183,7 +183,7 @@ export default function ReceivingFlow() {
 
           <div className="border-t border-outline-variant pt-6">
             <h3 className="font-semibold text-on-surface mb-3 flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px] text-primary">inventory_2</span>
+              <span className="material-symbols-outlined notranslate text-[18px] text-primary">inventory_2</span>
               Itens Esperados
             </h3>
             
@@ -229,7 +229,7 @@ export default function ReceivingFlow() {
                 }}
                 className="flex items-center justify-center gap-1 px-4 py-2 bg-surface text-on-surface font-semibold rounded-xl border border-outline-variant hover:bg-surface-container h-[42px] transition-colors w-full sm:w-auto"
               >
-                <span className="material-symbols-outlined text-[18px]">add</span>
+                <span className="material-symbols-outlined notranslate text-[18px]">add</span>
                 Incluir
               </button>
             </div>
@@ -238,7 +238,7 @@ export default function ReceivingFlow() {
           <div className="flex justify-end pt-6 border-t border-outline-variant">
             <button disabled={submitting} type="submit" className="flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-hover transition-colors disabled:opacity-50">
               Prosseguir para Conferência
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              <span className="material-symbols-outlined notranslate text-[18px]">arrow_forward</span>
             </button>
           </div>
         </form>
@@ -255,7 +255,7 @@ export default function ReceivingFlow() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex gap-4 items-center">
           <button onClick={() => navigate('/recebimentos')} className="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors">
-            <span className="material-symbols-outlined text-[24px]">arrow_back</span>
+            <span className="material-symbols-outlined notranslate text-[24px]">arrow_back</span>
           </button>
           <div>
             <h1 className="text-2xl font-bold text-on-surface">Conferência</h1>
@@ -269,7 +269,7 @@ export default function ReceivingFlow() {
             onClick={handleApprove}
             className="flex items-center justify-center gap-2 px-6 py-3 bg-secondary text-on-secondary rounded-xl font-bold hover:opacity-90 transition-colors shadow-sm disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[20px]">task_alt</span>
+            <span className="material-symbols-outlined notranslate text-[20px]">task_alt</span>
             Finalizar e Aprovar
           </button>
         )}
@@ -280,7 +280,7 @@ export default function ReceivingFlow() {
         <div className="bg-surface rounded-2xl shadow-sm border border-outline-variant overflow-hidden h-[70vh] flex flex-col">
           <div className="px-5 py-4 bg-surface-container-low border-b border-outline-variant flex items-center justify-between">
             <h3 className="font-semibold text-on-surface text-sm flex items-center gap-2">
-              <span className="material-symbols-outlined text-[18px] text-primary">format_list_numbered</span>
+              <span className="material-symbols-outlined notranslate text-[18px] text-primary">format_list_numbered</span>
               Itens da Nota
             </h3>
             <span className="text-xs bg-primary-container text-primary px-2 py-0.5 rounded-full font-semibold">
@@ -314,8 +314,8 @@ export default function ReceivingFlow() {
                     <p className={`font-semibold text-sm truncate ${isActive ? 'text-primary' : 'text-on-surface'}`}>{item.product.name}</p>
                     <p className="text-xs text-on-surface-variant mt-0.5">Ped: {item.requestedQty} {item.unit}</p>
                   </div>
-                  {checked && !hasDivergence && <span className="material-symbols-outlined text-[18px] text-secondary">check_circle</span>}
-                  {hasDivergence && <span className="material-symbols-outlined text-[18px] text-error">warning</span>}
+                  {checked && !hasDivergence && <span className="material-symbols-outlined notranslate text-[18px] text-secondary">check_circle</span>}
+                  {hasDivergence && <span className="material-symbols-outlined notranslate text-[18px] text-error">warning</span>}
                 </button>
               );
             })}
@@ -333,12 +333,12 @@ export default function ReceivingFlow() {
                 </span>
                 {activeItem.product.controlled && (
                   <span className="text-xs bg-error-container text-on-error-container px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[14px]">warning</span> Controlado
+                    <span className="material-symbols-outlined notranslate text-[14px]">warning</span> Controlado
                   </span>
                 )}
                 {activeItem.product.temperatureControlled && (
                   <span className="text-xs bg-[#e0f2fe] text-[#0284c7] px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[14px]">thermostat</span> 
+                    <span className="material-symbols-outlined notranslate text-[14px]">thermostat</span> 
                     Termolábil ({activeItem.product.minTemperature}° a {activeItem.product.maxTemperature}°)
                   </span>
                 )}
@@ -418,14 +418,14 @@ export default function ReceivingFlow() {
               <div className="px-6 py-4 border-t border-outline-variant flex justify-end">
                 <button disabled={submitting} type="submit" className="flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-hover transition-colors disabled:opacity-50">
                   Salvar Item e Avançar
-                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">arrow_forward</span>
                 </button>
               </div>
             )}
           </form>
         ) : (
           <div className="bg-surface rounded-2xl shadow-sm border border-outline-variant flex flex-col items-center justify-center p-8 text-on-surface-variant text-sm gap-3 h-[70vh]">
-            <span className="material-symbols-outlined text-4xl">touch_app</span>
+            <span className="material-symbols-outlined notranslate text-4xl">touch_app</span>
             Selecione um item ao lado para conferir
           </div>
         )}

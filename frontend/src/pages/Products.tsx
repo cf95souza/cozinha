@@ -158,6 +158,8 @@ export default function Products() {
       ['minTemperature', 'maxTemperature', 'sellPrice', 'costPrice', 'marginPercentage', 'weight', 'packageWeight', 'yieldPercentage', 'defaultExpirationDays'].forEach(field => {
         payload[field] = formData[field] === '' ? null : Number(formData[field]);
       });
+      payload.minStock = formData.minStock === '' ? 0 : Number(formData.minStock);
+      payload.maxStock = formData.maxStock === '' ? 0 : Number(formData.maxStock);
       payload.supplierId = formData.supplierId || null;
       payload.locationId = formData.locationId || null;
 
@@ -189,7 +191,7 @@ export default function Products() {
           onClick={openNew}
           className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined text-[18px]">add</span>
+          <span className="material-symbols-outlined notranslate text-[18px]">add</span>
           Novo Produto
         </button>
       </div>
@@ -201,7 +203,7 @@ export default function Products() {
           </div>
         ) : products.length === 0 ? (
           <div className="px-6 py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-            <span className="material-symbols-outlined text-4xl text-outline mb-2">inventory_2</span>
+            <span className="material-symbols-outlined notranslate text-4xl text-outline mb-2">inventory_2</span>
             Nenhum produto cadastrado no catálogo.
           </div>
         ) : (
@@ -220,7 +222,7 @@ export default function Products() {
                 <div key={p.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center">
                   <div className="col-span-1 md:col-span-5 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                      <span className="material-symbols-outlined text-[20px]">category</span>
+                      <span className="material-symbols-outlined notranslate text-[20px]">category</span>
                     </div>
                     <div>
                       <p className="font-semibold text-sm text-on-surface">{p.name}</p>
@@ -240,10 +242,10 @@ export default function Products() {
                   
                   <div className="col-span-1 md:col-span-2 flex md:justify-end gap-1">
                     <button onClick={() => openEdit(p)} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors">
-                      <span className="material-symbols-outlined text-[20px]">edit</span>
+                      <span className="material-symbols-outlined notranslate text-[20px]">edit</span>
                     </button>
                     <button onClick={() => handleDelete(p.id)} className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors">
-                      <span className="material-symbols-outlined text-[20px]">delete</span>
+                      <span className="material-symbols-outlined notranslate text-[20px]">delete</span>
                     </button>
                   </div>
                 </div>
@@ -262,11 +264,11 @@ export default function Products() {
           <div className="bg-surface rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
             <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
               <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">{editingId ? 'edit_square' : 'add_box'}</span>
+                <span className="material-symbols-outlined notranslate text-primary">{editingId ? 'edit_square' : 'add_box'}</span>
                 {editingId ? 'Editar Produto' : 'Novo Produto'}
               </h3>
               <button onClick={() => setIsModalOpen(false)} className="text-on-surface-variant hover:bg-surface-container p-1 rounded-full transition-colors">
-                <span className="material-symbols-outlined">close</span>
+                <span className="material-symbols-outlined notranslate">close</span>
               </button>
             </div>
             
@@ -274,19 +276,19 @@ export default function Products() {
               {/* Sidebar Tabs */}
               <div className="md:w-64 bg-surface-container-lowest border-b md:border-b-0 md:border-r border-outline-variant p-4 space-y-2 overflow-y-auto flex md:block shrink-0">
                 <button type="button" onClick={() => setActiveTab('basic')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors text-sm font-semibold ${activeTab === 'basic' ? 'bg-primary-container text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}>
-                  <span className="material-symbols-outlined text-[18px]">info</span> <span className="hidden md:inline">Dados Básicos</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">info</span> <span className="hidden md:inline">Dados Básicos</span>
                 </button>
                 <button type="button" onClick={() => setActiveTab('commercial')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors text-sm font-semibold ${activeTab === 'commercial' ? 'bg-primary-container text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}>
-                  <span className="material-symbols-outlined text-[18px]">payments</span> <span className="hidden md:inline">Comercial & Fiscal</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">payments</span> <span className="hidden md:inline">Comercial & Fiscal</span>
                 </button>
                 <button type="button" onClick={() => setActiveTab('specs')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors text-sm font-semibold ${activeTab === 'specs' ? 'bg-primary-container text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}>
-                  <span className="material-symbols-outlined text-[18px]">description</span> <span className="hidden md:inline">Especificações Técnicas</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">description</span> <span className="hidden md:inline">Especificações Técnicas</span>
                 </button>
                 <button type="button" onClick={() => setActiveTab('stock')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors text-sm font-semibold ${activeTab === 'stock' ? 'bg-primary-container text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}>
-                  <span className="material-symbols-outlined text-[18px]">inventory_2</span> <span className="hidden md:inline">Estoque</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">inventory_2</span> <span className="hidden md:inline">Estoque</span>
                 </button>
                 <button type="button" onClick={() => setActiveTab('rules')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors text-sm font-semibold ${activeTab === 'rules' ? 'bg-primary-container text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}>
-                  <span className="material-symbols-outlined text-[18px]">gpp_maybe</span> <span className="hidden md:inline">Regras</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">gpp_maybe</span> <span className="hidden md:inline">Regras</span>
                 </button>
               </div>
 
@@ -498,7 +500,7 @@ export default function Products() {
                    const tabs = ['basic', 'commercial', 'specs', 'stock', 'rules'];
                    setActiveTab(tabs[tabs.indexOf(activeTab) + 1] as any);
                  }} className="px-6 py-2.5 bg-surface border border-outline-variant text-on-surface rounded-xl text-sm font-bold hover:bg-surface-container-low transition-colors flex items-center gap-2">
-                   Avançar <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                   Avançar <span className="material-symbols-outlined notranslate text-[18px]">chevron_right</span>
                  </button>
               ) : (
                  <button type="submit" form="productForm" className="px-8 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm">

@@ -74,7 +74,7 @@ export default function Recipes() {
 
   if (loading) return (
     <div className="p-12 text-center flex flex-col items-center gap-3 text-on-surface-variant">
-      <span className="material-symbols-outlined animate-spin text-4xl">sync</span>
+      <span className="material-symbols-outlined notranslate animate-spin text-4xl">sync</span>
       <span className="text-sm font-semibold">Carregando fichas técnicas...</span>
     </div>
   );
@@ -90,7 +90,7 @@ export default function Recipes() {
           onClick={() => setIsModalOpen(true)}
           className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-hover transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined text-[20px]">add</span>
+          <span className="material-symbols-outlined notranslate text-[20px]">add</span>
           Nova Ficha
         </button>
       </div>
@@ -99,13 +99,13 @@ export default function Recipes() {
         {recipes.map(recipe => (
           <div key={recipe.id} className="bg-surface border border-outline-variant rounded-2xl shadow-sm flex flex-col relative overflow-hidden hover:border-primary/30 transition-colors group">
              <div className="absolute -right-4 -top-4 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-500">
-              <span className="material-symbols-outlined text-9xl">menu_book</span>
+              <span className="material-symbols-outlined notranslate text-9xl">menu_book</span>
             </div>
             
             <div className="p-6 pb-4 border-b border-outline-variant z-10 flex flex-col gap-1">
               <h3 className="font-bold text-lg text-on-surface leading-tight line-clamp-2 min-h-[2.5rem] flex items-center">{recipe.product.name}</h3>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-low border border-outline-variant rounded-md w-max mt-2">
-                <span className="material-symbols-outlined text-[14px] text-on-surface-variant">scale</span>
+                <span className="material-symbols-outlined notranslate text-[14px] text-on-surface-variant">scale</span>
                 <span className="text-xs font-bold text-on-surface">Rende {recipe.expectedYield} {recipe.product.unit}</span>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function Recipes() {
         
         {recipes.length === 0 && (
           <div className="col-span-full p-16 text-center text-on-surface-variant bg-surface rounded-2xl shadow-sm border border-outline-variant border-dashed flex flex-col items-center justify-center gap-3">
-            <span className="material-symbols-outlined text-5xl opacity-50">menu_book</span>
+            <span className="material-symbols-outlined notranslate text-5xl opacity-50">menu_book</span>
             <div>
               <p className="font-bold text-lg text-on-surface">Nenhuma ficha técnica cadastrada</p>
               <p className="text-sm mt-1">Crie a primeira receita para iniciar o controle.</p>
@@ -155,7 +155,7 @@ export default function Recipes() {
                 <p className="text-xs text-on-surface-variant mt-1">Define os ingredientes e rendimento de um produto fabricado.</p>
               </div>
               <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors">
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined notranslate text-[20px]">close</span>
               </button>
             </div>
             
@@ -193,13 +193,13 @@ export default function Recipes() {
                     <p className="text-xs text-on-surface-variant">Matéria-prima consumida para este rendimento</p>
                   </div>
                   <button type="button" onClick={addIngredientRow} className="text-sm text-primary font-bold flex items-center gap-1 hover:bg-primary-container px-3 py-1.5 rounded-lg transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">add</span> Adicionar
+                    <span className="material-symbols-outlined notranslate text-[18px]">add</span> Adicionar
                   </button>
                 </div>
                 
                 {items.length === 0 ? (
                   <div className="p-8 text-center border border-dashed border-outline-variant rounded-xl bg-surface-container-lowest flex flex-col items-center gap-2 text-on-surface-variant">
-                    <span className="material-symbols-outlined text-3xl opacity-50">kitchen</span>
+                    <span className="material-symbols-outlined notranslate text-3xl opacity-50">kitchen</span>
                     <p className="text-sm">Adicione pelo menos um ingrediente para compor a ficha técnica.</p>
                     <button type="button" onClick={addIngredientRow} className="text-primary font-bold text-sm hover:underline mt-1">Adicionar Ingrediente</button>
                   </div>
@@ -224,7 +224,7 @@ export default function Recipes() {
                           className="w-28 px-3 py-2 border border-outline-variant rounded-lg bg-surface text-sm focus:ring-2 focus:ring-primary/20 outline-none"
                         />
                         <button type="button" onClick={() => removeIngredientRow(index)} className="w-9 h-9 flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition-colors shrink-0">
-                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                          <span className="material-symbols-outlined notranslate text-[18px]">delete</span>
                         </button>
                       </div>
                     ))}
@@ -235,7 +235,7 @@ export default function Recipes() {
               <div className="flex justify-end gap-3 pt-6 border-t border-outline-variant mt-8">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 font-bold text-on-surface border border-outline-variant rounded-xl hover:bg-surface-container transition-colors">Cancelar</button>
                 <button type="submit" className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-xl shadow-sm hover:bg-primary-hover transition-colors flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px]">save</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">save</span>
                   Salvar Ficha Técnica
                 </button>
               </div>

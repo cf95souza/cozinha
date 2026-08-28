@@ -106,14 +106,14 @@ export default function Transfers() {
             
             {/* Ícone de conexão visual entre os cards (Apenas visual em telas grandes) */}
             <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-surface border border-outline-variant rounded-full items-center justify-center text-primary shadow-sm">
-              <span className="material-symbols-outlined">swap_horiz</span>
+              <span className="material-symbols-outlined notranslate">swap_horiz</span>
             </div>
 
             {/* ORIGEM */}
             <div className="bg-surface-container-lowest p-6 border border-outline-variant rounded-2xl space-y-5">
               <div className="flex items-center gap-3 pb-3 border-b border-outline-variant">
                 <div className="w-8 h-8 rounded-full bg-error-container text-error flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[18px]">arrow_upward</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">arrow_upward</span>
                 </div>
                 <h3 className="font-bold text-on-surface text-lg">Origem (Saída)</h3>
               </div>
@@ -154,7 +154,7 @@ export default function Transfers() {
             <div className="bg-surface-container-lowest p-6 border border-outline-variant rounded-2xl space-y-5">
               <div className="flex items-center gap-3 pb-3 border-b border-outline-variant">
                 <div className="w-8 h-8 rounded-full bg-primary-container text-primary flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[18px]">arrow_downward</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">arrow_downward</span>
                 </div>
                 <h3 className="font-bold text-on-surface text-lg">Destino (Entrada)</h3>
               </div>
@@ -235,9 +235,9 @@ export default function Transfers() {
               className="bg-primary text-on-primary font-bold px-8 py-3 rounded-xl shadow-sm hover:bg-primary-hover transition-colors flex items-center gap-2 disabled:opacity-50"
             >
               {loading ? (
-                <span className="material-symbols-outlined animate-spin text-[20px]">sync</span>
+                <span className="material-symbols-outlined notranslate animate-spin text-[20px]">sync</span>
               ) : (
-                <span className="material-symbols-outlined text-[20px]">send</span>
+                <span className="material-symbols-outlined notranslate text-[20px]">send</span>
               )}
               Confirmar Transferência
             </button>

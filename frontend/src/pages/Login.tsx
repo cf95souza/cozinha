@@ -94,11 +94,11 @@ export default function Login() {
         
         <div className="absolute top-8 right-8 flex gap-4 opacity-50">
           <div className="text-[10px] font-metadata uppercase border border-dashed border-outline-variant p-2 text-on-surface-variant rounded flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm">image</span>
+            <span className="material-symbols-outlined notranslate text-sm">image</span>
             Logo Restaurante
           </div>
           <div className="text-[10px] font-metadata uppercase border border-dashed border-outline-variant p-2 text-on-surface-variant rounded flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm">image</span>
+            <span className="material-symbols-outlined notranslate text-sm">image</span>
             Logo Sistema
           </div>
         </div>

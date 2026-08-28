@@ -10,7 +10,8 @@ export const auditMiddleware = (req: AuthRequest, res: Response, next: NextFunct
       // Only log if the request was successful
       if (res.statusCode >= 200 && res.statusCode < 300) {
         try {
-          const userId = req.user?.id || 'system';
+          const userId = req.user?.id;
+          if (!userId) return; // Do not log if there's no authenticated user
           const branchId = (req.headers['x-branch-id'] as string) || null;
           const entity = req.baseUrl.split('/').pop() || 'unknown';
           

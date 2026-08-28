@@ -42,27 +42,27 @@ export default function Expirations() {
     if (status === 'VENCIDO') {
       return (
         <div className="flex items-center gap-2 px-3 py-1 bg-error-container text-error rounded-full font-bold text-xs w-max tracking-wider uppercase">
-          <span className="material-symbols-outlined text-[16px]">dangerous</span> Vencido há {Math.abs(days)} dia(s)
+          <span className="material-symbols-outlined notranslate text-[16px]">dangerous</span> Vencido há {Math.abs(days)} dia(s)
         </div>
       );
     }
     if (status === 'URGENTE') {
       return (
         <div className="flex items-center gap-2 px-3 py-1 bg-[#fff7ed] text-[#ea580c] border border-[#ffedd5] rounded-full font-bold text-xs w-max tracking-wider uppercase">
-          <span className="material-symbols-outlined text-[16px]">warning</span> Vence em {days} dia(s)
+          <span className="material-symbols-outlined notranslate text-[16px]">warning</span> Vence em {days} dia(s)
         </div>
       );
     }
     if (status === 'ATENCAO') {
       return (
         <div className="flex items-center gap-2 px-3 py-1 bg-[#fefce8] text-[#ca8a04] border border-[#fef08a] rounded-full font-bold text-xs w-max tracking-wider uppercase">
-          <span className="material-symbols-outlined text-[16px]">schedule</span> Vence em {days} dia(s)
+          <span className="material-symbols-outlined notranslate text-[16px]">schedule</span> Vence em {days} dia(s)
         </div>
       );
     }
     return (
       <div className="flex items-center gap-2 px-3 py-1 bg-[#f0fdf4] text-[#16a34a] border border-[#dcfce7] rounded-full font-bold text-xs w-max tracking-wider uppercase">
-        <span className="material-symbols-outlined text-[16px]">verified_user</span> Normal ({days} dias)
+        <span className="material-symbols-outlined notranslate text-[16px]">verified_user</span> Normal ({days} dias)
       </div>
     );
   };
@@ -79,7 +79,7 @@ export default function Expirations() {
       <div className="bg-surface rounded-2xl shadow-sm border border-outline-variant overflow-hidden">
         {loading ? (
           <div className="p-12 text-center flex flex-col items-center gap-3 text-on-surface-variant">
-            <span className="material-symbols-outlined animate-spin text-4xl">sync</span>
+            <span className="material-symbols-outlined notranslate animate-spin text-4xl">sync</span>
             <span className="text-sm font-semibold">Carregando lotes...</span>
           </div>
         ) : (
@@ -96,7 +96,7 @@ export default function Expirations() {
                 <div key={l.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center text-sm">
                   <div className="col-span-1 md:col-span-5 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                      <span className="material-symbols-outlined text-[20px]">calendar_clock</span>
+                      <span className="material-symbols-outlined notranslate text-[20px]">calendar_clock</span>
                     </div>
                     <div>
                       <p className="font-bold text-on-surface text-base">{l.product.name}</p>
@@ -122,7 +122,7 @@ export default function Expirations() {
               
               {lots.length === 0 && (
                 <div className="px-6 py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-                  <span className="material-symbols-outlined text-4xl text-outline mb-2">event_available</span>
+                  <span className="material-symbols-outlined notranslate text-4xl text-outline mb-2">event_available</span>
                   <span className="font-semibold text-lg">Nenhum lote rastreável em estoque.</span>
                 </div>
               )}

@@ -150,7 +150,7 @@ export default function PDV() {
       <div className="flex-1 flex flex-col bg-surface border border-outline-variant rounded-2xl shadow-sm overflow-hidden">
         <div className="p-4 border-b border-outline-variant bg-surface-container-lowest">
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+            <span className="material-symbols-outlined notranslate absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
             <input 
               type="text" 
               placeholder="Buscar produtos por nome ou bipar código..." 
@@ -160,7 +160,7 @@ export default function PDV() {
             />
           </div>
           <div className="flex items-center gap-2 mt-4 text-xs font-semibold text-primary bg-primary-container/30 px-3 py-2 rounded-lg w-fit border border-primary/20">
-            <span className="material-symbols-outlined text-[16px] animate-pulse">barcode_scanner</span>
+            <span className="material-symbols-outlined notranslate text-[16px] animate-pulse">barcode_scanner</span>
             Leitor de Código de Barras Ativo (Pronto para Bipar)
           </div>
         </div>
@@ -168,11 +168,11 @@ export default function PDV() {
         <div className="flex-1 overflow-y-auto p-4 bg-surface-container-lowest">
           {loading ? (
             <div className="flex justify-center items-center h-full text-on-surface-variant gap-2">
-               <span className="material-symbols-outlined animate-spin text-4xl">sync</span>
+               <span className="material-symbols-outlined notranslate animate-spin text-4xl">sync</span>
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-on-surface-variant">
-              <span className="material-symbols-outlined text-6xl mb-4 opacity-50">remove_shopping_cart</span>
+              <span className="material-symbols-outlined notranslate text-6xl mb-4 opacity-50">remove_shopping_cart</span>
               <p className="font-semibold text-sm">Nenhum produto vendável encontrado.</p>
               <p className="text-xs mt-2 opacity-80">Dica: O produto precisa ter preço de venda configurado.</p>
             </div>
@@ -188,7 +188,7 @@ export default function PDV() {
                     {product.photoUrl ? (
                       <img src={product.photoUrl} alt={product.name} className="object-cover w-full h-full" />
                     ) : (
-                      <span className="material-symbols-outlined text-4xl text-on-surface-variant opacity-30">restaurant</span>
+                      <span className="material-symbols-outlined notranslate text-4xl text-on-surface-variant opacity-30">restaurant</span>
                     )}
                   </div>
                   <div>
@@ -210,14 +210,14 @@ export default function PDV() {
       {/* Direita: Carrinho */}
       <div className="w-full md:w-[400px] flex flex-col bg-surface border border-outline-variant rounded-2xl shadow-sm overflow-hidden shrink-0">
         <div className="p-5 border-b border-outline-variant bg-primary text-on-primary flex items-center gap-3">
-          <span className="material-symbols-outlined">shopping_cart</span>
+          <span className="material-symbols-outlined notranslate">shopping_cart</span>
           <h2 className="font-bold text-lg">Frente de Caixa</h2>
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 bg-surface-container-lowest">
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-on-surface-variant">
-              <span className="material-symbols-outlined text-6xl mb-4 opacity-50">shopping_basket</span>
+              <span className="material-symbols-outlined notranslate text-6xl mb-4 opacity-50">shopping_basket</span>
               <p className="text-sm font-semibold">O carrinho está vazio</p>
             </div>
           ) : (
@@ -226,7 +226,7 @@ export default function PDV() {
                 <div className="flex justify-between items-start">
                   <h4 className="font-bold text-sm line-clamp-2 text-on-surface pr-4">{item.name}</h4>
                   <button onClick={() => removeFromCart(item.id)} className="text-on-surface-variant hover:text-error hover:bg-error-container p-1 rounded-full transition-colors shrink-0">
-                    <span className="material-symbols-outlined text-[18px]">close</span>
+                    <span className="material-symbols-outlined notranslate text-[18px]">close</span>
                   </button>
                 </div>
                 <div className="flex justify-between items-end mt-2">
@@ -235,14 +235,14 @@ export default function PDV() {
                       onClick={() => updateQuantity(item.id, item.cartQuantity - 1)}
                       className="w-7 h-7 flex items-center justify-center bg-surface rounded-lg shadow-sm text-on-surface-variant hover:text-primary transition-colors border border-outline-variant"
                     >
-                      <span className="material-symbols-outlined text-[16px]">remove</span>
+                      <span className="material-symbols-outlined notranslate text-[16px]">remove</span>
                     </button>
                     <span className="font-bold text-sm w-4 text-center">{item.cartQuantity}</span>
                     <button 
                       onClick={() => updateQuantity(item.id, item.cartQuantity + 1)}
                       className="w-7 h-7 flex items-center justify-center bg-surface rounded-lg shadow-sm text-on-surface-variant hover:text-primary transition-colors border border-outline-variant"
                     >
-                      <span className="material-symbols-outlined text-[16px]">add</span>
+                      <span className="material-symbols-outlined notranslate text-[16px]">add</span>
                     </button>
                   </div>
                   <span className="font-black text-on-surface">
@@ -269,7 +269,7 @@ export default function PDV() {
               disabled={cart.length === 0}
               className="w-full bg-primary text-on-primary font-bold py-3.5 rounded-xl shadow-sm hover:bg-primary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
             >
-              <span className="material-symbols-outlined">payments</span>
+              <span className="material-symbols-outlined notranslate">payments</span>
               Cobrar Cliente
             </button>
           ) : (
@@ -297,7 +297,7 @@ export default function PDV() {
                   onClick={handleCheckout}
                   className="flex-[2] bg-primary text-on-primary font-bold py-3 rounded-xl shadow-sm hover:bg-primary-hover transition-colors flex justify-center items-center gap-2 text-sm"
                 >
-                  <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                  <span className="material-symbols-outlined notranslate text-[18px]">check_circle</span>
                   Finalizar Venda
                 </button>
               </div>

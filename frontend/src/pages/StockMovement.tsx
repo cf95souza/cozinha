@@ -109,7 +109,7 @@ export default function StockMovement() {
           {/* ORIGEM */}
           <div className="space-y-4 bg-error-container/10 p-6 rounded-xl border border-error/20">
             <h3 className="font-section-title text-lg text-error font-bold flex items-center gap-2">
-              <span className="material-symbols-outlined">outbox</span>
+              <span className="material-symbols-outlined notranslate">outbox</span>
               Origem (Saída)
             </h3>
             
@@ -149,7 +149,7 @@ export default function StockMovement() {
           {/* DESTINO */}
           <div className="space-y-4 bg-primary-container/20 p-6 rounded-xl border border-primary/20">
             <h3 className="font-section-title text-lg text-primary font-bold flex items-center gap-2">
-              <span className="material-symbols-outlined">move_to_inbox</span>
+              <span className="material-symbols-outlined notranslate">move_to_inbox</span>
               Destino (Entrada)
             </h3>
             

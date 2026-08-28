@@ -14,6 +14,12 @@ export default function Reports() {
   // Filters
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [costCenterId, setCostCenterId] = useState('');
+  const [costCenters, setCostCenters] = useState<any[]>([]);
+
+  useEffect(() => {
+    api.get('/finance/cost-centers').then(res => setCostCenters(res.data)).catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (activeBranch) {
@@ -27,12 +33,16 @@ export default function Reports() {
       const res = await api.get(`/reports/${tab}?branchId=${activeBranch?.id}`);
       let fetchedData = res.data;
       
-      // Client-side date filtering for simplicity, ideally done in backend
-      if (startDate || endDate) {
+      // Client-side date and custom filtering
+      if (startDate || endDate || (tab === 'invoices' && costCenterId)) {
         fetchedData = fetchedData.filter((item: any) => {
-          const itemDate = new Date(item.createdAt || item.date || item.startedAt || item.expirationDate);
+          const itemDate = new Date(item.createdAt || item.date || item.startedAt || item.expirationDate || item.issueDate);
           if (startDate && itemDate < new Date(startDate)) return false;
           if (endDate && itemDate > new Date(endDate + 'T23:59:59')) return false;
+          
+          if (tab === 'invoices' && costCenterId) {
+            if (item.costCenterId !== costCenterId) return false;
+          }
           return true;
         });
       }
@@ -47,6 +57,7 @@ export default function Reports() {
 
   const tabs = [
     { id: 'stock', label: 'Estoque Atual' },
+    { id: 'invoices', label: 'Notas / Despesas' },
     { id: 'movements', label: 'Movimentações' },
     { id: 'losses', label: 'Perdas' },
     { id: 'expirations', label: 'Validades' },
@@ -66,6 +77,9 @@ export default function Reports() {
     if (activeTab === 'stock') {
       headers = ['Produto', 'Local', 'Quantidade', 'Custo', 'Valor Total'];
       rows = data.map(item => `"${item.product.name}","${item.location.name}",${item.quantity},${item.product.costPrice || 0},${(item.quantity * (item.product.costPrice || 0))}`);
+    } else if (activeTab === 'invoices') {
+      headers = ['Data de Emissão', 'Filial', 'Fornecedor', 'Nº da Nota', 'Centro de Custo', 'Tipo', 'Valor Final (R$)'];
+      rows = data.map(item => `"${new Date(item.issueDate).toLocaleDateString()}","${item.branch?.name || 'Matriz'}","${item.supplier.name}","${item.invoiceNumber}","${item.costCenter.name}","${item.invoiceType.name}",${item.finalAmount}`);
     } else if (activeTab === 'movements') {
       headers = ['Data', 'Produto', 'Tipo', 'Origem', 'Destino', 'Quantidade', 'Responsável'];
       rows = data.map(item => `"${new Date(item.createdAt).toLocaleString()}","${item.product.name}","${item.type}","${item.originLocation?.name || '-'}","${item.destinationLocation?.name || '-'}",${item.quantity},"${item.user.name}"`);
@@ -118,7 +132,7 @@ export default function Reports() {
           disabled={data.length === 0}
           className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-outline-variant text-on-surface rounded-xl text-sm font-bold hover:bg-surface-container transition-colors shadow-sm disabled:opacity-50"
         >
-          <span className="material-symbols-outlined text-[18px]">download</span> Exportar CSV
+          <span className="material-symbols-outlined notranslate text-[18px]">download</span> Exportar CSV
         </button>
       </div>
 
@@ -144,7 +158,7 @@ export default function Reports() {
       {/* Date Filters */}
       <div className="bg-surface p-5 rounded-2xl shadow-sm border border-outline-variant flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex items-center gap-2 text-on-surface-variant font-bold">
-          <span className="material-symbols-outlined text-[20px]">filter_list</span>
+          <span className="material-symbols-outlined notranslate text-[20px]">filter_list</span>
           <span>Filtros:</span>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 flex-1">
@@ -154,7 +168,7 @@ export default function Reports() {
               type="date" 
               value={startDate} 
               onChange={e => { setStartDate(e.target.value); loadData(activeTab); }}
-              className="border-outline-variant rounded-xl py-2 px-3 bg-surface-container-lowest text-on-surface text-sm border w-full sm:w-auto"
+              className="border-outline-variant rounded-xl py-2 px-3 bg-surface-container-lowest text-on-surface text-sm border w-full sm:w-auto outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -163,9 +177,22 @@ export default function Reports() {
               type="date" 
               value={endDate} 
               onChange={e => { setEndDate(e.target.value); loadData(activeTab); }}
-              className="border-outline-variant rounded-xl py-2 px-3 bg-surface-container-lowest text-on-surface text-sm border w-full sm:w-auto"
+              className="border-outline-variant rounded-xl py-2 px-3 bg-surface-container-lowest text-on-surface text-sm border w-full sm:w-auto outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
+          {activeTab === 'invoices' && (
+            <div className="flex items-center gap-3 w-full sm:w-auto border-l border-outline-variant pl-4">
+              <label className="text-sm font-semibold text-on-surface shrink-0">Centro de Custo:</label>
+              <select 
+                value={costCenterId}
+                onChange={e => { setCostCenterId(e.target.value); loadData(activeTab); }}
+                className="border-outline-variant rounded-xl py-2 px-3 bg-surface-container-lowest text-on-surface text-sm border w-full sm:w-auto outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="">Todos</option>
+                {costCenters.map(cc => <option key={cc.id} value={cc.id}>{cc.name}</option>)}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 
@@ -205,6 +232,16 @@ export default function Reports() {
                     <div className="col-span-3">Local</div>
                     <div className="col-span-2 text-right">Qtd</div>
                     <div className="col-span-2 text-right">Valor Est.</div>
+                  </>
+                )}
+                {activeTab === 'invoices' && (
+                  <>
+                    <div className="col-span-2">Emissão</div>
+                    <div className="col-span-2">Filial</div>
+                    <div className="col-span-3">Fornecedor</div>
+                    <div className="col-span-1">NF</div>
+                    <div className="col-span-2">Centro Custo</div>
+                    <div className="col-span-2 text-right">Valor Final</div>
                   </>
                 )}
                 {activeTab === 'movements' && (
@@ -289,6 +326,16 @@ export default function Reports() {
                       <div className="col-span-3 text-on-surface-variant">{item.location.name}</div>
                       <div className="col-span-2 text-right font-bold">{item.quantity}</div>
                       <div className="col-span-2 text-right font-bold text-primary">R$ {((item.product.costPrice || 0) * item.quantity).toFixed(2)}</div>
+                    </>
+                  )}
+                  {activeTab === 'invoices' && (
+                    <>
+                      <div className="col-span-2">{new Date(item.issueDate).toLocaleDateString()}</div>
+                      <div className="col-span-2 font-bold text-xs uppercase text-on-surface-variant">{item.branch?.name || 'Matriz'}</div>
+                      <div className="col-span-3 font-bold text-on-surface truncate">{item.supplier.name}</div>
+                      <div className="col-span-1 text-on-surface-variant">{item.invoiceNumber || '-'}</div>
+                      <div className="col-span-2 text-xs font-semibold px-2 py-1 bg-primary-container text-on-primary-container rounded-md truncate w-fit">{item.costCenter.name}</div>
+                      <div className="col-span-2 text-right font-black text-primary">R$ {item.finalAmount.toFixed(2)}</div>
                     </>
                   )}
                   {activeTab === 'movements' && (
@@ -388,7 +435,7 @@ export default function Reports() {
               
               {data.length === 0 && (
                 <div className="px-6 py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-2">
-                  <span className="material-symbols-outlined text-4xl text-outline mb-2">find_in_page</span>
+                  <span className="material-symbols-outlined notranslate text-4xl text-outline mb-2">find_in_page</span>
                   Nenhum dado encontrado para o filtro selecionado.
                 </div>
               )}
