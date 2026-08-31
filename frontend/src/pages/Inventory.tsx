@@ -89,7 +89,7 @@ export default function Inventory() {
         api.get(`/products?branchId=${activeBranch?.id}`),
         api.get(`/stock/balances?branchId=${activeBranch?.id}`)
       ]);
-      setInventories(invRes.data);
+      setInventories(Array.isArray(invRes.data) ? invRes.data.filter((i: any) => i.user) : []);
       setProducts(prodRes.data.data || prodRes.data);
       setStockBalances(stockRes.data);
     } catch (error) {

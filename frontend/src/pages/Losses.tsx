@@ -28,7 +28,7 @@ export default function Losses() {
         api.get(`/losses?branchId=${activeBranch?.id}`),
         api.get(`/products?branchId=${activeBranch?.id}`)
       ]);
-      setLosses(lossesRes.data);
+      setLosses(Array.isArray(lossesRes.data) ? lossesRes.data.filter((l: any) => l.product && l.user) : []);
       setProducts(productsRes.data.data || productsRes.data);
     } catch (error) {
       console.error('Erro ao carregar dados', error);

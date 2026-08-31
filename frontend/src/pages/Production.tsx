@@ -23,8 +23,8 @@ export default function Production() {
         api.get('/recipes'),
         api.get('/productions')
       ]);
-      setRecipes(recRes.data);
-      setProductions(prodRes.data);
+      setRecipes(Array.isArray(recRes.data) ? recRes.data.filter((r: any) => r.product) : []);
+      setProductions(Array.isArray(prodRes.data) ? prodRes.data.filter((p: any) => p.product && p.user) : []);
     } catch (error) {
       console.error(error);
     } finally {

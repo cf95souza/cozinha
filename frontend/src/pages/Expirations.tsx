@@ -24,7 +24,7 @@ export default function Expirations() {
     try {
       setLoading(true);
       const res = await api.get(`/lots?branchId=${activeBranch.id}`);
-      setLots(res.data);
+      setLots(Array.isArray(res.data) ? res.data.filter((l: any) => l.product && l.location) : []);
     } catch (err) {
       console.error(err);
     } finally {

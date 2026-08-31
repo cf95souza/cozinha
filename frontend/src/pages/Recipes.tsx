@@ -26,7 +26,7 @@ export default function Recipes() {
         api.get('/recipes'),
         api.get('/products')
       ]);
-      setRecipes(recRes.data);
+      setRecipes(Array.isArray(recRes.data) ? recRes.data.filter((r: any) => r.product) : []);
       setProducts(prodRes.data.data || prodRes.data);
     } catch (error) {
       console.error(error);

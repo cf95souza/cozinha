@@ -76,28 +76,28 @@ export default function Reports() {
 
     if (activeTab === 'stock') {
       headers = ['Produto', 'Local', 'Quantidade', 'Custo', 'Valor Total'];
-      rows = data.map(item => `"${item.product.name}","${item.location.name}",${item.quantity},${item.product.costPrice || 0},${(item.quantity * (item.product.costPrice || 0))}`);
+      rows = data.map(item => `"${item.product?.name || 'Desconhecido'}","${item.location?.name || 'Desconhecido'}",${item.quantity},${item.product?.costPrice || 0},${(item.quantity * (item.product?.costPrice || 0))}`);
     } else if (activeTab === 'invoices') {
       headers = ['Data de Emissão', 'Filial', 'Fornecedor', 'Nº da Nota', 'Centro de Custo', 'Tipo', 'Valor Final (R$)'];
       rows = data.map(item => `"${new Date(item.issueDate).toLocaleDateString()}","${item.branch?.name || 'Matriz'}","${item.supplier.name}","${item.invoiceNumber}","${item.costCenter.name}","${item.invoiceType.name}",${item.finalAmount}`);
     } else if (activeTab === 'movements') {
       headers = ['Data', 'Produto', 'Tipo', 'Origem', 'Destino', 'Quantidade', 'Responsável'];
-      rows = data.map(item => `"${new Date(item.createdAt).toLocaleString()}","${item.product.name}","${item.type}","${item.originLocation?.name || '-'}","${item.destinationLocation?.name || '-'}",${item.quantity},"${item.user.name}"`);
+      rows = data.map(item => `"${new Date(item.createdAt).toLocaleString()}","${item.product?.name || 'Desconhecido'}","${item.type}","${item.originLocation?.name || '-'}","${item.destinationLocation?.name || '-'}",${item.quantity},"${item.user?.name || 'Sistema'}"`);
     } else if (activeTab === 'losses') {
       headers = ['Data', 'Produto', 'Quantidade', 'Motivo', 'Responsável'];
-      rows = data.map(item => `"${new Date(item.date).toLocaleString()}","${item.product.name}",${item.quantity},"${item.reason}","${item.user.name}"`);
+      rows = data.map(item => `"${new Date(item.date).toLocaleString()}","${item.product?.name || 'Desconhecido'}",${item.quantity},"${item.reason}","${item.user?.name || 'Sistema'}"`);
     } else if (activeTab === 'expirations') {
       headers = ['Vencimento', 'Lote', 'Produto', 'Quantidade', 'Status'];
-      rows = data.map(item => `"${new Date(item.expirationDate).toLocaleDateString()}","${item.number}","${item.product.name}",${item.currentQty},"${item.status}"`);
+      rows = data.map(item => `"${new Date(item.expirationDate).toLocaleDateString()}","${item.number}","${item.product?.name || 'Desconhecido'}",${item.currentQty},"${item.status}"`);
     } else if (activeTab === 'receivings') {
       headers = ['Data', 'Nota Fiscal', 'Fornecedor', 'Responsável', 'Status'];
-      rows = data.map(item => `"${new Date(item.date).toLocaleDateString()}","${item.invoice || '-'}","${item.supplier?.name || '-'}","${item.user.name}","${item.status}"`);
+      rows = data.map(item => `"${new Date(item.date).toLocaleDateString()}","${item.invoice || '-'}","${item.supplier?.name || '-'}","${item.user?.name || 'Sistema'}","${item.status}"`);
     } else if (activeTab === 'inventories') {
       headers = ['Data', 'Responsável', 'Status', 'Itens Contados'];
-      rows = data.map(item => `"${new Date(item.date).toLocaleDateString()}","${item.user.name}","${item.status}",${item.items?.length || 0}`);
+      rows = data.map(item => `"${new Date(item.date).toLocaleDateString()}","${item.user?.name || 'Sistema'}","${item.status}",${item.items?.length || 0}`);
     } else if (activeTab === 'productions') {
       headers = ['Data', 'Produto', 'Planejado', 'Produzido', 'Rendimento %', 'Responsável'];
-      rows = data.map(item => `"${new Date(item.startedAt || item.finishedAt).toLocaleDateString()}","${item.product.name}",${item.plannedQuantity},${item.producedQuantity},${(item.yieldPercentage || 0) * 100},"${item.user.name}"`);
+      rows = data.map(item => `"${new Date(item.startedAt || item.finishedAt).toLocaleDateString()}","${item.product?.name || 'Desconhecido'}",${item.plannedQuantity},${item.producedQuantity},${(item.yieldPercentage || 0) * 100},"${item.user?.name || 'Sistema'}"`);
     } else if (activeTab === 'cmv') {
       headers = ['Data', 'Valor Total em Estoque', 'Faturamento', 'CMV %'];
       rows = data.map(item => {
