@@ -34,7 +34,11 @@ export default function Stock() {
         api.get(`/categories?branchId=${activeBranch?.id}`),
         api.get(`/locations?branchId=${activeBranch?.id}`)
       ]);
-      setStockBalances(stockRes.data);
+      setStockBalances(
+        Array.isArray(stockRes.data) 
+          ? stockRes.data.filter((b: any) => b.product && b.location) 
+          : []
+      );
       const cats = catRes.data.data || catRes.data;
       const locs = locRes.data.data || locRes.data;
       
