@@ -81,7 +81,7 @@ export default function Reports() {
       rows = data.map(item => `"${item.product?.name || 'Desconhecido'}","${item.location?.name || 'Desconhecido'}",${item.quantity},${item.product?.costPrice || 0},${(item.quantity * (item.product?.costPrice || 0))}`);
     } else if (activeTab === 'invoices') {
       headers = ['Data de Emissão', 'Filial', 'Fornecedor', 'Nº da Nota', 'Centro de Custo', 'Tipo', 'Valor Final (R$)'];
-      rows = data.map(item => `"${new Date(item.issueDate).toLocaleDateString()}","${item.branch?.name || 'Matriz'}","${item.supplier.name}","${item.invoiceNumber}","${item.costCenter.name}","${item.invoiceType.name}",${item.finalAmount}`);
+      rows = data.map(item => `"${new Date(item.issueDate).toLocaleDateString()}","${item.branch?.name || 'Matriz'}","${item.supplier?.name || 'Desconhecido'}","${item.invoiceNumber || '-'}","${item.costCenter?.name || 'Desconhecido'}","${item.invoiceType?.name || '-'}",${item.finalAmount || 0}`);
     } else if (activeTab === 'movements') {
       headers = ['Data', 'Produto', 'Tipo', 'Origem', 'Destino', 'Quantidade', 'Responsável'];
       rows = data.map(item => `"${new Date(item.createdAt).toLocaleString()}","${item.product?.name || 'Desconhecido'}","${item.type}","${item.originLocation?.name || '-'}","${item.destinationLocation?.name || '-'}",${item.quantity},"${item.user?.name || 'Sistema'}"`);
@@ -357,7 +357,7 @@ export default function Reports() {
                       <div className="col-span-3 font-bold text-on-surface truncate">{item.supplier?.name || 'Desconhecido'}</div>
                       <div className="col-span-1 text-on-surface-variant">{item.invoiceNumber || '-'}</div>
                       <div className="col-span-2 text-xs font-semibold px-2 py-1 bg-primary-container text-on-primary-container rounded-md truncate w-fit">{item.costCenter?.name || 'Desconhecido'}</div>
-                      <div className="col-span-2 text-right font-black text-primary">R$ {item.finalAmount.toFixed(2)}</div>
+                      <div className="col-span-2 text-right font-black text-primary">R$ {(item.finalAmount || 0).toFixed(2)}</div>
                     </>
                   )}
                   {activeTab === 'movements' && (
