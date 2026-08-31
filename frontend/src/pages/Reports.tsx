@@ -3,10 +3,11 @@ import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Reports() {
-  const { activeBranch } = useAuth();
+  const { user, activeBranch } = useAuth();
   const [activeTab, setActiveTab] = useState('stock');
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [allBranches, setAllBranches] = useState(false);
   
   // Para input manual de CMV
   const [manualRevenue, setManualRevenue] = useState<number>(0);
@@ -22,15 +23,16 @@ export default function Reports() {
   }, []);
 
   useEffect(() => {
-    if (activeBranch) {
+    if (activeBranch || allBranches) {
       loadData(activeTab);
     }
-  }, [activeBranch, activeTab]);
+  }, [activeBranch, activeTab, allBranches]);
 
   const loadData = async (tab: string) => {
     setLoading(true);
     try {
-      const res = await api.get(`/reports/${tab}?branchId=${activeBranch?.id}`);
+      const url = allBranches ? `/reports/${tab}` : `/reports/${tab}?branchId=${activeBranch?.id}`;
+      const res = await api.get(url);
       let fetchedData = res.data;
       
       // Client-side date and custom filtering
@@ -125,15 +127,35 @@ export default function Reports() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-on-surface">Relatórios Avançados</h1>
-          <p className="text-sm text-on-surface-variant mt-0.5">Extraia dados estratégicos da filial: {activeBranch?.name}</p>
+          <p className="text-sm text-on-surface-variant mt-0.5">
+            Extraia dados estratégicos {allBranches ? 'de todas as filiais' : `da filial: ${activeBranch?.name}`}
+          </p>
         </div>
-        <button 
-          onClick={handleExportCSV}
-          disabled={data.length === 0}
-          className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-outline-variant text-on-surface rounded-xl text-sm font-bold hover:bg-surface-container transition-colors shadow-sm disabled:opacity-50"
-        >
-          <span className="material-symbols-outlined notranslate text-[18px]">download</span> Exportar CSV
-        </button>
+        <div className="flex items-center gap-4">
+          {user?.role === 'ADMIN' && (
+            <div className="flex items-center gap-2 bg-surface border border-outline-variant rounded-xl px-2 py-1">
+              <button
+                onClick={() => setAllBranches(false)}
+                className={`px-3 py-1.5 text-sm font-bold rounded-lg transition-colors ${!allBranches ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}
+              >
+                Filial Atual
+              </button>
+              <button
+                onClick={() => setAllBranches(true)}
+                className={`px-3 py-1.5 text-sm font-bold rounded-lg transition-colors ${allBranches ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}
+              >
+                Todas as Filiais
+              </button>
+            </div>
+          )}
+          <button 
+            onClick={handleExportCSV}
+            disabled={data.length === 0}
+            className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-outline-variant text-on-surface rounded-xl text-sm font-bold hover:bg-surface-container transition-colors shadow-sm disabled:opacity-50"
+          >
+            <span className="material-symbols-outlined notranslate text-[18px]">download</span> Exportar CSV
+          </button>
+        </div>
       </div>
 
       {activeTab === 'cmv' && (

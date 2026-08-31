@@ -261,15 +261,15 @@ Este documento é o guia definitivo de execução do projeto. Cada funcionalidad
 
 ---
 
-### Fase 15: Virada de Chave - Relatórios Financeiros e Operacionais
+### Fase 15: Virada de Chave - Relatórios Financeiros e Operacionais [CONCLUÍDA]
 **Objetivo:** Criar um módulo de relatórios analíticos, permitindo extrair visões gerais dos lançamentos financeiros (notas de consumo) por dia e por período.
 
-- [ ] Desenvolver tela "Relatórios".
-- [ ] Implementar filtros de período (Data Inicial e Final).
-- [ ] Implementar visualização "Multi-unidades" (consolidado da Empresa) x "Unidade específica".
-- [ ] Implementar filtro por Centro de Custo.
-- [ ] Exportação/Visão totalizadora para análise rápida.
-- [ ] (Opcional) Exportação para Excel / PDF.
+- [x] Desenvolver tela "Relatórios".
+- [x] Implementar filtros de período (Data Inicial e Final).
+- [x] Implementar visualização "Multi-unidades" (consolidado da Empresa) x "Unidade específica".
+- [x] Implementar filtro por Centro de Custo.
+- [x] Exportação/Visão totalizadora para análise rápida.
+- [x] (Opcional) Exportação para Excel / PDF. (Formato CSV entregue)
 
 ---
 

@@ -5,9 +5,13 @@ import { AuthRequest } from '../middlewares/authMiddleware';
 export class ReportController {
   async getStock(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const balances = await prisma.stockBalance.findMany({
-        where: branchId ? { branchId } : {},
+        where: {
+          product: { companyId },
+          ...(branchId ? { branchId } : {})
+        },
         include: { product: { include: { category: true } }, location: true },
         orderBy: { product: { name: 'asc' } }
       });
@@ -19,14 +23,18 @@ export class ReportController {
 
   async getMovements(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const movements = await prisma.stockMovement.findMany({
-        where: branchId ? {
-          OR: [
-            { originBranchId: branchId },
-            { destinationBranchId: branchId }
-          ]
-        } : {},
+        where: {
+          product: { companyId },
+          ...(branchId ? {
+            OR: [
+              { originBranchId: branchId },
+              { destinationBranchId: branchId }
+            ]
+          } : {})
+        },
         include: { product: true, user: true, originLocation: true, destinationLocation: true },
         orderBy: { createdAt: 'desc' },
         take: 500
@@ -39,9 +47,13 @@ export class ReportController {
 
   async getLosses(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const losses = await prisma.loss.findMany({
-        where: branchId ? { branchId } : {},
+        where: {
+          product: { companyId },
+          ...(branchId ? { branchId } : {})
+        },
         include: { product: true, lot: true, user: true },
         orderBy: { date: 'desc' },
         take: 500
@@ -54,9 +66,11 @@ export class ReportController {
 
   async getExpirations(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const lots = await prisma.lot.findMany({
         where: {
+          product: { companyId },
           branchId: branchId ? branchId : undefined,
           status: { not: 'CONSUMIDO' },
           currentQty: { gt: 0 }
@@ -73,9 +87,13 @@ export class ReportController {
 
   async getReceivings(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const receivings = await prisma.receiving.findMany({
-        where: branchId ? { branchId } : {},
+        where: {
+          companyId,
+          ...(branchId ? { branchId } : {})
+        },
         include: { supplier: true, user: true, items: { include: { product: true } } },
         orderBy: { date: 'desc' },
         take: 100
@@ -88,9 +106,13 @@ export class ReportController {
 
   async getInventories(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const inventories = await prisma.inventory.findMany({
-        where: branchId ? { branchId } : {},
+        where: {
+          branch: { companyId },
+          ...(branchId ? { branchId } : {})
+        },
         include: { user: true, items: { include: { product: true } } },
         orderBy: { date: 'desc' },
         take: 100
@@ -103,9 +125,13 @@ export class ReportController {
 
   async getProductions(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const productions = await prisma.production.findMany({
-        where: branchId ? { branchId } : {},
+        where: {
+          branch: { companyId },
+          ...(branchId ? { branchId } : {})
+        },
         include: { product: true, user: true, recipe: true },
         orderBy: { startedAt: 'desc' },
         take: 100
@@ -118,9 +144,13 @@ export class ReportController {
 
   async getCmv(req: AuthRequest, res: Response) {
     try {
+      const { companyId } = req.user!;
       const branchId = req.query.branchId as string;
       const snapshots = await prisma.stockSnapshot.findMany({
-        where: branchId ? { branchId } : {},
+        where: {
+          companyId,
+          ...(branchId ? { branchId } : {})
+        },
         orderBy: { date: 'desc' },
         take: 12
       });
