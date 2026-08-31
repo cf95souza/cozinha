@@ -356,7 +356,7 @@ export default function ReceivingFlow() {
                       disabled={isApproved}
                       value={conferencia.receivedQty !== undefined ? conferencia.receivedQty : (activeItem.receivedQty !== null ? activeItem.receivedQty : '')} 
                       onChange={e => setConferencia({...conferencia, receivedQty: e.target.value})}
-                      className="w-full pl-4 pr-12 py-3 bg-primary-container/30 border border-primary/30 rounded-xl text-lg font-bold text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20" 
+                      className="w-full pl-4 pr-12 py-3 bg-surface border-2 border-primary/50 rounded-xl text-lg font-bold text-on-surface focus:outline-none focus:ring-2 focus:border-primary focus:ring-primary/20" 
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant">{activeItem.unit}</span>
                   </div>
