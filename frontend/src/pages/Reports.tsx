@@ -322,40 +322,40 @@ export default function Reports() {
                 <div key={item.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center text-sm">
                   {activeTab === 'stock' && (
                     <>
-                      <div className="col-span-5 font-bold text-on-surface">{item.product.name}</div>
-                      <div className="col-span-3 text-on-surface-variant">{item.location.name}</div>
+                      <div className="col-span-5 font-bold text-on-surface">{item.product?.name || 'Desconhecido'}</div>
+                      <div className="col-span-3 text-on-surface-variant">{item.location?.name || 'Desconhecido'}</div>
                       <div className="col-span-2 text-right font-bold">{item.quantity}</div>
-                      <div className="col-span-2 text-right font-bold text-primary">R$ {((item.product.costPrice || 0) * item.quantity).toFixed(2)}</div>
+                      <div className="col-span-2 text-right font-bold text-primary">R$ {((item.product?.costPrice || 0) * item.quantity).toFixed(2)}</div>
                     </>
                   )}
                   {activeTab === 'invoices' && (
                     <>
                       <div className="col-span-2">{new Date(item.issueDate).toLocaleDateString()}</div>
                       <div className="col-span-2 font-bold text-xs uppercase text-on-surface-variant">{item.branch?.name || 'Matriz'}</div>
-                      <div className="col-span-3 font-bold text-on-surface truncate">{item.supplier.name}</div>
+                      <div className="col-span-3 font-bold text-on-surface truncate">{item.supplier?.name || 'Desconhecido'}</div>
                       <div className="col-span-1 text-on-surface-variant">{item.invoiceNumber || '-'}</div>
-                      <div className="col-span-2 text-xs font-semibold px-2 py-1 bg-primary-container text-on-primary-container rounded-md truncate w-fit">{item.costCenter.name}</div>
+                      <div className="col-span-2 text-xs font-semibold px-2 py-1 bg-primary-container text-on-primary-container rounded-md truncate w-fit">{item.costCenter?.name || 'Desconhecido'}</div>
                       <div className="col-span-2 text-right font-black text-primary">R$ {item.finalAmount.toFixed(2)}</div>
                     </>
                   )}
                   {activeTab === 'movements' && (
                     <>
                       <div className="col-span-2">{new Date(item.createdAt).toLocaleString()}</div>
-                      <div className="col-span-4 font-bold text-on-surface">{item.product.name}</div>
-                      <div className="col-span-2 font-bold uppercase text-xs">{item.type.replace('_', ' ')}</div>
-                      <div className={`col-span-2 text-right font-bold ${item.type.includes('SAIDA') || item.type.includes('PERDA') ? 'text-error' : 'text-primary'}`}>
+                      <div className="col-span-4 font-bold text-on-surface">{item.product?.name || 'Desconhecido'}</div>
+                      <div className="col-span-2 font-bold uppercase text-xs">{item.type?.replace('_', ' ') || '-'}</div>
+                      <div className={`col-span-2 text-right font-bold ${item.type?.includes('SAIDA') || item.type?.includes('PERDA') ? 'text-error' : 'text-primary'}`}>
                         {item.quantity}
                       </div>
-                      <div className="col-span-2">{item.user.name}</div>
+                      <div className="col-span-2">{item.user?.name || 'Sistema'}</div>
                     </>
                   )}
                   {activeTab === 'losses' && (
                     <>
                       <div className="col-span-2">{new Date(item.date).toLocaleDateString()}</div>
-                      <div className="col-span-4 font-bold text-on-surface">{item.product.name}</div>
+                      <div className="col-span-4 font-bold text-on-surface">{item.product?.name || 'Desconhecido'}</div>
                       <div className="col-span-2 text-right font-bold text-error">{item.quantity}</div>
-                      <div className="col-span-2 text-on-surface-variant uppercase text-xs font-bold">{item.reason}</div>
-                      <div className="col-span-2">{item.user.name}</div>
+                      <div className="col-span-2 text-on-surface-variant uppercase text-xs font-bold">{item.reason || '-'}</div>
+                      <div className="col-span-2">{item.user?.name || 'Sistema'}</div>
                     </>
                   )}
                   {activeTab === 'expirations' && (
@@ -364,7 +364,7 @@ export default function Reports() {
                         {new Date(item.expirationDate).toLocaleDateString()}
                       </div>
                       <div className="col-span-2 font-mono text-xs text-on-surface-variant">{item.number}</div>
-                      <div className="col-span-4 font-bold">{item.product.name}</div>
+                      <div className="col-span-4 font-bold">{item.product?.name || 'Desconhecido'}</div>
                       <div className="col-span-2 text-right font-bold">{item.currentQty}</div>
                       <div className="col-span-2 text-on-surface-variant">{item.supplier?.name || '-'}</div>
                     </>
@@ -374,14 +374,14 @@ export default function Reports() {
                       <div className="col-span-2">{new Date(item.date).toLocaleDateString()}</div>
                       <div className="col-span-2 font-bold text-on-surface">{item.invoice || 'S/N'}</div>
                       <div className="col-span-4">{item.supplier?.name || '-'}</div>
-                      <div className="col-span-2">{item.user.name}</div>
+                      <div className="col-span-2">{item.user?.name || 'Sistema'}</div>
                       <div className="col-span-2 text-xs font-bold uppercase">{item.status.replace('_', ' ')}</div>
                     </>
                   )}
                   {activeTab === 'inventories' && (
                     <>
                       <div className="col-span-2">{new Date(item.date).toLocaleDateString()}</div>
-                      <div className="col-span-4">{item.user.name}</div>
+                      <div className="col-span-4">{item.user?.name || 'Sistema'}</div>
                       <div className="col-span-4 text-xs font-bold uppercase">{item.status}</div>
                       <div className="col-span-2 text-right font-bold">{item.items?.length || 0}</div>
                     </>
