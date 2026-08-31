@@ -7,14 +7,22 @@ export const getSuppliers = async (req: AuthRequest, res: Response): Promise<voi
     const { companyId } = req.user!;
     const { branchId, page = '1', limit = '10' } = req.query;
 
-    const pageNumber = parseInt(page as string, 10);
-    const limitNumber = parseInt(limit as string, 10);
-    const skip = (pageNumber - 1) * limitNumber;
+    let pageNumber = parseInt(page as string, 10);
+    let limitNumber = parseInt(limit as string, 10);
+    
+    if (isNaN(pageNumber) || pageNumber < 1) pageNumber = 1;
+    let takeArgs: any = {};
+    let skipArgs: any = {};
+    
+    if (!isNaN(limitNumber) && limitNumber > 0) {
+      takeArgs = { take: limitNumber };
+      skipArgs = { skip: (pageNumber - 1) * limitNumber };
+    }
 
     const where: any = { companyId, status: 'ATIVO' };
 
     const [suppliers, total] = await Promise.all([
-      prisma.supplier.findMany({ where, skip, take: limitNumber }),
+      prisma.supplier.findMany({ where, ...skipArgs, ...takeArgs }),
       prisma.supplier.count({ where })
     ]);
     
@@ -23,11 +31,12 @@ export const getSuppliers = async (req: AuthRequest, res: Response): Promise<voi
       meta: {
         total,
         page: pageNumber,
-        limit: limitNumber,
-        totalPages: Math.ceil(total / limitNumber)
+        limit: isNaN(limitNumber) ? total : limitNumber,
+        totalPages: isNaN(limitNumber) ? 1 : Math.ceil(total / limitNumber)
       }
     });
   } catch (error) {
+    console.error('Error in getSuppliers:', error);
     res.status(500).json({ error: 'Erro ao buscar fornecedores' });
   }
 };
