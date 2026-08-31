@@ -98,9 +98,13 @@ export default function Inventory() {
   };
 
   const startInventory = async () => {
+    if (!activeBranch) {
+      alert('Por favor, selecione uma filial primeiro.');
+      return;
+    }
     try {
       const res = await api.post('/inventories', {
-        branchId: activeBranch?.id,
+        branchId: activeBranch.id,
         userId: user?.id
       });
       setCurrentInventoryId(res.data.id);
