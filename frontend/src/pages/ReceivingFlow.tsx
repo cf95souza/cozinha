@@ -30,10 +30,10 @@ export default function ReceivingFlow() {
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   
   const [conferencia, setConferencia] = useState<{
-    receivedQty?: number,
+    receivedQty?: number | string,
     lotNumber?: string,
     expirationDate?: string,
-    temperature?: number,
+    temperature?: number | string,
     packageStatus?: string
   }>({});
 
@@ -57,10 +57,10 @@ export default function ReceivingFlow() {
         const firstItem = res.data.items[0];
         setActiveItemId(firstItem.id);
         setConferencia({
-          receivedQty: firstItem.receivedQty || '',
+          receivedQty: firstItem.receivedQty !== null ? firstItem.receivedQty : '',
           lotNumber: firstItem.lotNumber || '',
           expirationDate: firstItem.expirationDate ? firstItem.expirationDate.split('T')[0] : '',
-          temperature: firstItem.temperature || '',
+          temperature: firstItem.temperature !== null ? firstItem.temperature : '',
           packageStatus: firstItem.packageStatus || 'INTACTA'
         });
       }
@@ -99,10 +99,10 @@ export default function ReceivingFlow() {
       setSubmitting(true);
       const itemToUpdate = receiving.items.find((i: any) => i.id === activeItemId);
       const payload = {
-        receivedQty: conferencia.receivedQty !== undefined ? conferencia.receivedQty : itemToUpdate.receivedQty,
+        receivedQty: conferencia.receivedQty !== undefined && conferencia.receivedQty !== '' ? Number(conferencia.receivedQty) : itemToUpdate.receivedQty,
         lotNumber: conferencia.lotNumber !== undefined ? conferencia.lotNumber : itemToUpdate.lotNumber,
         expirationDate: conferencia.expirationDate !== undefined ? conferencia.expirationDate : (itemToUpdate.expirationDate ? itemToUpdate.expirationDate.split('T')[0] : ''),
-        temperature: conferencia.temperature !== undefined ? conferencia.temperature : itemToUpdate.temperature,
+        temperature: conferencia.temperature !== undefined && conferencia.temperature !== '' ? Number(conferencia.temperature) : itemToUpdate.temperature,
         packageStatus: conferencia.packageStatus !== undefined ? conferencia.packageStatus : (itemToUpdate.packageStatus || 'INTACTA')
       };
       await api.put(`/receivings/${id}/items/${activeItemId}`, payload);
@@ -113,10 +113,10 @@ export default function ReceivingFlow() {
         const nextItem = receiving.items[currentIndex + 1];
         setActiveItemId(nextItem.id);
         setConferencia({
-          receivedQty: nextItem.receivedQty || '',
+          receivedQty: nextItem.receivedQty !== null ? nextItem.receivedQty : '',
           lotNumber: nextItem.lotNumber || '',
           expirationDate: nextItem.expirationDate ? nextItem.expirationDate.split('T')[0] : '',
-          temperature: nextItem.temperature || '',
+          temperature: nextItem.temperature !== null ? nextItem.temperature : '',
           packageStatus: nextItem.packageStatus || 'INTACTA'
         });
       }
@@ -299,10 +299,10 @@ export default function ReceivingFlow() {
                   onClick={() => {
                     setActiveItemId(item.id);
                     setConferencia({
-                      receivedQty: item.receivedQty || '',
+                      receivedQty: item.receivedQty !== null ? item.receivedQty : '',
                       lotNumber: item.lotNumber || '',
                       expirationDate: item.expirationDate ? item.expirationDate.split('T')[0] : '',
-                      temperature: item.temperature || '',
+                      temperature: item.temperature !== null ? item.temperature : '',
                       packageStatus: item.packageStatus || 'INTACTA'
                     });
                   }}
@@ -354,8 +354,8 @@ export default function ReceivingFlow() {
                     <input 
                       type="number" step="0.01" required 
                       disabled={isApproved}
-                      value={conferencia.receivedQty ?? activeItem.receivedQty ?? ''} 
-                      onChange={e => setConferencia({...conferencia, receivedQty: Number(e.target.value)})}
+                      value={conferencia.receivedQty !== undefined ? conferencia.receivedQty : (activeItem.receivedQty !== null ? activeItem.receivedQty : '')} 
+                      onChange={e => setConferencia({...conferencia, receivedQty: e.target.value})}
                       className="w-full pl-4 pr-12 py-3 bg-primary-container/30 border border-primary/30 rounded-xl text-lg font-bold text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20" 
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-on-surface-variant">{activeItem.unit}</span>
@@ -391,8 +391,8 @@ export default function ReceivingFlow() {
                     <input 
                       type="number" step="0.1" required 
                       disabled={isApproved}
-                      value={conferencia.temperature ?? activeItem.temperature ?? ''}
-                      onChange={e => setConferencia({...conferencia, temperature: Number(e.target.value)})}
+                      value={conferencia.temperature !== undefined ? conferencia.temperature : (activeItem.temperature !== null ? activeItem.temperature : '')}
+                      onChange={e => setConferencia({...conferencia, temperature: e.target.value})}
                       className="w-full px-4 py-3 bg-error-container/20 border border-error/30 rounded-xl text-sm font-bold text-on-surface focus:outline-none focus:ring-2 focus:ring-error/20" 
                     />
                   </div>
