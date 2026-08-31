@@ -38,7 +38,7 @@ export const createSupplier = async (req: AuthRequest, res: Response): Promise<v
     const { name, tradeName, document, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder, notes, rating, status, branchId } = req.body;
 
     const supplier = await prisma.supplier.create({
-      data: { name, tradeName, document: document || null, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder: minimumOrder ? Number(minimumOrder) : null, notes, rating: rating ? Number(rating) : null, status, companyId, branchId: null }
+      data: { name, tradeName, document: document || null, contact, phone, email, address, city, state, zipCode, website, paymentTerms: paymentTerms ? String(paymentTerms) : null, deliveryDays: deliveryDays ? String(deliveryDays) : null, minimumOrder: minimumOrder ? Number(minimumOrder) : null, notes, rating: rating ? Number(rating) : null, status, companyId, branchId: null }
     });
 
     res.status(201).json(supplier);
@@ -55,7 +55,7 @@ export const updateSupplier = async (req: AuthRequest, res: Response): Promise<v
 
     const supplier = await prisma.supplier.update({
       where: { id },
-      data: { name, tradeName, document: document || null, contact, phone, email, address, city, state, zipCode, website, paymentTerms, deliveryDays, minimumOrder: minimumOrder ? Number(minimumOrder) : null, notes, rating: rating ? Number(rating) : null, status }
+      data: { name, tradeName, document: document || null, contact, phone, email, address, city, state, zipCode, website, paymentTerms: paymentTerms ? String(paymentTerms) : null, deliveryDays: deliveryDays ? String(deliveryDays) : null, minimumOrder: minimumOrder ? Number(minimumOrder) : null, notes, rating: rating ? Number(rating) : null, status }
     });
 
     res.json(supplier);
