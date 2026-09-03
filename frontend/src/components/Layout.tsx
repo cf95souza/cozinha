@@ -38,7 +38,10 @@ export default function Layout() {
         setBranches(response.data);
         if (response.data.length > 0) {
           const storedBranch = localStorage.getItem('@CozinhaPlus:branch');
-          if (!storedBranch) {
+          if (!storedBranch && user?.branchId) {
+            const userBranch = response.data.find((b: Branch) => b.id === user.branchId);
+            if (userBranch) setActiveBranch(userBranch);
+          } else if (!storedBranch) {
             setActiveBranch(response.data[0]);
           }
         }
@@ -46,9 +49,7 @@ export default function Layout() {
         console.error('Erro ao carregar unidades', err);
       }
     };
-    if (user?.role === 'ADMIN' || user?.role === 'GESTOR') {
-       fetchBranches();
-    }
+    fetchBranches();
   }, [user]);
 
   useEffect(() => {
@@ -128,6 +129,17 @@ export default function Layout() {
     { path: '/relatorios', label: 'Relatórios', icon: 'bar_chart', roles: ['ADMIN', 'GESTOR'] },
   ];
 
+  const financeItems = [
+    { path: '/finance/cash', label: 'PDV & Caixa', icon: 'point_of_sale', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/mesas', label: 'Mesas & Comandas', icon: 'table_restaurant', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/kds', label: 'KDS (Cozinha)', icon: 'soup_kitchen', roles: ['ADMIN', 'GESTOR', 'COZINHEIRO'] },
+    { path: '/finance/payables', label: 'Contas a Pagar', icon: 'payments', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/finance/receivables', label: 'Contas a Receber', icon: 'request_quote', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/finance/cashflow', label: 'Fluxo de Caixa', icon: 'show_chart', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/finance/dre', label: 'D.R.E.', icon: 'analytics', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/finance/categories', label: 'Plano de Contas', icon: 'account_tree', roles: ['ADMIN', 'GESTOR'] },
+  ];
+
   const cadastrosItems = [
     { path: '/produtos', label: 'Produtos', icon: 'kitchen', roles: ['ADMIN', 'GESTOR', 'ESTOQUISTA', 'COZINHEIRO'] },
     { path: '/categorias', label: 'Categorias', icon: 'category', roles: ['ADMIN', 'GESTOR'] },
@@ -136,8 +148,9 @@ export default function Layout() {
     { path: '/fichas', label: 'Fichas Técnicas', icon: 'menu_book', roles: ['ADMIN', 'GESTOR'] },
     { path: '/transferencias', label: 'Transferências', icon: 'move_up', roles: ['ADMIN', 'GESTOR', 'ESTOQUISTA'] },
     { path: '/perdas', label: 'Perdas', icon: 'delete', roles: ['ADMIN', 'GESTOR', 'ESTOQUISTA', 'COZINHEIRO'] },
-    { path: '/compras', label: 'Sugestão de Compras', icon: 'shopping_cart', roles: ['ADMIN', 'GESTOR'] },
-    { path: '/pdv', label: 'PDV (Frente de Caixa)', icon: 'point_of_sale', roles: ['ADMIN', 'GESTOR', 'ESTOQUISTA', 'COZINHEIRO'] },
+    { path: '/cotacoes', label: 'Cotação Inteligente', icon: 'price_change', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/pedidos-compra', label: 'Pedidos de Compra', icon: 'shopping_basket', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/compras', label: 'Sugestão de Compras', icon: 'lightbulb', roles: ['ADMIN', 'GESTOR'] },
   ];
 
   const configItems = [
@@ -178,12 +191,12 @@ export default function Layout() {
     );
   };
 
-  const renderGroup = (label: string, items: typeof mainItems, groupKey: string) => {
+  const renderGroup = (label: string, items: typeof mainItems, groupKey: string, iconOverride?: string) => {
     const visibleItems = items.filter(i => i.roles.includes(user?.role || ''));
     if (visibleItems.length === 0) return null;
     const isOpen = openGroups[groupKey] ?? false;
     const hasActiveChild = visibleItems.some(i => location.pathname === i.path);
-    const groupIcon = groupKey === 'cadastros' ? 'folder_open' : 'settings';
+    const groupIcon = iconOverride || (groupKey === 'cadastros' ? 'folder_open' : 'settings');
     const activeClass = hasActiveChild
       ? 'text-primary font-semibold'
       : 'text-on-surface-variant hover:bg-surface-container';
@@ -233,8 +246,8 @@ export default function Layout() {
     <>
       {/* Logo */}
       <div className={`px-5 pt-6 pb-4 flex items-center ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
-        {!isSidebarCollapsed && <h1 className="text-xl font-extrabold text-primary tracking-tight">cozinha+</h1>}
-        <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant hidden md:block">
+        {!isSidebarCollapsed && <h1 className="text-2xl font-section-title font-bold text-primary tracking-tight">cozinha+</h1>}
+        <button onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)} className="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant hidden md:block transition-colors">
           <span className="material-symbols-outlined notranslate">{isSidebarCollapsed ? 'menu' : 'menu_open'}</span>
         </button>
       </div>
@@ -243,6 +256,9 @@ export default function Layout() {
       <div className="flex-1 overflow-y-auto space-y-1 pb-4">
         <div className="space-y-0.5">
           {mainItems.map(renderMenuItem)}
+        </div>
+        <div className="space-y-0.5">
+          {renderGroup('Financeiro', financeItems, 'finance', 'payments')}
         </div>
         <div className="space-y-0.5">
           {renderGroup('Cadastros', cadastrosItems, 'cadastros')}
@@ -277,12 +293,12 @@ export default function Layout() {
       )}
 
       {/* Sidebar Desktop */}
-      <nav className={`hidden md:flex flex-col h-[100dvh] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] bg-surface border-r border-outline-variant fixed left-0 top-0 z-20 transition-all duration-300 ${isSidebarCollapsed ? 'w-[80px]' : 'w-[260px]'}`}>
+      <nav className={`hidden md:flex flex-col h-[100dvh] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] bg-surface border-r border-surface-container-high fixed left-0 top-0 z-20 transition-all duration-300 ${isSidebarCollapsed ? 'w-[80px]' : 'w-[260px]'}`}>
         {SidebarContent()}
       </nav>
 
       {/* Sidebar Mobile */}
-      <nav className={`md:hidden fixed left-0 top-0 h-[100dvh] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] w-[260px] bg-surface border-r border-outline-variant z-40 flex flex-col transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <nav className={`md:hidden fixed left-0 top-0 h-[100dvh] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] w-[260px] bg-surface border-r border-surface-container-high z-40 flex flex-col transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {SidebarContent()}
       </nav>
 
@@ -290,7 +306,7 @@ export default function Layout() {
       <main className={`flex-1 ml-0 flex flex-col min-h-[100dvh] pb-[env(safe-area-inset-bottom)] relative overflow-y-auto bg-surface-container-low transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-[80px]' : 'md:ml-[260px]'}`}>
         
         {/* Topbar */}
-        <header className="flex justify-between items-center w-full px-5 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] bg-surface border-b border-outline-variant sticky top-0 z-10">
+        <header className="flex justify-between items-center w-full px-5 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] bg-surface border-b border-surface-container-high sticky top-0 z-10 transition-colors">
           <div className="flex items-center gap-3">
             {/* Hamburger Mobile */}
             <button className="md:hidden p-1.5 -ml-1 rounded-lg hover:bg-surface-container" onClick={() => setSidebarOpen(true)}>
@@ -299,8 +315,8 @@ export default function Layout() {
 
             {/* Restaurante + Badge Unidade */}
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-on-surface">{user?.company || 'COZINHA+'}</span>
-              {user?.role === 'ADMIN' && branches.length > 0 ? (
+              <span className="text-lg font-section-title font-semibold text-on-surface tracking-tight">{user?.company || 'COZINHA+'}</span>
+              {branches.length > 1 ? (
                 <select 
                   value={activeBranch?.id || ''}
                   onChange={e => {
@@ -313,7 +329,9 @@ export default function Layout() {
                   }}
                   className="text-xs bg-primary-container text-primary font-semibold px-2.5 py-1 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer appearance-none"
                 >
-                  <option value="">Todas</option>
+                  {user?.role === 'ADMIN' ? (
+                      <option value="">Todas</option>
+                    ) : null}
                   {branches.map(b => (
                     <option key={b.id} value={b.id}>{b.name}</option>
                   ))}
@@ -437,7 +455,7 @@ export default function Layout() {
                 {user?.name?.charAt(0)}
               </div>
               <div className="hidden xl:block">
-                <p className="text-xs font-semibold text-on-surface leading-tight">{user?.name}</p>
+                <p className="text-[13px] font-section-title font-semibold text-on-surface leading-tight">{user?.name}</p>
                 <p className="text-[11px] text-on-surface-variant leading-tight">{user?.role}</p>
               </div>
             </div>

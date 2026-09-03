@@ -76,20 +76,20 @@ export default {
       },
       fontFamily: {
         "body": ["Inter", "sans-serif"],
-        "section-title": ["Inter", "sans-serif"],
-        "card-title": ["Inter", "sans-serif"],
-        "display-lg-mobile": ["Inter", "sans-serif"],
-        "display-lg": ["Inter", "sans-serif"],
+        "section-title": ["Outfit", "sans-serif"],
+        "card-title": ["Outfit", "sans-serif"],
+        "display-lg-mobile": ["Outfit", "sans-serif"],
+        "display-lg": ["Outfit", "sans-serif"],
         "metadata": ["Inter", "sans-serif"]
       },
       fontSize: {
-        "body": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
-        "section-title": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "700" }],
-        "card-title": ["18px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-        "display-lg-mobile": ["28px", { "lineHeight": "1.2", "fontWeight": "700" }],
-        "display-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-        "metadata": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500" }],
-        "kpi": ["48px", { "lineHeight": "1", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+        "body": ["14px", { "lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400" }],
+        "section-title": ["22px", { "lineHeight": "1.3", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+        "card-title": ["16px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+        "display-lg-mobile": ["26px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+        "display-lg": ["32px", { "lineHeight": "1.1", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+        "metadata": ["12px", { "lineHeight": "1.5", "letterSpacing": "0.01em", "fontWeight": "500" }],
+        "kpi": ["44px", { "lineHeight": "1", "letterSpacing": "-0.03em", "fontWeight": "700" }]
       }
     },
   },

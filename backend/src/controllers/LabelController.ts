@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { prisma } from '../lib/prisma';
 import crypto from 'crypto';
+import { AuthRequest } from '../middlewares/authMiddleware';
 
 export class LabelController {
-  async create(req: Request, res: Response) {
+  async create(req: AuthRequest, res: Response) {
     try {
       const { productId, lotId, userId } = req.body;
 
@@ -28,14 +29,21 @@ export class LabelController {
         },
       });
 
-      return res.status(201).json(label);
+      let companyInfo = null;
+      if (req.user?.companyId) {
+        companyInfo = await prisma.company.findUnique({
+          where: { id: req.user.companyId }
+        });
+      }
+
+      return res.status(201).json({ ...label, company: companyInfo });
     } catch (error: any) {
       console.error(error);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  async findByQrCode(req: Request, res: Response) {
+  async findByQrCode(req: AuthRequest, res: Response) {
     try {
       const qrCode = req.params.qrCode as string;
 
@@ -68,7 +76,7 @@ export class LabelController {
     }
   }
 
-  async findAll(req: Request, res: Response) {
+  async findAll(req: AuthRequest, res: Response) {
     try {
       const branchId = req.query.branchId as string;
       const skip = Number(req.query.skip) || 0;

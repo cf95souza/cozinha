@@ -1,6 +1,9 @@
 import { Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import { NutritionService } from '../services/NutritionService';
+
+const nutritionService = new NutritionService();
 
 export class RecipeController {
   async create(req: AuthRequest, res: Response) {
@@ -45,7 +48,16 @@ export class RecipeController {
         include: { product: true, items: { include: { ingredient: true } } },
         orderBy: { product: { name: 'asc' } }
       });
-      return res.status(200).json(recipes);
+      
+      const recipesWithNutrition = await Promise.all(recipes.map(async (recipe) => {
+         const nutrition = await nutritionService.calculateNutritionFromObject(recipe);
+         return {
+           ...recipe,
+           nutrition
+         };
+      }));
+
+      return res.status(200).json(recipesWithNutrition);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal server error' });

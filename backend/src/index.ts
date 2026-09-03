@@ -26,12 +26,18 @@ import productionRoutes from './routes/productionRoutes';
 import suggestionRoutes from './routes/suggestionRoutes';
 import saleRoutes from './routes/saleRoutes';
 import financeRoutes from './routes/financeRoutes';
+import deliveryRoutes from './routes/deliveryRoutes';
+import purchasingRoutes from './routes/purchasingRoutes';
+import quotationRoutes from './routes/quotationRoutes';
+
+import tableRoutes from './routes/tableRoutes';
+import kdsRoutes from './routes/kdsRoutes';
 import { auditMiddleware } from './middlewares/auditMiddleware';
+import { setupCronJobs } from './cron/snapshotCron';
 
 dotenv.config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 app.use(auditMiddleware);
@@ -60,6 +66,12 @@ app.use('/api/productions', productionRoutes);
 app.use('/api/suggestions', suggestionRoutes);
 app.use('/api/sales', saleRoutes);
 app.use('/api/finance', financeRoutes);
+app.use('/api/delivery', deliveryRoutes);
+app.use('/api/purchasing', purchasingRoutes);
+app.use('/api/quotations', quotationRoutes);
+
+app.use('/api/tables', tableRoutes);
+app.use('/api/kds', kdsRoutes);
 
 app.get('/health', async (req, res) => {
   try {
@@ -73,4 +85,6 @@ app.get('/health', async (req, res) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  // Iniciar Cron Jobs
+  setupCronJobs();
 });

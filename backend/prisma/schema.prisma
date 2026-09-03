@@ -7,7 +7,7 @@ datasource db {
 }
 
 model Company {
-  id         String      @id @default(uuid())
+  id                       String                 @id @default(uuid())
   name                     String
   tradeName                String?
   document                 String?
@@ -19,90 +19,121 @@ model Company {
   state                    String?
   zipCode                  String?
   logoUrl                  String?
-  currencyCode             String      @default("BRL")
-  timezone                 String      @default("America/Sao_Paulo")
-  expirationAlertDays      Int         @default(7)
-  requireReceivingApproval Boolean     @default(true)
-  defaultExpirationDays    Int         @default(365)
-  createdAt                DateTime    @default(now())
-  updatedAt                DateTime    @updatedAt
-  branches   Branch[]
-  categories Category[]
-  locations  Location[]
-  products   Product[]
-  receivings Receiving[]
-  suppliers  Supplier[]
-  users      User[]
-  stockSnapshots StockSnapshot[]
-  costCenters   CostCenter[]
-  invoiceTypes  InvoiceType[]
-  invoiceOrigins InvoiceOrigin[]
-  invoices      Invoice[]
+  currencyCode             String                 @default("BRL")
+  timezone                 String                 @default("America/Sao_Paulo")
+  expirationAlertDays      Int                    @default(7)
+  requireReceivingApproval Boolean                @default(true)
+  defaultExpirationDays    Int                    @default(365)
+  createdAt                DateTime               @default(now())
+  updatedAt                DateTime               @updatedAt
+  branches                 Branch[]
+  categories               Category[]
+  locations                Location[]
+  products                 Product[]
+  receivings               Receiving[]
+  suppliers                Supplier[]
+  users                    User[]
+  stockSnapshots           StockSnapshot[]
+  purchaseOrders           PurchaseOrder[]
+  costCenters              CostCenter[]
+  invoiceTypes             InvoiceType[]
+  invoiceOrigins           InvoiceOrigin[]
+  invoices                 Invoice[]
+  financialCategories      FinancialCategory[]
+  payables                 Payable[]
+  receivables              Receivable[]
+  financialTransactions    FinancialTransaction[]
+  cashRegisters            CashRegister[]
 }
 
 model Branch {
-  id                   String          @id @default(uuid())
-  name                 String
-  tradeName            String?
-  document             String?
-  phone                String?
-  email                String?
-  address              String?
-  city                 String?
-  state                String?
-  zipCode              String?
-  managerName          String?
-  type                 String          @default("RESTAURANTE")
-  status               String          @default("ATIVO")
-  companyId            String
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
-  company              Company         @relation(fields: [companyId], references: [id])
-  categories           Category[]
-  locations            Location[]
-  products             Product[]
-  receivings           Receiving[]
-  stockBalances        StockBalance[]
-  movementsDestination StockMovement[] @relation("DestinationBranch")
-  movementsOrigin      StockMovement[] @relation("OriginBranch")
-  suppliers            Supplier[]
-  users                User[]
-  losses               Loss[]
-  inventories          Inventory[]
-  auditLogs            AuditLog[]
-  recipes              Recipe[]
-  productions          Production[]
-  stockSnapshots       StockSnapshot[]
-  sales                Sale[]
-  invoices             Invoice[]
+  id                    String                 @id @default(uuid())
+  name                  String
+  tradeName             String?
+  document              String?
+  phone                 String?
+  email                 String?
+  address               String?
+  city                  String?
+  state                 String?
+  zipCode               String?
+  managerName           String?
+  type                  String                 @default("RESTAURANTE")
+  status                String                 @default("ATIVO")
+  
+  // Configurações Fiscais (NFC-e)
+  nfceEnvironment       String                 @default("HOMOLOGACAO") // HOMOLOGACAO, PRODUCAO
+  nfceCscId             String?
+  nfceCscSecret         String?
+  nfceCertPassword      String?
+  nfceCertBase64        String?                @db.Text
+  nfceSeries            Int                    @default(1)
+  nfceNextNumber        Int                    @default(1)
+
+  // Integração de Delivery (Fase 18)
+  deliveryIntegrationActive Boolean            @default(false)
+  ifoodMerchantId       String?
+
+  companyId             String
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  company               Company                @relation(fields: [companyId], references: [id])
+  categories            Category[]
+  locations             Location[]
+  products              Product[]
+  receivings            Receiving[]
+  stockBalances         StockBalance[]
+  movementsDestination  StockMovement[]        @relation("DestinationBranch")
+  movementsOrigin       StockMovement[]        @relation("OriginBranch")
+  suppliers             Supplier[]
+  users                 User[]
+  losses                Loss[]
+  inventories           Inventory[]
+  auditLogs             AuditLog[]
+  recipes               Recipe[]
+  productions           Production[]
+  stockSnapshots        StockSnapshot[]
+  sales                 Sale[]
+  invoices              Invoice[]
+  payables              Payable[]
+  receivables           Receivable[]
+  financialTransactions FinancialTransaction[]
+  cashRegisters         CashRegister[]
+  purchaseOrders        PurchaseOrder[]
+  supplierQuotations    SupplierQuotation[]
 }
 
 model User {
-  id             String          @id @default(uuid())
-  name           String
-  email          String          @unique
-  password       String
-  role           String          @default("COZINHEIRO")
-  status         String          @default("ATIVO")
-  companyId      String
-  branchId       String?
-  failedLoginAttempts Int     @default(0)
-  lockedUntil    DateTime?
-  resetToken     String?
-  resetTokenExpires DateTime?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  receivings     Receiving[]
-  stockMovements StockMovement[]
-  branch         Branch?         @relation(fields: [branchId], references: [id])
-  company        Company         @relation(fields: [companyId], references: [id])
-  losses         Loss[]
-  inventories    Inventory[]
-  labelsGenerated Label[]
-  auditLogs      AuditLog[]
-  productions    Production[]
-  sales          Sale[]
-  invoices       Invoice[]
+  id                    String                 @id @default(uuid())
+  name                  String
+  email                 String                 @unique
+  password              String
+  role                  String                 @default("COZINHEIRO")
+  status                String                 @default("ATIVO")
+  companyId             String
+  branchId              String?
+  failedLoginAttempts   Int                    @default(0)
+  lockedUntil           DateTime?
+  resetToken            String?
+  resetTokenExpires     DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  receivings            Receiving[]
+  stockMovements        StockMovement[]
+  branch                Branch?                @relation(fields: [branchId], references: [id])
+  company               Company                @relation(fields: [companyId], references: [id])
+  losses                Loss[]
+  inventories           Inventory[]
+  labelsGenerated       Label[]
+  auditLogs             AuditLog[]
+  productions           Production[]
+  sales                 Sale[]
+  invoices              Invoice[]
+  cashShiftsOpened      CashShift[]            @relation("ShiftOpener")
+  cashShiftsClosed      CashShift[]            @relation("ShiftCloser")
+  cashMovements         CashMovement[]
+  financialTransactions FinancialTransaction[]
+  purchaseOrders        PurchaseOrder[]
 }
 
 model Category {
@@ -140,51 +171,54 @@ model Location {
 }
 
 model Supplier {
-  id         String      @id @default(uuid())
-  name       String
-  document   String?
-  contact    String?
-  phone      String?
-  email          String?
-  tradeName      String?
-  address        String?
-  city           String?
-  state          String?
-  zipCode        String?
-  website        String?
-  paymentTerms   String?
-  deliveryDays   String?
-  minimumOrder   Float?
-  notes          String?     @db.Text
-  rating         Float?
-  status         String      @default("ATIVO")
-  companyId      String
-  branchId   String?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  lots       Lot[]
-  products   Product[]
-  receivings Receiving[]
-  branch     Branch?     @relation(fields: [branchId], references: [id])
-  company    Company     @relation(fields: [companyId], references: [id])
-  invoices   Invoice[]
+  id           String      @id @default(uuid())
+  name         String
+  document     String?
+  contact      String?
+  phone        String?
+  email        String?
+  tradeName    String?
+  address      String?
+  city         String?
+  state        String?
+  zipCode      String?
+  website      String?
+  paymentTerms String?
+  deliveryDays String?
+  minimumOrder Float?
+  notes        String?     @db.Text
+  rating       Float?
+  status       String      @default("ATIVO")
+  companyId    String
+  branchId     String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  lots         Lot[]
+  products     Product[]
+  receivings   Receiving[]
+  branch       Branch?     @relation(fields: [branchId], references: [id])
+  company      Company     @relation(fields: [companyId], references: [id])
+  invoices     Invoice[]
+  payables     Payable[]
+  purchaseOrders PurchaseOrder[]
+  quotations   SupplierQuotation[]
 }
 
 model Product {
-  id                    String          @id @default(uuid())
+  id                    String                 @id @default(uuid())
   name                  String
   sku                   String?
   unit                  String
   brand                 String?
-  minStock              Float           @default(0)
-  maxStock              Float           @default(0)
-  controlled            Boolean         @default(false)
-  temperatureControlled Boolean         @default(false)
+  minStock              Float                  @default(0)
+  maxStock              Float                  @default(0)
+  controlled            Boolean                @default(false)
+  temperatureControlled Boolean                @default(false)
   minTemperature        Float?
   maxTemperature        Float?
   costPrice             Float?
   barcode               String?
-  description           String?         @db.Text
+  description           String?                @db.Text
   photoUrl              String?
   defaultExpirationDays Int?
   conservationMethod    String?
@@ -194,35 +228,45 @@ model Product {
   marginPercentage      Float?
   weight                Float?
   packageWeight         Float?
-  notes                 String?         @db.Text
+  notes                 String?                @db.Text
   abcClass              String?
-  isComposite           Boolean         @default(false)
+  isComposite           Boolean                @default(false)
   yieldPercentage       Float?
-  status                String          @default("ATIVO")
+  
+  // Tabela Nutricional (Valores por 100g ou por porção base)
+  calories              Float?
+  proteins              Float?
+  carbohydrates         Float?
+  fats                  Float?
+  sodium                Float?
+
+  status                String                 @default("ATIVO")
   categoryId            String
   locationId            String?
   supplierId            String?
   companyId             String
   branchId              String?
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
   lots                  Lot[]
-  branch                Branch?         @relation(fields: [branchId], references: [id])
-  category              Category        @relation(fields: [categoryId], references: [id])
-  company               Company         @relation(fields: [companyId], references: [id])
-  location              Location?       @relation(fields: [locationId], references: [id])
-  supplier              Supplier?       @relation(fields: [supplierId], references: [id])
+  branch                Branch?                @relation(fields: [branchId], references: [id])
+  category              Category               @relation(fields: [categoryId], references: [id])
+  company               Company                @relation(fields: [companyId], references: [id])
+  location              Location?              @relation(fields: [locationId], references: [id])
+  supplier              Supplier?              @relation(fields: [supplierId], references: [id])
   receivingItems        ReceivingItem[]
   stockBalances         StockBalance[]
   stockMovements        StockMovement[]
   losses                Loss[]
   inventoryItems        InventoryItem[]
   labels                Label[]
-  recipesAsResult       Recipe[]        @relation("RecipeResultProduct")
-  recipeItems           RecipeItem[]    @relation("RecipeIngredient")
-  productionsAsResult   Production[]    @relation("ProductionResultProduct")
+  recipesAsResult       Recipe[]               @relation("RecipeResultProduct")
+  recipeItems           RecipeItem[]           @relation("RecipeIngredient")
+  productionsAsResult   Production[]           @relation("ProductionResultProduct")
   productionIngredients ProductionIngredient[] @relation("ProductionConsumedIngredient")
   saleItems             SaleItem[]
+  purchaseOrderItems    PurchaseOrderItem[]
+  supplierQuotations    SupplierQuotation[]
 }
 
 model StockBalance {
@@ -284,6 +328,8 @@ model ReceivingItem {
   requestedQty   Float
   receivedQty    Float?
   unit           String
+  unitPrice      Float?
+  totalPrice     Float?
   lotNumber      String?
   expirationDate DateTime?
   temperature    Float?
@@ -295,24 +341,24 @@ model ReceivingItem {
 }
 
 model Lot {
-  id             String    @id @default(uuid())
-  number         String
-  productId      String
-  supplierId     String?
-  receivingId    String?
-  expirationDate DateTime
-  initialQty     Float
-  currentQty     Float
-  branchId       String
-  locationId     String
-  status         String    @default("NORMAL")
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  location       Location  @relation(fields: [locationId], references: [id])
-  product        Product   @relation(fields: [productId], references: [id])
-  supplier       Supplier? @relation(fields: [supplierId], references: [id])
-  losses         Loss[]
-  labels         Label[]
+  id                    String                 @id @default(uuid())
+  number                String
+  productId             String
+  supplierId            String?
+  receivingId           String?
+  expirationDate        DateTime
+  initialQty            Float
+  currentQty            Float
+  branchId              String
+  locationId            String
+  status                String                 @default("NORMAL")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  location              Location               @relation(fields: [locationId], references: [id])
+  product               Product                @relation(fields: [productId], references: [id])
+  supplier              Supplier?              @relation(fields: [supplierId], references: [id])
+  losses                Loss[]
+  labels                Label[]
   productionIngredients ProductionIngredient[]
 }
 
@@ -331,38 +377,38 @@ model Loss {
   date       DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  
-  product    Product  @relation(fields: [productId], references: [id])
-  lot        Lot?     @relation(fields: [lotId], references: [id])
-  branch     Branch   @relation(fields: [branchId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
+
+  product Product @relation(fields: [productId], references: [id])
+  lot     Lot?    @relation(fields: [lotId], references: [id])
+  branch  Branch  @relation(fields: [branchId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 }
 
 model Inventory {
-  id         String   @id @default(uuid())
-  branchId   String
-  userId     String
-  status     String   @default("PENDENTE")
-  date       DateTime @default(now())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  
-  branch     Branch   @relation(fields: [branchId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-  items      InventoryItem[]
+  id        String   @id @default(uuid())
+  branchId  String
+  userId    String
+  status    String   @default("PENDENTE")
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  branch Branch          @relation(fields: [branchId], references: [id])
+  user   User            @relation(fields: [userId], references: [id])
+  items  InventoryItem[]
 }
 
 model InventoryItem {
-  id                  String   @id @default(uuid())
+  id                  String  @id @default(uuid())
   inventoryId         String
   productId           String
   theoreticalQuantity Float
   physicalQuantity    Float
   difference          Float
   notes               String?
-  
-  inventory           Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-  product             Product   @relation(fields: [productId], references: [id])
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id])
 }
 
 model Label {
@@ -372,10 +418,10 @@ model Label {
   qrCode      String   @unique
   generatedBy String
   generatedAt DateTime @default(now())
-  
-  product     Product  @relation(fields: [productId], references: [id])
-  lot         Lot?     @relation(fields: [lotId], references: [id])
-  user        User     @relation(fields: [generatedBy], references: [id])
+
+  product Product @relation(fields: [productId], references: [id])
+  lot     Lot?    @relation(fields: [lotId], references: [id])
+  user    User    @relation(fields: [generatedBy], references: [id])
 }
 
 model AuditLog {
@@ -387,115 +433,132 @@ model AuditLog {
   details   Json?
   branchId  String?
   createdAt DateTime @default(now())
-  
-  user      User     @relation(fields: [userId], references: [id])
-  branch    Branch?  @relation(fields: [branchId], references: [id])
+
+  user   User    @relation(fields: [userId], references: [id])
+  branch Branch? @relation(fields: [branchId], references: [id])
 }
 
 model Recipe {
-  id               String       @id @default(uuid())
-  productId        String       // O produto que será gerado (Prato final ou Pré-preparo)
-  branchId         String
-  expectedYield    Float        // Rendimento esperado (Ex: 9 kg)
-  preparationTime  Int?         // Em minutos
-  instructions     String?      @db.Text
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  id              String   @id @default(uuid())
+  productId       String // O produto que será gerado (Prato final ou Pré-preparo)
+  branchId        String
+  expectedYield   Float // Rendimento esperado (Ex: 9 kg)
+  preparationTime Int? // Em minutos
+  instructions    String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  product          Product      @relation("RecipeResultProduct", fields: [productId], references: [id])
-  branch           Branch       @relation(fields: [branchId], references: [id])
-  items            RecipeItem[]
-  productions      Production[]
+  product     Product      @relation("RecipeResultProduct", fields: [productId], references: [id])
+  branch      Branch       @relation(fields: [branchId], references: [id])
+  items       RecipeItem[]
+  productions Production[]
 }
 
 model RecipeItem {
-  id               String       @id @default(uuid())
-  recipeId         String
-  ingredientId     String       // O produto que será consumido
-  quantity         Float        // Quantidade necessária para a receita
-  
-  recipe           Recipe       @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  ingredient       Product      @relation("RecipeIngredient", fields: [ingredientId], references: [id])
+  id           String @id @default(uuid())
+  recipeId     String
+  ingredientId String // O produto que será consumido
+  quantity     Float // Quantidade necessária para a receita
+
+  recipe     Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Product @relation("RecipeIngredient", fields: [ingredientId], references: [id])
 }
 
 model Production {
-  id               String       @id @default(uuid())
+  id               String    @id @default(uuid())
   branchId         String
-  recipeId         String?      // Pode ter uma receita vinculada (opcional para cálculo de rendimento)
-  productId        String       // O produto final gerado
-  plannedQuantity  Float        // O quanto se pretendia produzir (Ex: 9 kg)
-  producedQuantity Float        // O quanto realmente rendeu (Ex: 8.5 kg)
-  yieldPercentage  Float?       // Rendimento Real / Planejado
+  recipeId         String? // Pode ter uma receita vinculada (opcional para cálculo de rendimento)
+  productId        String // O produto final gerado
+  plannedQuantity  Float // O quanto se pretendia produzir (Ex: 9 kg)
+  producedQuantity Float // O quanto realmente rendeu (Ex: 8.5 kg)
+  yieldPercentage  Float? // Rendimento Real / Planejado
   startedAt        DateTime?
-  finishedAt       DateTime     @default(now())
+  finishedAt       DateTime  @default(now())
   userId           String
-  notes            String?      @db.Text
+  notes            String?   @db.Text
 
-  branch           Branch       @relation(fields: [branchId], references: [id])
-  recipe           Recipe?      @relation(fields: [recipeId], references: [id])
-  product          Product      @relation("ProductionResultProduct", fields: [productId], references: [id])
-  user             User         @relation(fields: [userId], references: [id])
-  ingredients      ProductionIngredient[]
+  branch      Branch                 @relation(fields: [branchId], references: [id])
+  recipe      Recipe?                @relation(fields: [recipeId], references: [id])
+  product     Product                @relation("ProductionResultProduct", fields: [productId], references: [id])
+  user        User                   @relation(fields: [userId], references: [id])
+  ingredients ProductionIngredient[]
 }
 
 model ProductionIngredient {
-  id               String       @id @default(uuid())
-  productionId     String
-  ingredientId     String       // Produto consumido
-  lotId            String?      // Lote consumido (pela baixa FIFO)
-  quantity         Float        // Quantidade descontada
-  
-  production       Production   @relation(fields: [productionId], references: [id], onDelete: Cascade)
-  ingredient       Product      @relation("ProductionConsumedIngredient", fields: [ingredientId], references: [id])
-  lot              Lot?         @relation(fields: [lotId], references: [id])
+  id           String  @id @default(uuid())
+  productionId String
+  ingredientId String // Produto consumido
+  lotId        String? // Lote consumido (pela baixa FIFO)
+  quantity     Float // Quantidade descontada
+
+  production Production @relation(fields: [productionId], references: [id], onDelete: Cascade)
+  ingredient Product    @relation("ProductionConsumedIngredient", fields: [ingredientId], references: [id])
+  lot        Lot?       @relation(fields: [lotId], references: [id])
 }
 
 model StockSnapshot {
-  id          String   @id @default(uuid())
-  companyId   String
-  branchId    String
-  date        DateTime @default(now())
-  totalValue  Float
-  
-  company     Company  @relation(fields: [companyId], references: [id])
-  branch      Branch   @relation(fields: [branchId], references: [id])
+  id         String   @id @default(uuid())
+  companyId  String
+  branchId   String
+  date       DateTime @default(now())
+  totalValue Float
+
+  company Company @relation(fields: [companyId], references: [id])
+  branch  Branch  @relation(fields: [branchId], references: [id])
 }
 
 model Sale {
-  id          String     @id @default(uuid())
-  branchId    String
-  userId      String
-  totalAmount Float
-  paymentType String     // PIX, CREDITO, DEBITO, DINHEIRO
-  status      String     @default("CONCLUIDO")
-  createdAt   DateTime   @default(now())
+  id           String   @id @default(uuid())
+  branchId     String
+  userId       String
+  type         String   @default("BALCAO") // BALCAO, MESA, COMANDA, DELIVERY
+  tableNumber  String?
+  customerName String?
+  totalAmount  Float
+  paymentType  String?  // Opcional enquanto a mesa estiver ABERTA
+  status       String   @default("CONCLUIDO") // ABERTO, CONCLUIDO, CANCELADO
+  
+  // Dados Fiscais NFC-e
+  nfceStatus   String?  // AUTORIZADO, REJEITADO, PROCESSANDO
+  nfceKey      String?
+  nfceProtocol String?
+  nfceUrl      String?
+  nfceMessage  String?
 
-  branch      Branch     @relation(fields: [branchId], references: [id])
-  user        User       @relation(fields: [userId], references: [id])
-  items       SaleItem[]
+  createdAt    DateTime @default(now())
+
+  branch Branch     @relation(fields: [branchId], references: [id])
+  user   User       @relation(fields: [userId], references: [id])
+  items  SaleItem[]
 }
 
 model SaleItem {
-  id        String  @id @default(uuid())
-  saleId    String
-  productId String
-  quantity  Float
-  unitPrice Float
-  total     Float
+  id            String   @id @default(uuid())
+  saleId        String
+  productId     String
+  quantity      Float
+  unitPrice     Float
+  total         Float
+  discountType  String?
+  discountValue Float?
+  status        String   @default("PEDIDO") // PEDIDO, PREPARANDO, ENTREGUE, CANCELADO
+  createdAt     DateTime @default(now())
 
-  sale      Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
-  product   Product @relation(fields: [productId], references: [id])
+  sale    Sale    @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model CostCenter {
-  id        String    @id @default(uuid())
-  name      String
-  status    String    @default("ATIVO")
-  companyId String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  company   Company   @relation(fields: [companyId], references: [id])
-  invoices  Invoice[]
+  id          String       @id @default(uuid())
+  name        String
+  status      String       @default("ATIVO")
+  companyId   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  company     Company      @relation(fields: [companyId], references: [id])
+  invoices    Invoice[]
+  payables    Payable[]
+  receivables Receivable[]
 }
 
 model InvoiceType {
@@ -521,18 +584,18 @@ model InvoiceOrigin {
 }
 
 model Invoice {
-  id              String         @id @default(uuid())
-  invoiceNumber   String
-  invoiceKey      String?
-  issueDate       DateTime
-  dueDate         DateTime
-  totalAmount     Float
-  interestAmount  Float          @default(0)
-  freightAmount   Float          @default(0)
-  discountAmount  Float          @default(0)
-  finalAmount     Float
-  status          String         @default("ATIVO")
-  
+  id             String   @id @default(uuid())
+  invoiceNumber  String
+  invoiceKey     String?
+  issueDate      DateTime
+  dueDate        DateTime
+  totalAmount    Float
+  interestAmount Float    @default(0)
+  freightAmount  Float    @default(0)
+  discountAmount Float    @default(0)
+  finalAmount    Float
+  status         String   @default("ATIVO")
+
   supplierId      String
   costCenterId    String
   invoiceTypeId   String
@@ -540,14 +603,191 @@ model Invoice {
   branchId        String
   companyId       String
   userId          String
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  supplier        Supplier       @relation(fields: [supplierId], references: [id])
-  costCenter      CostCenter     @relation(fields: [costCenterId], references: [id])
-  invoiceType     InvoiceType    @relation(fields: [invoiceTypeId], references: [id])
-  invoiceOrigin   InvoiceOrigin  @relation(fields: [invoiceOriginId], references: [id])
-  branch          Branch         @relation(fields: [branchId], references: [id])
-  company         Company        @relation(fields: [companyId], references: [id])
-  user            User           @relation(fields: [userId], references: [id])
+  supplier      Supplier      @relation(fields: [supplierId], references: [id])
+  costCenter    CostCenter    @relation(fields: [costCenterId], references: [id])
+  invoiceType   InvoiceType   @relation(fields: [invoiceTypeId], references: [id])
+  invoiceOrigin InvoiceOrigin @relation(fields: [invoiceOriginId], references: [id])
+  branch        Branch        @relation(fields: [branchId], references: [id])
+  company       Company       @relation(fields: [companyId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+}
+
+// ==========================================
+// MÓDULO FINANCEIRO (Fase 16)
+// ==========================================
+
+model FinancialCategory {
+  id        String   @id @default(uuid())
+  name      String
+  type      String // RECEITA, DESPESA, CUSTO
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company      Company                @relation(fields: [companyId], references: [id])
+  payables     Payable[]
+  receivables  Receivable[]
+  transactions FinancialTransaction[]
+}
+
+model Payable {
+  id           String   @id @default(uuid())
+  description  String
+  amount       Float
+  dueDate      DateTime
+  status       String   @default("PENDENTE") // PENDENTE, PAGO, CANCELADO
+  supplierId   String?
+  categoryId   String
+  costCenterId String?
+  branchId     String
+  companyId    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  supplier     Supplier?              @relation(fields: [supplierId], references: [id])
+  category     FinancialCategory      @relation(fields: [categoryId], references: [id])
+  costCenter   CostCenter?            @relation(fields: [costCenterId], references: [id])
+  branch       Branch                 @relation(fields: [branchId], references: [id])
+  company      Company                @relation(fields: [companyId], references: [id])
+  transactions FinancialTransaction[]
+}
+
+model Receivable {
+  id           String   @id @default(uuid())
+  description  String
+  amount       Float
+  dueDate      DateTime
+  status       String   @default("PENDENTE") // PENDENTE, RECEBIDO, CANCELADO
+  categoryId   String
+  costCenterId String?
+  branchId     String
+  companyId    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  category     FinancialCategory      @relation(fields: [categoryId], references: [id])
+  costCenter   CostCenter?            @relation(fields: [costCenterId], references: [id])
+  branch       Branch                 @relation(fields: [branchId], references: [id])
+  company      Company                @relation(fields: [companyId], references: [id])
+  transactions FinancialTransaction[]
+}
+
+model FinancialTransaction {
+  id            String   @id @default(uuid())
+  description   String
+  amount        Float
+  type          String // ENTRADA, SAIDA
+  date          DateTime @default(now())
+  paymentMethod String? // PIX, DINHEIRO, CARTAOCREDITO, CARTAODEBITO, BOLETO
+  payableId     String?
+  receivableId  String?
+  categoryId    String
+  branchId      String
+  companyId     String
+  userId        String
+
+  payable    Payable?          @relation(fields: [payableId], references: [id])
+  receivable Receivable?       @relation(fields: [receivableId], references: [id])
+  category   FinancialCategory @relation(fields: [categoryId], references: [id])
+  branch     Branch            @relation(fields: [branchId], references: [id])
+  company    Company           @relation(fields: [companyId], references: [id])
+  user       User              @relation(fields: [userId], references: [id])
+}
+
+model CashRegister {
+  id        String   @id @default(uuid())
+  name      String
+  status    String   @default("FECHADO") // ABERTO, FECHADO
+  branchId  String
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  branch  Branch      @relation(fields: [branchId], references: [id])
+  company Company     @relation(fields: [companyId], references: [id])
+  shifts  CashShift[]
+}
+
+model CashShift {
+  id             String    @id @default(uuid())
+  cashRegisterId String
+  openedById     String
+  closedById     String?
+  openedAt       DateTime  @default(now())
+  closedAt       DateTime?
+  initialBalance Float
+  finalBalance   Float?
+  difference     Float?
+  status         String    @default("ABERTO") // ABERTO, FECHADO
+
+  cashRegister CashRegister   @relation(fields: [cashRegisterId], references: [id])
+  openedBy     User           @relation("ShiftOpener", fields: [openedById], references: [id])
+  closedBy     User?          @relation("ShiftCloser", fields: [closedById], references: [id])
+  movements    CashMovement[]
+}
+
+model CashMovement {
+  id          String   @id @default(uuid())
+  cashShiftId String
+  type        String // SANGRIA, SUPRIMENTO, VENDA
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+  userId      String
+
+  cashShift CashShift @relation(fields: [cashShiftId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+// ==========================================
+// MÓDULO DE COMPRAS (Fase 19)
+// ==========================================
+
+model PurchaseOrder {
+  id                   String              @id @default(uuid())
+  branchId             String
+  companyId            String
+  userId               String
+  supplierId           String?
+  status               String              @default("RASCUNHO") // RASCUNHO, COTACAO, APROVADO, RECEBIDO, CANCELADO
+  orderDate            DateTime            @default(now())
+  expectedDeliveryDate DateTime?
+  totalAmount          Float               @default(0)
+  notes                String?             @db.Text
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  branch               Branch              @relation(fields: [branchId], references: [id])
+  company              Company             @relation(fields: [companyId], references: [id])
+  user                 User                @relation(fields: [userId], references: [id])
+  supplier             Supplier?           @relation(fields: [supplierId], references: [id])
+  items                PurchaseOrderItem[]
+}
+
+model PurchaseOrderItem {
+  id              String         @id @default(uuid())
+  purchaseOrderId String
+  productId       String
+  quantity        Float
+  unitPrice       Float?
+  total           Float?
+
+  purchaseOrder   PurchaseOrder  @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  product         Product        @relation(fields: [productId], references: [id])
+}
+
+model SupplierQuotation {
+  id          String   @id @default(uuid())
+  productId   String
+  supplierId  String
+  branchId    String
+  price       Float
+  date        DateTime @default(now())
+
+  product     Product  @relation(fields: [productId], references: [id])
+  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  branch      Branch   @relation(fields: [branchId], references: [id])
 }

@@ -125,6 +125,24 @@ export default function Recipes() {
                 ))}
               </ul>
             </div>
+            
+            {recipe.nutrition && (
+              <div className="p-4 bg-surface-container-low border-t border-outline-variant z-10">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-[10px] font-bold text-on-surface uppercase tracking-wider">Informação Nutricional</h4>
+                  <span className="text-[9px] text-on-surface-variant bg-surface border border-outline-variant px-1.5 py-0.5 rounded">Porção / 100g</span>
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
+                  <div className="flex justify-between items-center"><span className="text-on-surface-variant">Calorias</span><span className="font-bold text-on-surface">{recipe.nutrition.perPortion.calories} kcal</span></div>
+                  <div className="flex justify-between items-center"><span className="text-on-surface-variant">Carboidratos</span><span className="font-bold text-on-surface">{recipe.nutrition.perPortion.carbohydrates} g</span></div>
+                  <div className="flex justify-between items-center"><span className="text-on-surface-variant">Proteínas</span><span className="font-bold text-on-surface">{recipe.nutrition.perPortion.proteins} g</span></div>
+                  <div className="flex justify-between items-center"><span className="text-on-surface-variant">Gorduras</span><span className="font-bold text-on-surface">{recipe.nutrition.perPortion.fats} g</span></div>
+                  <div className="flex justify-between items-center col-span-2 border-t border-outline-variant/50 pt-1.5 mt-0.5">
+                     <span className="text-on-surface-variant">Sódio</span><span className="font-bold text-on-surface">{recipe.nutrition.perPortion.sodium} mg</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))}
         

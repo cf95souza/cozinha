@@ -1,44 +1,140 @@
 import { Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import { z } from 'zod';
+import { NfceService } from '../services/NfceService';
+
+const createSaleSchema = z.object({
+  items: z.array(z.object({
+    productId: z.string(),
+    quantity: z.number().positive(),
+    unitPrice: z.number().nonnegative(),
+    discountType: z.enum(['PERCENT', 'FIXED']).optional(),
+    discountValue: z.number().nonnegative().optional()
+  })).min(1),
+  paymentMethods: z.array(z.object({
+    type: z.enum(['PIX', 'CREDITO', 'DEBITO', 'DINHEIRO']),
+    amount: z.number().positive()
+  })).min(1),
+  totalAmount: z.number().nonnegative(),
+  discountType: z.enum(['PERCENT', 'FIXED']).optional(),
+  discountValue: z.number().nonnegative().optional()
+});
 
 export class SaleController {
   
   async create(req: AuthRequest, res: Response) {
     try {
-      const { items, paymentType, totalAmount } = req.body;
-      const branchId = req.user?.branchId;
-      const userId = req.user?.id;
-
-      if (!branchId || !userId) {
-        return res.status(400).json({ error: 'Usuário não vinculado a uma filial' });
+      const parsed = createSaleSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: 'Dados inválidos', details: parsed.error.issues });
       }
 
-      if (!items || items.length === 0) {
-        return res.status(400).json({ error: 'Nenhum item na venda' });
+      const { items, paymentMethods, totalAmount, discountType, discountValue } = parsed.data;
+      const branchId = req.user?.branchId;
+      const userId = req.user?.id;
+      const companyId = req.user?.companyId;
+
+      if (!branchId || !userId || !companyId) {
+        return res.status(400).json({ error: 'Usuário não vinculado a uma filial ou empresa' });
+      }
+
+      // Validar que soma dos pagamentos = totalAmount
+      const sumPayments = paymentMethods.reduce((acc, p) => acc + p.amount, 0);
+      if (Math.abs(sumPayments - totalAmount) > 0.01) {
+        return res.status(400).json({ error: 'Soma dos pagamentos deve ser igual ao total da venda' });
       }
 
       // Iniciar a transação
       const result = await prisma.$transaction(async (tx) => {
         
-        // 1. Criar a Venda
+        // 1. Criar a Venda (usar primeiro método como principal para compatibilidade)
+        const primaryPaymentType = paymentMethods[0]?.type || 'PIX';
         const sale = await tx.sale.create({
           data: {
             branchId,
             userId,
-            paymentType,
+            paymentType: primaryPaymentType,
             totalAmount,
             items: {
               create: items.map((item: any) => ({
                 productId: item.productId,
                 quantity: item.quantity,
                 unitPrice: item.unitPrice,
-                total: item.quantity * item.unitPrice
+                total: item.quantity * item.unitPrice,
+                discountType: item.discountType,
+                discountValue: item.discountValue
               }))
             }
           },
           include: { items: true }
         });
+
+        // =====================================
+        // INTEGRAÇÃO FINANCEIRA (Fase 16)
+        // =====================================
+        let saleCategory = await tx.financialCategory.findFirst({
+          where: { companyId, name: 'Vendas PDV', type: 'RECEITA' }
+        });
+        
+        if (!saleCategory) {
+          saleCategory = await tx.financialCategory.create({
+            data: { name: 'Vendas PDV', type: 'RECEITA', companyId }
+          });
+        }
+
+        // Processar cada forma de pagamento
+        for (const pm of paymentMethods) {
+          if (pm.type === 'CREDITO') {
+            // Criar Contas a Receber (D+30)
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 30);
+            await tx.receivable.create({
+              data: {
+                description: `Venda PDV #${sale.id.slice(0, 6)} (${pm.type})`,
+                amount: pm.amount,
+                dueDate,
+                categoryId: saleCategory.id,
+                branchId,
+                companyId
+              }
+            });
+          } else {
+            // Criar Transação Direta (Entrada no Fluxo de Caixa)
+            await tx.financialTransaction.create({
+              data: {
+                description: `Venda PDV #${sale.id.slice(0, 6)} (${pm.type})`,
+                amount: pm.amount,
+                type: 'ENTRADA',
+                paymentMethod: pm.type,
+                categoryId: saleCategory.id,
+                branchId,
+                companyId,
+                userId
+              }
+            });
+
+            // Se for dinheiro, injetar o valor no Caixa do Operador (se houver um turno aberto)
+            if (pm.type === 'DINHEIRO') {
+              const shift = await tx.cashShift.findFirst({
+                where: { cashRegister: { branchId }, status: 'ABERTO', openedById: userId },
+                orderBy: { openedAt: 'desc' }
+              });
+
+              if (shift) {
+                await tx.cashMovement.create({
+                  data: {
+                    cashShiftId: shift.id,
+                    type: 'VENDA',
+                    amount: pm.amount,
+                    description: `Venda PDV #${sale.id.slice(0, 6)}`,
+                    userId
+                  }
+                });
+              }
+            }
+          }
+        }
 
         // 2. Dar baixa no estoque
         for (const item of sale.items) {
@@ -63,6 +159,9 @@ export class SaleController {
               });
 
               if (stock) {
+                if (stock.quantity < qtyToDeduct) {
+                  throw new Error(`Estoque insuficiente. Necessário: ${qtyToDeduct}, Disponível: ${stock.quantity}`);
+                }
                 await tx.stockBalance.update({
                   where: { id: stock.id },
                   data: { quantity: { decrement: qtyToDeduct } }
@@ -78,6 +177,8 @@ export class SaleController {
                     userId
                   }
                 });
+              } else {
+                throw new Error(`Estoque insuficiente (Saldo zero). Necessário: ${qtyToDeduct}`);
               }
             }
           } else {
@@ -88,6 +189,9 @@ export class SaleController {
             });
 
             if (stock) {
+              if (stock.quantity < item.quantity) {
+                throw new Error(`Estoque insuficiente. Necessário: ${item.quantity}, Disponível: ${stock.quantity}`);
+              }
               await tx.stockBalance.update({
                 where: { id: stock.id },
                 data: { quantity: { decrement: item.quantity } }
@@ -103,6 +207,8 @@ export class SaleController {
                   userId
                 }
               });
+            } else {
+              throw new Error(`Estoque insuficiente (Saldo zero). Necessário: ${item.quantity}`);
             }
           }
         }
@@ -110,9 +216,25 @@ export class SaleController {
         return sale;
       });
 
-      res.status(201).json(result);
-    } catch (error) {
+      // Emissão Automática da NFC-e (Fase 17)
+      const nfceService = new NfceService();
+      const nfceResult = await nfceService.emitNfce({
+        saleId: result.id,
+        branchId: result.branchId,
+        totalAmount: result.totalAmount,
+        items: result.items
+      });
+
+      // Anexar o resultado da NFC-e à resposta para o frontend
+      res.status(201).json({
+        ...result,
+        nfce: nfceResult
+      });
+    } catch (error: any) {
       console.error(error);
+      if (error.message && error.message.includes('Estoque insuficiente')) {
+        return res.status(400).json({ error: error.message });
+      }
       res.status(500).json({ error: 'Erro ao registrar venda' });
     }
   }

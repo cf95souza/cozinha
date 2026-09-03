@@ -12,6 +12,7 @@ interface User {
   email: string;
   role: string;
   company: string;
+  branchId?: string;
 }
 
 interface AuthContextData {
@@ -55,6 +56,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('@CozinhaPlus:user', JSON.stringify(newUser));
     setToken(newToken);
     setUser(newUser);
+    // Auto-select user's branch if available
+    if (newUser.branchId) {
+      const branch = { id: newUser.branchId, name: '' };
+      localStorage.setItem('@CozinhaPlus:branch', JSON.stringify(branch));
+      setActiveBranch(branch);
+    }
   };
 
   const logout = () => {

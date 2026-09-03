@@ -8,7 +8,7 @@ Este documento servirá como base para recriação total do banco, contendo toda
 
 ## Tabelas e Relacionamentos (Atualizado: M-026)
 
-O banco agora possui mais de 20 tabelas, estruturando todo o fluxo de um ERP de cozinha e backoffice, incluindo Múltiplas Unidades, Produtos (Enriquecido), Produção, Inventário, Compras e Raio-X de Estoque.
+O banco agora possui mais de 25 tabelas, estruturando todo o fluxo de um ERP de cozinha e backoffice, incluindo Múltiplas Unidades, Produtos (Enriquecido), Produção, Inventário, Compras, Raio-X de Estoque e o Módulo Financeiro completo.
 
 ### Estrutura Base & Usuários
 - **`Company`**: Grupos Econômicos / Matriz. Inclui CNPJ, Moeda, Regras de alerta de validade e Fuso horário.
@@ -51,6 +51,14 @@ O banco agora possui mais de 20 tabelas, estruturando todo o fluxo de um ERP de 
 
 ### Segurança e Auditoria
 - **`AuditLog`**: Registro imutável para compliance. Grava Ação, Entidade (Tabela), ID Afetado, Usuário, e o JSON contendo `details` das mudanças realizadas, para histórico.
+
+### Financeiro e Fluxo de Caixa (Fase 16)
+- **`FinancialCategory`**: Plano de contas, dividindo as naturezas entre Receita, Despesa e Custo.
+- **`Payable` e `Receivable`**: Contas a Pagar e Contas a Receber. Controlam fornecedores, clientes, valores, datas de vencimento e status de liquidação.
+- **`FinancialTransaction`**: O Livro-Caixa / Extrato consolidado. Toda movimentação real de liquidação de títulos ou venda no balcão gera um registro aqui, alimentando o Fluxo de Caixa Diário e o DRE.
+- **`CashRegister`**: Caixas/PDVs físicos em uma filial.
+- **`CashShift`**: Turnos de abertura e fechamento de caixa, gravando o operador, saldos iniciais, finais e diferenças de quebra de caixa.
+- **`CashMovement`**: Entradas e retiradas manuais do caixa (Sangria e Suprimento).
 
 ## Queries SQL e ORM
 O mapeamento completo, os índices (`@@unique`) e as regras de exclusão em cascata (como em Itens de NF e Produção) estão gerenciados centralmente pelo Prisma Schema (`backend/prisma/schema.prisma`). Alterações de schema geram arquivos SQL na pasta `backend/prisma/migrations`.

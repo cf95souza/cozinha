@@ -20,7 +20,7 @@ export const getBranches = async (req: AuthRequest, res: Response): Promise<void
 export const createBranch = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const companyId = req.user?.companyId as string;
-    const { name, tradeName, document, phone, email, address, city, state, zipCode, managerName, type, status } = req.body;
+    const { name, tradeName, document, phone, email, address, city, state, zipCode, managerName, type, status, nfceEnvironment, nfceCscId, nfceCscSecret, nfceCertPassword, nfceCertBase64, nfceSeries, nfceNextNumber } = req.body;
 
     if (!name) {
       res.status(400).json({ error: 'O nome da unidade é obrigatório' });
@@ -30,6 +30,7 @@ export const createBranch = async (req: AuthRequest, res: Response): Promise<voi
     const newBranch = await prisma.branch.create({
       data: {
         name, tradeName, document, phone, email, address, city, state, zipCode, managerName, type, status,
+        nfceEnvironment, nfceCscId, nfceCscSecret, nfceCertPassword, nfceCertBase64, nfceSeries, nfceNextNumber,
         companyId: companyId!,
       }
     });
@@ -45,7 +46,7 @@ export const updateBranch = async (req: AuthRequest, res: Response): Promise<voi
   try {
     const companyId = req.user?.companyId as string;
     const id = req.params.id as string;
-    const { name, tradeName, document, phone, email, address, city, state, zipCode, managerName, type, status } = req.body;
+    const { name, tradeName, document, phone, email, address, city, state, zipCode, managerName, type, status, nfceEnvironment, nfceCscId, nfceCscSecret, nfceCertPassword, nfceCertBase64, nfceSeries, nfceNextNumber } = req.body;
 
     const branch = await prisma.branch.findUnique({ where: { id } });
     if (!branch || branch.companyId !== companyId) {
@@ -55,7 +56,7 @@ export const updateBranch = async (req: AuthRequest, res: Response): Promise<voi
 
     const updatedBranch = await prisma.branch.update({
       where: { id },
-      data: { name, tradeName, document, phone, email, address, city, state, zipCode, managerName, type, status }
+      data: { name, tradeName, document, phone, email, address, city, state, zipCode, managerName, type, status, nfceEnvironment, nfceCscId, nfceCscSecret, nfceCertPassword, nfceCertBase64, nfceSeries, nfceNextNumber }
     });
 
     res.json(updatedBranch);

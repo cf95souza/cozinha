@@ -12,6 +12,7 @@ export default function Labels() {
   const [readQrCode, setReadQrCode] = useState('');
   const [readLabelInfo, setReadLabelInfo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [companyDetails, setCompanyDetails] = useState<any>(null);
   const [historicalLabels, setHistoricalLabels] = useState<any[]>([]);
   const [showScanner, setShowScanner] = useState(false);
 
@@ -20,7 +21,13 @@ export default function Labels() {
       api.get(`/products?branchId=${activeBranch.id}`).then(res => setProducts(res.data.data || res.data));
       fetchHistoricalLabels();
     }
-  }, [activeBranch]);
+    if (user?.companyId) {
+      api.get(`/companies`).then(res => {
+        const comp = res.data.find((c: any) => c.id === user.companyId) || res.data[0];
+        setCompanyDetails(comp);
+      }).catch(console.error);
+    }
+  }, [activeBranch, user]);
 
   const fetchHistoricalLabels = async () => {
     try {
@@ -48,11 +55,11 @@ export default function Labels() {
       setGeneratedLabel({
         ...labelData,
         product: productInfo,
-        companyName: user?.company || 'COZINHA+ RESTAURANTE',
-        cnpj: '00.000.000/0001-00',
-        cep: '00000-000',
-        address: 'Rua Exemplo, 123',
-        city: 'São Paulo - SP',
+        companyName: companyDetails?.name || 'COZINHA+ RESTAURANTE',
+        cnpj: companyDetails?.cnpj || '12.345.678/0001-99',
+        cep: companyDetails?.cep || '01000-000',
+        address: companyDetails?.address ? `${companyDetails.address}, ${companyDetails.number || ''}` : 'Rua da Gastronomia, 123',
+        city: companyDetails?.city ? `${companyDetails.city} - ${companyDetails.state || ''}` : 'São Paulo - SP',
         userName: user?.name || 'Responsável',
         sif: productInfo?.sif || 'N/A',
         brand: productInfo?.brand || 'Própria',
@@ -255,11 +262,11 @@ export default function Labels() {
                           setGeneratedLabel({
                             ...label,
                             product: productInfo,
-                            companyName: user?.company || 'COZINHA+ RESTAURANTE',
-                            cnpj: '00.000.000/0001-00',
-                            cep: '00000-000',
-                            address: 'Rua Exemplo, 123',
-                            city: 'São Paulo - SP',
+                            companyName: companyDetails?.name || 'COZINHA+ RESTAURANTE',
+                            cnpj: companyDetails?.cnpj || '12.345.678/0001-99',
+                            cep: companyDetails?.cep || '01000-000',
+                            address: companyDetails?.address ? `${companyDetails.address}, ${companyDetails.number || ''}` : 'Rua da Gastronomia, 123',
+                            city: companyDetails?.city ? `${companyDetails.city} - ${companyDetails.state || ''}` : 'São Paulo - SP',
                             userName: label.user?.name || 'Responsável',
                             sif: productInfo?.sif || 'N/A',
                             brand: productInfo?.brand || 'Própria',

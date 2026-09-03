@@ -13,15 +13,30 @@ export default function Dashboard() {
   const [kpis, setKpis] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const [viewBranchId, setViewBranchId] = useState<string>('');
+  const [branches, setBranches] = useState<any[]>([]);
+
   useEffect(() => {
-    if (activeBranch) {
+    if (user?.role === 'ADMIN') {
+      api.get('/branches').then(res => setBranches(res.data)).catch(console.error);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (activeBranch && !viewBranchId) {
+      setViewBranchId(activeBranch.id);
+    }
+  }, [activeBranch]);
+
+  useEffect(() => {
+    if (viewBranchId) {
       setLoading(true);
-      api.get(`/dashboard/kpis?branchId=${activeBranch.id}`)
+      api.get(`/dashboard/kpis?branchId=${viewBranchId}`)
         .then(res => setKpis(res.data))
         .catch(err => console.error(err))
         .finally(() => setLoading(false));
     }
-  }, [activeBranch]);
+  }, [viewBranchId]);
 
   if (loading || !kpis) {
     return (
@@ -48,6 +63,18 @@ export default function Dashboard() {
             Atualizado hoje às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
+        {user?.role === 'ADMIN' && (
+          <select 
+            value={viewBranchId} 
+            onChange={e => setViewBranchId(e.target.value)}
+            className="bg-surface border border-outline-variant text-on-surface rounded-lg px-3 py-1.5 text-sm font-semibold shadow-sm outline-none focus:ring-2 focus:ring-primary/20"
+          >
+            <option value="holding">📊 Visão Holding (Rede)</option>
+            {branches.map(b => (
+              <option key={b.id} value={b.id}>{b.name}</option>
+            ))}
+          </select>
+        )}
       </div>
 
       {/* Quick Actions */}
@@ -216,6 +243,27 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
+
+      {/* Ranking da Holding */}
+      {viewBranchId === 'holding' && kpis.branchRankings && (
+        <section className="bg-surface border border-outline-variant rounded-2xl p-5 flex flex-col h-[400px]">
+          <h3 className="font-semibold text-on-surface text-sm mb-4">Ranking de Filiais (Faturamento vs Perdas - Últimos 30 dias)</h3>
+          <div className="flex-1 w-full min-h-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={kpis.branchRankings} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                <XAxis dataKey="branchName" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+                <YAxis yAxisId="left" orientation="left" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} tickFormatter={v => `${v/1000}k`} />
+                <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9CA3AF' }} tickFormatter={v => `${v}`} />
+                <RechartsTooltip formatter={(value: number) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)' }} />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
+                <Bar yAxisId="left" dataKey="sales" name="Faturamento (R$)" fill="#06B6D4" radius={[4, 4, 0, 0]} barSize={40} />
+                <Bar yAxisId="right" dataKey="losses" name="Perdas (R$)" fill="#EF4444" radius={[4, 4, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+      )}
 
       {/* Detail Cards Row */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-5">

@@ -26,6 +26,7 @@ export default function Reports() {
     if (activeBranch || allBranches) {
       loadData(activeTab);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeBranch, activeTab, allBranches]);
 
   const loadData = async (tab: string) => {

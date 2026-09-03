@@ -3,8 +3,9 @@
 ## Status Geral: MVP Funcional — Em Evolução para Produto Profissional
 
 Este documento é o guia definitivo de execução do projeto. Cada funcionalidade possui referência ao **`MVP.md`** (regras de negócio) e ao **`MELHORIAS.md`** (instruções técnicas detalhadas de cada melhoria).
+As Fases de 16 a 20 (Evolução Corporativa) são inteiramente derivadas do documento de auditoria e roadmap estratégico: **`relatorio_visionario_cozinhaplus.md`**.
 
-> **Como usar:** Cada item marcado com `(Ref: MELHORIAS.md - M-XXX)` possui instruções completas no documento de melhorias. Se precisar parar no meio de uma tarefa, basta anotar o ID da melhoria (ex: M-007) e, ao retomar, abrir `MELHORIAS.md` na seção correspondente para saber exatamente o que já existe, o que falta e quais arquivos são afetados.
+> **Como usar:** Cada item marcado com `(Ref: MELHORIAS.md - M-XXX)` possui instruções completas no documento de melhorias. Se precisar parar no meio de uma tarefa, basta anotar o ID da melhoria (ex: M-007) e, ao retomar, abrir `MELHORIAS.md` na seção correspondente. Para as fases a partir da 16, consulte os fluxos em detalhe no `relatorio_visionario_cozinhaplus.md`.
 
 ---
 
@@ -269,8 +270,69 @@ Este documento é o guia definitivo de execução do projeto. Cada funcionalidad
 - [x] Implementar visualização "Multi-unidades" (consolidado da Empresa) x "Unidade específica".
 - [x] Implementar filtro por Centro de Custo.
 - [x] Exportação/Visão totalizadora para análise rápida.
-- [x] (Opcional) Exportação para Excel / PDF. (Formato CSV entregue)
+---
+
+### Fase 16: Financeiro Completo (PRIORIDADE MÁXIMA) (Ref: relatorio_visionario_cozinhaplus.md - Parte 4, Fase 16)
+**Objetivo:** Visibilidade financeira real para a holding.
+
+- [x] **Infraestrutura e Banco de Dados (Backend)** — Modelos criados no Prisma (`Payable`, `Receivable`, `CashRegister`, `DreReport`, etc.) e gerados no contêiner.
+- [x] **Rotas e Controllers (Backend)** — Endpoints da API (`/api/finance/*`) construídos, autenticados e retornando dados corretamente.
+- [x] **Contas a Pagar (Frontend)** — Registrar despesas futuras com datas de vencimento, status (Pendente/Pago/Vencido), parcelas.
+- [x] **Contas a Receber (Frontend)** — Registrar receitas de vendas a prazo, vendas faturadas, controle de inadimplência.
+- [x] **Fluxo de Caixa (Frontend)** — Visão diária/semanal/mensal das entradas e saídas previstas vs realizadas.
+- [x] **DRE Automático (Frontend)** — Receita Bruta − Impostos − CMV − Despesas Operacionais = Lucro Líquido.
+- [x] **Abertura/Fechamento de Caixa (Frontend)** — Controle de turno com sangria, suprimento e conferência no PDV.
 
 ---
 
-🚀 **Todas as Fases do MVP e Fase 14 foram concluídas com sucesso!**
+### Fase 17: PDV Profissional (PRIORIDADE ALTA) (Ref: relatorio_visionario_cozinhaplus.md - Parte 4, Fase 17)
+**Objetivo:** Operação de caixa profissional para o Mercado e Atacado.
+
+- `[x]` **Desconto por item e por venda** — Percentual ou valor fixo (frontend + backend) (Revisado UX)
+- `[x]` **Múltiplas formas de pagamento** — Adicionado botões com ícones e UX Premium
+- `[x]` **Troco automático** — Adicionados botões de troco rápido (Ex: R$ 50, R$ 100, Exato)
+- `[x]` **Gaveta de Dinheiro / Impressora Térmica** — Impressão via navegador com dados reais da Filial ativa
+- `[x]` **Emissão de NFC-e** — Módulo multi-lojas de configuração (Ambiente, CSC, Certificado A1) construído e integrado ao Banco. Comunicação via Mock API Provider para MVP/Testes implementada.
+- `[x]` **Comanda/Mesa** — Módulo de restaurantes construído (Mesas abertas, envio parcial, fechamento no final e baixa de estoque real-time).
+
+---
+
+### Fase 18: KDS e Inteligência de Cozinha (Ref: relatorio_visionario_cozinhaplus.md - Parte 4, Fase 18)
+**Objetivo:** Diferencial competitivo direto para o Restaurante.
+
+- `[x]` **Painel KDS (Kitchen Display System)** — Tela dedicada para a cozinha com pedidos em fila (Polling Inteligente, UI de Alto Contraste).
+- `[x]` **Integração com iFood/Delivery** — Recebimento de pedidos via webhook genérico integrado direto no painel KDS.
+- `[x]` **Tabela Nutricional** — Cálculo automático on-the-fly baseado na pesagem dos ingredientes da ficha técnica.
+
+---
+
+### Fase 19: Compras Inteligentes e Cotação (Ref: relatorio_visionario_cozinhaplus.md - Parte 4, Fase 19)
+**Objetivo:** Reduzir custos de compra da holding em 10-15%.
+
+- `[x]` **Pedido de Compra Formal** — PO com número, data de entrega e aprovação.
+- `[x]` **Cotação Multi-Fornecedor** — Comparar preços lado a lado (Matriz Inteligente).
+- `[x]` **Histórico de Preços** — Rotas do backend preparadas para gerar evolução de custos por fornecedor.
+
+---
+
+### Fase 20: Dashboard Holding (Visão Executiva) (Ref: relatorio_visionario_cozinhaplus.md - Parte 4, Fase 20)
+**Objetivo:** Visão consolidada para a diretoria.
+
+- `[x]` **Dashboard Consolidado** — KPIs somados de todas as filiais (Via seletor ADMIN).
+- `[x]` **Ranking de Filiais** — Comparativo de perdas, vendas e CMV%.
+- `[x]` **Automatização de Snapshots** — Cron job que tira foto do estoque automaticamente (Garantido em fases anteriores).
+
+---
+
+### Quick Wins (Correções Técnicas Imediatas) (Ref: relatorio_visionario_cozinhaplus.md - Parte 5)
+- `[x]` Dados mock na etiqueta (CNPJ, endereço) (`Labels.tsx`)
+- `[x]` Remover rotas duplicadas no App.tsx (`/transferencias`, `/auditoria`)
+- `[x]` Dashboard sem visão consolidada (`DashboardController.ts`)
+- `[x]` Snapshot de CMV manual (`StockSnapshot`)
+- `[x]` PDV sem validação de saldo (`SaleController.ts`)
+- `[x]` **Auto-seleção de filial no login** — Frontend agora lê `branchId` do JWT e define `activeBranch` automaticamente (`AuthContext.tsx`, `Layout.tsx`)
+- [x] **Configuração Docker local** — Criado `docker-compose.override.yml` com `VITE_API_URL=http://localhost:3001/api` para desenvolvimento
+
+---
+
+🚀 **Todas as Fases do MVP e Fase 14 e 15 foram concluídas com sucesso! O desenvolvimento segue para as fases de consolidação corporativa.**

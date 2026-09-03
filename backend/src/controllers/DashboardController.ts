@@ -6,11 +6,12 @@ export class DashboardController {
   async getKpis(req: AuthRequest, res: Response) {
     try {
       const branchId = req.query.branchId as string;
-      const whereBranch = branchId ? { branchId } : {};
+      const isHolding = branchId === 'holding';
+      const whereBranch = (branchId && !isHolding) ? { branchId } : {};
 
       // 1. Produtos
       const totalProducts = await prisma.product.count({
-        where: { branchId: branchId || undefined }
+        where: isHolding ? {} : { branchId: branchId || undefined }
       });
 
       // 2. Valor Estimado em Estoque (Qty * CostPrice)
@@ -97,7 +98,7 @@ export class DashboardController {
 
       // 8. Últimas Movimentações (Extrato)
       const recentMovements = await prisma.stockMovement.findMany({
-        where: branchId ? {
+        where: (branchId && !isHolding) ? {
           OR: [
             { originBranchId: branchId },
             { destinationBranchId: branchId }
@@ -127,7 +128,7 @@ export class DashboardController {
       const allMovements = await prisma.stockMovement.findMany({
         where: {
           createdAt: { gte: past7Days },
-          ...(branchId ? { OR: [{ originBranchId: branchId }, { destinationBranchId: branchId }] } : {})
+          ...((branchId && !isHolding) ? { OR: [{ originBranchId: branchId }, { destinationBranchId: branchId }] } : {})
         }
       });
 
@@ -152,6 +153,34 @@ export class DashboardController {
       });
       const movementsChart = Array.from(movementsMap.values());
 
+      // 11. Ranking de Filiais (Visão Holding)
+      let branchRankings: any[] = [];
+      if (isHolding) {
+        const branches = await prisma.branch.findMany({ where: { status: 'ATIVO' } });
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        for (const b of branches) {
+          const sales = await prisma.sale.aggregate({
+            where: { branchId: b.id, createdAt: { gte: thirtyDaysAgo }, status: 'FINALIZADO' },
+            _sum: { totalAmount: true }
+          });
+          
+          const losses = await prisma.stockMovement.findMany({
+            where: { originBranchId: b.id, type: 'PERDA', createdAt: { gte: thirtyDaysAgo } },
+            include: { product: true }
+          });
+          const totalLosses = losses.reduce((acc, l) => acc + (l.quantity * (l.product.costPrice || 0)), 0);
+          
+          branchRankings.push({
+            branchName: b.name,
+            sales: sales._sum.totalAmount || 0,
+            losses: totalLosses
+          });
+        }
+        branchRankings.sort((a, b) => b.sales - a.sales);
+      }
+
       res.status(200).json({
         totalProducts,
         totalValue,
@@ -163,7 +192,8 @@ export class DashboardController {
         expiringLotsDetails,
         recentMovements,
         categoryChart,
-        movementsChart
+        movementsChart,
+        branchRankings
       });
     } catch (error) {
       console.error(error);
