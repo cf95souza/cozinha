@@ -7,11 +7,9 @@ export class QuotationController {
   // Salva os valores cotados para histórico, e opcionalmente gera um Pedido de Compra se solicitado
   async saveQuotations(req: AuthRequest, res: Response) {
     try {
-      const branchId = req.user?.branchId;
+      const { quotations, generatePO, supplierId, branchId: bodyBranchId } = req.body;
+      const branchId = bodyBranchId || req.user?.branchId;
       if (!branchId) return res.status(400).json({ error: 'BranchId is required' });
-
-      // array de objetos: { productId, supplierId, price }
-      const { quotations, generatePO, supplierId } = req.body;
       
       if (!quotations || !quotations.length) {
          return res.status(400).json({ error: 'No quotations provided' });
@@ -67,7 +65,7 @@ export class QuotationController {
   // Puxa o histórico de preços para o gráfico
   async getPriceHistory(req: AuthRequest, res: Response) {
     try {
-      const branchId = req.user?.branchId;
+      const branchId = (req.query.branchId as string) || req.user?.branchId;
       const { productId } = req.params;
 
       if (!branchId) return res.status(400).json({ error: 'BranchId is required' });

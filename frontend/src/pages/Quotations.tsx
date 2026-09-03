@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Quotations() {
   const navigate = useNavigate();
+  const { activeBranch } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,7 @@ export default function Quotations() {
         api.get('/suppliers')
       ]);
       setProducts(prodRes.data.data || prodRes.data);
-      setSuppliers(suppRes.data);
+      setSuppliers(suppRes.data.data || suppRes.data);
     } catch (error) {
       toast.error('Erro ao carregar dados');
     } finally {
@@ -110,20 +112,26 @@ export default function Quotations() {
       return;
     }
 
+    if (!activeBranch?.id) {
+      toast.error('Selecione uma filial no topo para gerar os pedidos.');
+      return;
+    }
+
     try {
       // Para cada fornecedor vencedor, envia um bloco chamando o saveQuotations com generatePO = true
       for (const supId of Object.keys(ordersBySupplier)) {
          await api.post('/quotations', {
            quotations: allQuotesToSave.filter(q => q.supplierId === supId), // manda as quotes dele
            generatePO: true,
-           supplierId: supId
+           supplierId: supId,
+           branchId: activeBranch.id
          });
       }
       
       // As cotações perdidas precisam ir pro histórico também
       const loserQuotes = allQuotesToSave.filter(q => !ordersBySupplier[q.supplierId]);
       if (loserQuotes.length > 0) {
-         await api.post('/quotations', { quotations: loserQuotes, generatePO: false });
+         await api.post('/quotations', { quotations: loserQuotes, generatePO: false, branchId: activeBranch.id });
       }
 
       toast.success('Pedidos de compra gerados com sucesso!');
