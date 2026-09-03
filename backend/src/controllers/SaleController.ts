@@ -158,28 +158,40 @@ export class SaleController {
                 orderBy: { quantity: 'desc' } // Pega o local com mais estoque por padrão
               });
 
+              let targetLocationId = stock?.locationId;
+              
+              if (!targetLocationId) {
+                const fallbackLocation = await tx.location.findFirst({ where: { branchId } });
+                if (!fallbackLocation) throw new Error("Nenhum local de armazenamento cadastrado nesta filial.");
+                targetLocationId = fallbackLocation.id;
+              }
+
               if (stock) {
-                if (stock.quantity < qtyToDeduct) {
-                  throw new Error(`Estoque insuficiente. Necessário: ${qtyToDeduct}, Disponível: ${stock.quantity}`);
-                }
                 await tx.stockBalance.update({
                   where: { id: stock.id },
                   data: { quantity: { decrement: qtyToDeduct } }
                 });
-
-                await tx.stockMovement.create({
+              } else {
+                await tx.stockBalance.create({
                   data: {
                     productId: rItem.ingredientId,
-                    type: 'SAIDA_VENDA_RECEITA',
-                    quantity: qtyToDeduct,
-                    originBranchId: branchId,
-                    originLocationId: stock.locationId,
-                    userId
+                    branchId,
+                    locationId: targetLocationId,
+                    quantity: -qtyToDeduct
                   }
                 });
-              } else {
-                throw new Error(`Estoque insuficiente (Saldo zero). Necessário: ${qtyToDeduct}`);
               }
+
+              await tx.stockMovement.create({
+                data: {
+                  productId: rItem.ingredientId,
+                  type: 'SAIDA_VENDA_RECEITA',
+                  quantity: qtyToDeduct,
+                  originBranchId: branchId,
+                  originLocationId: targetLocationId,
+                  userId
+                }
+              });
             }
           } else {
             // Dar baixa no próprio produto vendido
@@ -188,28 +200,40 @@ export class SaleController {
               orderBy: { quantity: 'desc' }
             });
 
+            let targetLocationId = stock?.locationId;
+            
+            if (!targetLocationId) {
+              const fallbackLocation = await tx.location.findFirst({ where: { branchId } });
+              if (!fallbackLocation) throw new Error("Nenhum local de armazenamento cadastrado nesta filial.");
+              targetLocationId = fallbackLocation.id;
+            }
+
             if (stock) {
-              if (stock.quantity < item.quantity) {
-                throw new Error(`Estoque insuficiente. Necessário: ${item.quantity}, Disponível: ${stock.quantity}`);
-              }
               await tx.stockBalance.update({
                 where: { id: stock.id },
                 data: { quantity: { decrement: item.quantity } }
               });
-
-              await tx.stockMovement.create({
+            } else {
+              await tx.stockBalance.create({
                 data: {
                   productId: item.productId,
-                  type: 'SAIDA_VENDA',
-                  quantity: item.quantity,
-                  originBranchId: branchId,
-                  originLocationId: stock.locationId,
-                  userId
+                  branchId,
+                  locationId: targetLocationId,
+                  quantity: -item.quantity
                 }
               });
-            } else {
-              throw new Error(`Estoque insuficiente (Saldo zero). Necessário: ${item.quantity}`);
             }
+
+            await tx.stockMovement.create({
+              data: {
+                productId: item.productId,
+                type: 'SAIDA_VENDA',
+                quantity: item.quantity,
+                originBranchId: branchId,
+                originLocationId: targetLocationId,
+                userId
+              }
+            });
           }
         }
 
@@ -232,7 +256,7 @@ export class SaleController {
       });
     } catch (error: any) {
       console.error(error);
-      if (error.message && error.message.includes('Estoque insuficiente')) {
+      if (error.message && error.message.includes('Nenhum local de armazenamento')) {
         return res.status(400).json({ error: error.message });
       }
       res.status(500).json({ error: 'Erro ao registrar venda' });
