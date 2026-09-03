@@ -1,4 +1,6 @@
 #!/bin/bash
+export TZ="America/Sao_Paulo"
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 BOT_TOKEN="8261444082:AAE8hXDWocLrcO6pzLEIq2PA9EE8MwgbqHI"
 CHAT_ID="1045658856"

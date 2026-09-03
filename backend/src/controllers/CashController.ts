@@ -32,8 +32,8 @@ export class CashController {
 
   async createRegister(req: AuthRequest, res: Response) {
     try {
-      const { name } = req.body;
-      const branchId = req.user?.branchId;
+      const { name, branchId: bodyBranchId } = req.body;
+      const branchId = bodyBranchId || req.user?.branchId;
       const companyId = req.user?.companyId;
 
       if (!branchId || !companyId || !name) return res.status(400).json({ error: 'Missing fields' });

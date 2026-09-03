@@ -252,20 +252,40 @@ export default function Stock() {
                   {isExpanded && (
                     <div className="divide-y divide-outline-variant bg-surface">
                       {balances.map(balance => (
-                        <div key={balance.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-3 hover:bg-surface-container-low transition-colors items-center">
-                          <div className="col-span-1 md:col-span-5 flex flex-col md:pl-10">
+                        <div key={balance.id} className="flex flex-col md:grid md:grid-cols-12 gap-2 md:gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-start md:items-center text-sm border-b border-outline-variant md:border-0 last:border-0">
+                          
+                          {/* Produto e Categoria */}
+                          <div className="w-full md:col-span-5 flex flex-col md:pl-10">
                             <div className="flex items-center gap-2">
-                              <p className="font-semibold text-sm text-on-surface">{balance.product.name}</p>
+                              <p className="font-bold text-sm text-on-surface">{balance.product.name}</p>
                               {balance.product.controlled && <span className="text-[10px] bg-secondary-container text-on-secondary-container px-1.5 py-0.5 rounded-full font-bold">Controlado</span>}
                             </div>
-                            <p className="text-xs text-on-surface-variant mt-0.5">SKU: {balance.product.sku || '-'} • Cat: {balance.product.category?.name || '-'}</p>
+                            <p className="text-[10px] text-on-surface-variant mt-0.5 font-mono">SKU: {balance.product.sku || '-'} • Cat: {balance.product.category?.name || '-'}</p>
                           </div>
                           
-                          <div className="col-span-1 md:col-span-3 flex md:justify-center items-center py-2 md:py-0">
+                          {/* Nível (Progress Bar) e Quantidade no Mobile na mesma área */}
+                          <div className="w-full flex md:hidden items-center justify-between mt-1 mb-1">
+                            <div className="flex-1 mr-4">
+                              {renderProgressBar(balance.quantity, balance.product.minStock, balance.product.maxStock)}
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              {balance.quantity < balance.product.minStock && <span className="material-symbols-outlined notranslate text-[16px] text-error">warning</span>}
+                              <div className="flex items-baseline gap-0.5">
+                                <span className={`font-bold text-base ${balance.quantity < balance.product.minStock ? 'text-error' : 'text-on-surface'}`}>
+                                  {balance.quantity}
+                                </span>
+                                <span className="text-[11px] text-on-surface-variant">{balance.product.unit}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Desktop Nível */}
+                          <div className="hidden md:flex md:col-span-3 justify-center items-center w-full px-4">
                             {renderProgressBar(balance.quantity, balance.product.minStock, balance.product.maxStock)}
                           </div>
                           
-                          <div className="col-span-1 md:col-span-2 flex md:justify-end items-center gap-2">
+                          {/* Desktop Quantidade */}
+                          <div className="hidden md:flex md:col-span-2 justify-end items-center gap-2">
                             {balance.quantity < balance.product.minStock && <span className="material-symbols-outlined notranslate text-[16px] text-error" title="Abaixo do Mínimo">warning</span>}
                             <div className="flex items-baseline gap-1">
                               <span className={`font-bold text-base ${balance.quantity < balance.product.minStock ? 'text-error' : 'text-on-surface'}`}>
@@ -275,9 +295,14 @@ export default function Stock() {
                             </div>
                           </div>
                           
-                          <div className="col-span-1 md:col-span-2 md:text-right font-medium text-sm text-on-surface-variant">
-                            R$ {((balance.product.costPrice || 0) * balance.quantity).toFixed(2)}
+                          {/* Valor Est. */}
+                          <div className="w-full md:col-span-2 flex justify-between md:block items-center md:text-right pt-2 md:pt-0 border-t border-outline-variant md:border-0">
+                            <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Valor em Estoque</span>
+                            <span className="font-semibold text-sm text-on-surface-variant">
+                              R$ {((balance.product.costPrice || 0) * balance.quantity).toFixed(2)}
+                            </span>
                           </div>
+
                         </div>
                       ))}
                     </div>

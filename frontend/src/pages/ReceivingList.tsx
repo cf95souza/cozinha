@@ -63,9 +63,9 @@ export default function ReceivingList() {
         
         <button 
           onClick={() => navigate('/recebimento/novo')}
-          className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-semibold hover:bg-primary-hover transition-colors shadow-sm"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined notranslate text-[18px]">add_circle</span>
+          <span className="material-symbols-outlined notranslate text-[20px]">add_circle</span>
           Novo Recebimento
         </button>
       </div>
@@ -98,35 +98,42 @@ export default function ReceivingList() {
               <div 
                 key={r.id} 
                 onClick={() => navigate(`/recebimento/${r.id}`)}
-                className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors cursor-pointer items-center"
+                className="flex flex-col md:grid md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors cursor-pointer items-start md:items-center border-b border-outline-variant md:border-0 last:border-0"
               >
-                <div className="col-span-1 md:col-span-3 flex items-center gap-3">
+                {/* Ícone, Nota e Data */}
+                <div className="w-full md:col-span-3 flex items-center gap-3 border-b border-outline-variant md:border-0 pb-3 md:pb-0">
                   <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
                     <span className="material-symbols-outlined notranslate text-[20px]">receipt_long</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-on-surface">{r.invoice ? `NF ${r.invoice}` : 'S/N'}</p>
-                    <p className="text-xs text-on-surface-variant mt-0.5">{new Date(r.date).toLocaleDateString('pt-BR')}</p>
+                    <p className="font-bold text-sm text-on-surface">{r.invoice ? `NF ${r.invoice}` : 'S/N'}</p>
+                    <p className="text-xs font-mono text-on-surface-variant mt-0.5">{new Date(r.date).toLocaleDateString('pt-BR')}</p>
                   </div>
                 </div>
 
-                <div className="col-span-1 md:col-span-3">
-                  <span className="text-sm font-semibold text-on-surface-variant">{r.supplier.name}</span>
+                {/* Fornecedor */}
+                <div className="w-full md:col-span-3 flex justify-between md:block items-center">
+                  <span className="md:hidden text-[10px] text-on-surface-variant font-bold uppercase">Fornecedor</span>
+                  <span className="text-sm font-semibold text-on-surface">{r.supplier.name}</span>
                 </div>
 
-                <div className="col-span-1 md:col-span-2 flex md:justify-center">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full text-xs font-semibold text-on-surface-variant">
-                    <span className="material-symbols-outlined notranslate text-[14px]">format_list_numbered</span>
-                    {r._count.items}
+                {/* Itens e Status na mesma linha no mobile */}
+                <div className="w-full flex md:contents justify-between items-center mt-2 md:mt-0">
+                  <div className="md:col-span-2 flex md:justify-center">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container rounded-full text-xs font-bold text-on-surface-variant">
+                      <span className="material-symbols-outlined notranslate text-[14px]">format_list_numbered</span>
+                      {r._count.items} itens
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 flex md:justify-center">
+                    {getStatusBadge(r.status)}
                   </div>
                 </div>
 
-                <div className="col-span-1 md:col-span-2 flex md:justify-center">
-                  {getStatusBadge(r.status)}
-                </div>
-
-                <div className="col-span-1 md:col-span-2 flex justify-end">
-                  <button className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+                {/* Ação */}
+                <div className="w-full md:col-span-2 flex justify-end mt-2 md:mt-0 pt-3 md:pt-0 border-t border-outline-variant md:border-0">
+                  <button className="text-xs text-primary font-bold hover:underline flex items-center gap-1">
                     {r.status === 'APROVADO' || r.status === 'APROVADO_RESSALVA' ? 'Visualizar' : 'Conferir'}
                     <span className="material-symbols-outlined notranslate text-[16px]">chevron_right</span>
                   </button>

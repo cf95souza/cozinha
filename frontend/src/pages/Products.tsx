@@ -219,28 +219,46 @@ export default function Products() {
 
               {/* Itens */}
               {products.map(p => (
-                <div key={p.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center">
-                  <div className="col-span-1 md:col-span-5 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                      <span className="material-symbols-outlined notranslate text-[20px]">category</span>
+                <div key={p.id} className="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-start md:items-center text-sm border-b border-outline-variant md:border-0 last:border-0">
+                  
+                  {/* Header Mobile & Desktop */}
+                  <div className="w-full md:col-span-5 flex items-center justify-between gap-4 border-b border-outline-variant pb-3 md:pb-0 md:border-0">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
+                        <span className="material-symbols-outlined notranslate text-[20px]">category</span>
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm text-on-surface">{p.name}</p>
+                        <p className="text-[10px] text-on-surface-variant mt-0.5 font-mono">
+                          {p.sku && `SKU: ${p.sku}`} {p.barcode && `• EAN: ${p.barcode}`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-sm text-on-surface">{p.name}</p>
-                      <p className="text-xs text-on-surface-variant mt-0.5">
-                        {p.sku && `SKU: ${p.sku}`} {p.barcode && `• EAN: ${p.barcode}`}
-                      </p>
+                    {/* Botões Ação (Mobile) */}
+                    <div className="md:hidden flex justify-end gap-1">
+                      <button onClick={() => openEdit(p)} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors">
+                        <span className="material-symbols-outlined notranslate text-[20px]">edit</span>
+                      </button>
+                      <button onClick={() => handleDelete(p.id)} className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors">
+                        <span className="material-symbols-outlined notranslate text-[20px]">delete</span>
+                      </button>
                     </div>
                   </div>
                   
-                  <div className="col-span-1 md:col-span-3">
-                    <span className="text-sm font-medium text-on-surface-variant">{p.category?.name || 'Sem Categoria'}</span>
+                  {/* Categoria */}
+                  <div className="md:col-span-3 w-full flex justify-between md:block items-center">
+                    <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Categoria</span>
+                    <span className="text-sm font-semibold text-on-surface-variant">{p.category?.name || 'Sem Categoria'}</span>
                   </div>
                   
-                  <div className="col-span-1 md:col-span-2">
+                  {/* Unidade */}
+                  <div className="md:col-span-2 w-full flex justify-between md:block items-center">
+                    <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Unidade de Medida</span>
                     <span className="text-xs font-semibold bg-surface-container text-on-surface-variant px-2.5 py-1 rounded-full">{p.unit}</span>
                   </div>
                   
-                  <div className="col-span-1 md:col-span-2 flex md:justify-end gap-1">
+                  {/* Botões Ação (Desktop) */}
+                  <div className="hidden md:flex md:col-span-2 justify-end gap-1">
                     <button onClick={() => openEdit(p)} className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors">
                       <span className="material-symbols-outlined notranslate text-[20px]">edit</span>
                     </button>
@@ -248,6 +266,7 @@ export default function Products() {
                       <span className="material-symbols-outlined notranslate text-[20px]">delete</span>
                     </button>
                   </div>
+                  
                 </div>
               ))}
             </div>

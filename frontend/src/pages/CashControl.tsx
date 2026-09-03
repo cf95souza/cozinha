@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
-import { Plus, User, Clock, ArrowDownToLine, ArrowUpFromLine, Lock, Unlock, Store } from 'lucide-react';
+import { Plus, User, Clock, ArrowDownToLine, ArrowUpFromLine, Lock, Unlock, Store, ShoppingBasket } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { EmptyState } from '../components/EmptyState';
+import { Link } from 'react-router-dom';
 
 export default function CashControl() {
   const { activeBranch } = useAuth();
@@ -40,9 +41,15 @@ export default function CashControl() {
   const handleCreateRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newRegisterName.trim()) return;
+    
+    if (!activeBranch?.id) {
+      toast.error('Selecione uma filial no menu superior para criar um caixa.');
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await api.post('/finance/cash-registers', { name: newRegisterName });
+      await api.post('/finance/cash-registers', { name: newRegisterName, branchId: activeBranch.id });
       toast.success('Caixa criado com sucesso!');
       setNewRegisterName('');
       fetchRegisters();
@@ -128,7 +135,7 @@ export default function CashControl() {
             value={newRegisterName} 
             onChange={e => setNewRegisterName(e.target.value)} 
             placeholder="Nome do Novo Caixa..." 
-            className="px-4 py-2 border rounded-xl w-64 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+            className="px-4 py-2 border border-outline-variant bg-surface text-on-surface placeholder:text-on-surface-variant rounded-xl w-64 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
             required
           />
           <button type="submit" disabled={submitting} className="px-4 py-2 bg-surface-container-high font-bold rounded-xl hover:bg-surface-container-highest border border-outline-variant transition-colors flex items-center gap-2">
@@ -192,6 +199,9 @@ export default function CashControl() {
                     </button>
                   ) : (
                     <>
+                      <Link to="/pdv" className="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-2 mb-2">
+                        <ShoppingBasket size={18} /> Ir para o PDV
+                      </Link>
                       <div className="flex gap-2">
                         <button onClick={() => startMovement(shift.id, 'SANGRIA')} className="flex-1 py-2 bg-red-50 text-red-700 font-bold rounded-xl hover:bg-red-100 border border-red-200 transition-colors flex items-center justify-center gap-2 text-sm">
                           <ArrowDownToLine size={16} /> Sangria
@@ -232,7 +242,7 @@ export default function CashControl() {
               {openModalType === 'OPEN' && (
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-on-surface">Fundo de Troco (Dinheiro Inicial)</label>
-                  <input type="number" step="0.01" value={inputValue} onChange={e => setInputValue(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface focus:ring-2 focus:ring-primary/20 outline-none" required placeholder="0.00" autoFocus />
+                  <input type="number" step="0.01" value={inputValue} onChange={e => setInputValue(e.target.value)} className="w-full px-4 py-2 border border-outline-variant rounded-xl bg-surface text-on-surface focus:ring-2 focus:ring-primary/20 outline-none" required placeholder="0.00" autoFocus />
                 </div>
               )}
 
@@ -240,7 +250,7 @@ export default function CashControl() {
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-on-surface">Saldo Final em Dinheiro (Gaveta)</label>
                   <p className="text-xs text-on-surface-variant mb-2">Conte o dinheiro físico e informe abaixo. O sistema calculará sobras ou quebras de caixa automaticamente.</p>
-                  <input type="number" step="0.01" value={inputValue} onChange={e => setInputValue(e.target.value)} className="w-full px-4 py-3 text-xl font-bold border border-red-300 rounded-xl bg-red-50 focus:ring-2 focus:ring-red-500/20 outline-none" required placeholder="0.00" autoFocus />
+                  <input type="number" step="0.01" value={inputValue} onChange={e => setInputValue(e.target.value)} className="w-full px-4 py-3 text-xl font-bold border border-red-300 rounded-xl bg-red-50 text-red-900 focus:ring-2 focus:ring-red-500/20 outline-none" required placeholder="0.00" autoFocus />
                 </div>
               )}
 
@@ -248,11 +258,11 @@ export default function CashControl() {
                 <>
                   <div>
                     <label className="block text-sm font-semibold mb-1 text-on-surface">Valor da {movementType}</label>
-                    <input type="number" step="0.01" value={inputValue} onChange={e => setInputValue(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface outline-none" required placeholder="0.00" autoFocus />
+                    <input type="number" step="0.01" value={inputValue} onChange={e => setInputValue(e.target.value)} className="w-full px-4 py-2 border border-outline-variant rounded-xl bg-surface text-on-surface outline-none focus:ring-2 focus:ring-primary/20" required placeholder="0.00" autoFocus />
                   </div>
                   <div>
                     <label className="block text-sm font-semibold mb-1 text-on-surface">Motivo / Descrição</label>
-                    <input type="text" value={inputDesc} onChange={e => setInputDesc(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface outline-none" required placeholder="Ex: Pagamento Fornecedor X" />
+                    <input type="text" value={inputDesc} onChange={e => setInputDesc(e.target.value)} className="w-full px-4 py-2 border border-outline-variant rounded-xl bg-surface text-on-surface outline-none focus:ring-2 focus:ring-primary/20" required placeholder="Ex: Pagamento Fornecedor X" />
                   </div>
                 </>
               )}

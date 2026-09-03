@@ -85,27 +85,27 @@ export default function CompanySettings() {
       </div>
 
       <div className="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-        <div className="flex border-b border-outline-variant bg-surface-container-lowest">
+        <div className="flex border-b border-outline-variant bg-surface-container-lowest overflow-x-auto flex-nowrap hide-scrollbar">
           <button
             type="button"
             onClick={() => setActiveTab('geral')}
-            className={`flex-1 py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'geral' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
+            className={`flex-1 shrink-0 whitespace-nowrap py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'geral' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
           >
-            <Building2 className="w-5 h-5" /> Dados Cadastrais
+            <Building2 className="w-5 h-5 shrink-0" /> Dados Cadastrais
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('endereco')}
-            className={`flex-1 py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'endereco' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
+            className={`flex-1 shrink-0 whitespace-nowrap py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'endereco' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
           >
-            <MapPin className="w-5 h-5" /> Endereço
+            <MapPin className="w-5 h-5 shrink-0" /> Endereço
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('prefs')}
-            className={`flex-1 py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'prefs' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
+            className={`flex-1 shrink-0 whitespace-nowrap py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'prefs' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
           >
-            <Settings className="w-5 h-5" /> Preferências
+            <Settings className="w-5 h-5 shrink-0" /> Preferências
           </button>
         </div>
 

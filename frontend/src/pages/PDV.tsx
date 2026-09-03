@@ -35,14 +35,33 @@ export default function PDV() {
   const [globalDiscountType, setGlobalDiscountType] = useState<'PERCENT' | 'FIXED'>('PERCENT');
   const [globalDiscountValue, setGlobalDiscountValue] = useState(0);
 
+  // Cash Register State
+  const [activeRegister, setActiveRegister] = useState<any>(null);
+
   const barcodeBuffer = useRef('');
   const lastKeystrokeTime = useRef(0);
 
   useEffect(() => {
     if (activeBranch) {
       fetchProducts();
+      fetchActiveRegister();
     }
-  }, [activeBranch]);
+  }, [activeBranch, user]);
+
+  const fetchActiveRegister = async () => {
+    try {
+      const res = await api.get(`/finance/cash-registers?branchId=${activeBranch?.id}`);
+      const registers = res.data || [];
+      const myRegister = registers.find((reg: any) => 
+        reg.shifts && reg.shifts.some((shift: any) => shift.status === 'ABERTO' && shift.openedById === user?.id)
+      );
+      if (myRegister) {
+        setActiveRegister(myRegister);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar caixa ativo', error);
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -324,12 +343,16 @@ export default function PDV() {
         {/* Header do Carrinho */}
         <div className="p-5 border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-primary/10 p-2 rounded-xl text-primary">
+            <div className={`p-2 rounded-xl ${activeRegister ? 'bg-primary/10 text-primary' : 'bg-red-500/10 text-red-500'}`}>
               <ShoppingBasket className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="font-bold text-lg leading-tight">Caixa Livre</h2>
-              <p className="text-xs text-on-surface-variant font-bold uppercase tracking-wider">Mesa / Balcão</p>
+              <h2 className="font-bold text-lg leading-tight">
+                {activeRegister ? activeRegister.name : 'Caixa Fechado'}
+              </h2>
+              <p className={`text-xs font-bold uppercase tracking-wider ${activeRegister ? 'text-on-surface-variant' : 'text-red-500'}`}>
+                {activeRegister ? 'PDV Aberto' : 'Abra o caixa antes de vender'}
+              </p>
             </div>
           </div>
           {cart.length > 0 && (

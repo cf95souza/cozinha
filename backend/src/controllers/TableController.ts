@@ -94,13 +94,17 @@ export class TableController {
       const parsed = addItemsSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: 'Dados inválidos' });
 
-      const branchId = req.user?.branchId;
       const userId = req.user?.id;
 
-      if (!branchId || !userId) return res.status(400).json({ error: 'Credenciais inválidas' });
+      if (!userId) return res.status(400).json({ error: 'Credenciais inválidas' });
 
-      const sale = await prisma.sale.findFirst({ where: { id, branchId, status: 'ABERTO' } });
+      const sale = await prisma.sale.findFirst({ where: { id, status: 'ABERTO' } });
       if (!sale) return res.status(404).json({ error: 'Mesa não encontrada ou já finalizada' });
+
+      const branchId = sale.branchId;
+      if (req.user?.role !== 'ADMIN' && req.user?.branchId !== branchId) {
+        return res.status(403).json({ error: 'Sem permissão para esta filial' });
+      }
 
       const { items } = parsed.data;
 
@@ -220,13 +224,17 @@ export class TableController {
   async cancelItem(req: AuthRequest, res: Response) {
     try {
       const { id, itemId } = req.params;
-      const branchId = req.user?.branchId;
       const userId = req.user?.id;
 
-      if (!branchId || !userId) return res.status(400).json({ error: 'Credenciais inválidas' });
+      if (!userId) return res.status(400).json({ error: 'Credenciais inválidas' });
 
-      const sale = await prisma.sale.findFirst({ where: { id, branchId, status: 'ABERTO' } });
+      const sale = await prisma.sale.findFirst({ where: { id, status: 'ABERTO' } });
       if (!sale) return res.status(404).json({ error: 'Mesa não encontrada ou já finalizada' });
+
+      const branchId = sale.branchId;
+      if (req.user?.role !== 'ADMIN' && req.user?.branchId !== branchId) {
+        return res.status(403).json({ error: 'Sem permissão para esta filial' });
+      }
 
       const saleItem = await prisma.saleItem.findFirst({ where: { id: itemId, saleId: sale.id } });
       if (!saleItem) return res.status(404).json({ error: 'Item não encontrado na mesa' });
@@ -316,13 +324,17 @@ export class TableController {
       const parsed = checkoutSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: 'Dados inválidos' });
 
-      const branchId = req.user?.branchId;
       const userId = req.user?.id;
       const companyId = req.user?.companyId;
-      if (!branchId || !userId || !companyId) return res.status(400).json({ error: 'Credenciais inválidas' });
+      if (!userId || !companyId) return res.status(400).json({ error: 'Credenciais inválidas' });
 
-      const sale = await prisma.sale.findFirst({ where: { id, branchId, status: 'ABERTO' } });
+      const sale = await prisma.sale.findFirst({ where: { id, status: 'ABERTO' } });
       if (!sale) return res.status(404).json({ error: 'Mesa não encontrada ou já finalizada' });
+
+      const branchId = sale.branchId;
+      if (req.user?.role !== 'ADMIN' && req.user?.branchId !== branchId) {
+        return res.status(403).json({ error: 'Sem permissão para esta filial' });
+      }
 
       const { paymentMethods, totalAmount } = parsed.data;
 

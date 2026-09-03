@@ -139,4 +139,26 @@ export class InventoryController {
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  async delete(req: AuthRequest, res: Response) {
+    try {
+      const id = req.params.id as string;
+      const inventory = await prisma.inventory.findUnique({ where: { id } });
+      
+      if (!inventory) {
+        return res.status(404).json({ error: 'Inventory not found' });
+      }
+      
+      if (inventory.status !== 'PENDENTE') {
+        return res.status(400).json({ error: 'Apenas inventários PENDENTES podem ser excluídos' });
+      }
+
+      await prisma.inventory.delete({ where: { id } });
+      
+      return res.status(200).json({ message: 'Inventário excluído com sucesso' });
+    } catch (error: any) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }

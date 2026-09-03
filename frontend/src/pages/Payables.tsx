@@ -189,37 +189,37 @@ export default function Payables() {
           <Plus size={20} className="text-primary" /> Nova Conta a Pagar
         </h2>
         <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 min-w-0">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Descrição *</label>
-            <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required placeholder="Ex: Aluguel, Boleto Fornecedor..." />
+            <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full min-w-0 px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant" required placeholder="Ex: Aluguel, Boleto Fornecedor..." />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Valor (R$) *</label>
-            <input type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required placeholder="0.00" />
+            <input type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} className="w-full min-w-0 px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant" required placeholder="0.00" />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Vencimento (1ª) *</label>
-            <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required />
+            <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="w-full min-w-0 px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Categoria *</label>
-            <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface focus:ring-2 focus:ring-primary/20 outline-none transition-all" required>
+            <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full min-w-0 px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required>
               <option value="">Selecione...</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Fornecedor</label>
-            <select value={supplierId} onChange={e => setSupplierId(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+            <select value={supplierId} onChange={e => setSupplierId(e.target.value)} className="w-full min-w-0 px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all">
               <option value="">Nenhum (Opcional)</option>
               {suppliers.map(s => <option key={s.id} value={s.id}>{s.name} - {s.document}</option>)}
             </select>
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Qtd Parcelas (Meses)</label>
-            <input type="number" min="1" max="60" value={installments} onChange={e => setInstallments(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required />
+            <input type="number" min="1" max="60" value={installments} onChange={e => setInstallments(e.target.value)} className="w-full min-w-0 px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required />
           </div>
-          <button type="submit" disabled={submitting} className="px-4 py-2 bg-primary text-white font-bold rounded-xl hover:bg-orange-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+          <button type="submit" disabled={submitting} className="w-full md:w-auto px-4 py-2 bg-primary text-white font-bold rounded-xl hover:bg-orange-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {submitting ? 'Salvando...' : 'Lançar Conta'}
           </button>
         </form>
@@ -230,7 +230,7 @@ export default function Payables() {
         <div className="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
           <h3 className="font-bold text-lg flex items-center gap-2"><Filter size={18} /> Lançamentos</h3>
           <div className="flex gap-2">
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="px-3 py-1.5 text-sm border rounded-lg bg-surface focus:ring-2 focus:ring-primary/20 outline-none">
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="px-3 py-1.5 text-sm border border-outline-variant rounded-lg bg-surface text-on-surface focus:ring-2 focus:ring-primary/20 outline-none">
               <option value="TODOS">Todos os Status</option>
               <option value="PENDENTE">Pendentes</option>
               <option value="PAGO">Pagos</option>
@@ -244,61 +244,91 @@ export default function Payables() {
         ) : filteredPayables.length === 0 ? (
           <div className="p-12"><EmptyState icon={CheckCircle2} title="Nenhuma conta" message="Não há contas a pagar neste filtro." /></div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-surface-container-low text-on-surface-variant">
-                <tr>
-                  <th className="p-4 font-semibold">Vencimento</th>
-                  <th className="p-4 font-semibold">Descrição</th>
-                  <th className="p-4 font-semibold">Fornecedor</th>
-                  <th className="p-4 font-semibold">Categoria</th>
-                  <th className="p-4 font-semibold text-right">Valor (R$)</th>
-                  <th className="p-4 font-semibold text-center">Status</th>
-                  <th className="p-4 font-semibold text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant">
-                {filteredPayables.map(p => {
-                  const isLate = p.status === 'PENDENTE' && new Date(p.dueDate) < today;
-                  return (
-                    <tr key={p.id} className="hover:bg-surface-container-lowest transition-colors">
-                      <td className="p-4 text-on-surface">
-                        <span className={isLate ? 'text-error font-bold' : ''}>
+          <div className="flex flex-col">
+            <div className="divide-y divide-outline-variant">
+              {/* Header Desktop */}
+              <div className="hidden md:grid md:grid-cols-12 gap-4 px-6 py-3 bg-surface-container-low text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
+                <div className="col-span-2">Vencimento</div>
+                <div className="col-span-3">Descrição</div>
+                <div className="col-span-2">Fornecedor / Categoria</div>
+                <div className="col-span-2 text-right">Valor (R$)</div>
+                <div className="col-span-1 text-center">Status</div>
+                <div className="col-span-2 text-right">Ações</div>
+              </div>
+
+              {/* Itens */}
+              {filteredPayables.map(p => {
+                const isLate = p.status === 'PENDENTE' && new Date(p.dueDate) < today;
+                return (
+                  <div key={p.id} className="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-start md:items-center text-sm border-b border-outline-variant md:border-0 last:border-0">
+                    
+                    {/* Header Mobile & Desktop (Vencimento + Status no Mobile) */}
+                    <div className="w-full md:col-span-2 flex items-center justify-between md:justify-start gap-4 border-b border-outline-variant pb-3 md:pb-0 md:border-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`font-bold ${isLate ? 'text-error' : 'text-on-surface'}`}>
                           {new Date(p.dueDate).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
                         </span>
-                      </td>
-                      <td className="p-4 font-semibold text-on-surface">{p.description}</td>
-                      <td className="p-4 text-on-surface-variant truncate max-w-[150px]">{p.supplier?.name || '-'}</td>
-                      <td className="p-4 text-on-surface-variant">
-                        <span className="bg-surface-container px-2 py-1 rounded text-xs">{p.category?.name}</span>
-                      </td>
-                      <td className="p-4 font-bold text-right text-on-surface">
-                        {p.amount.toFixed(2)}
-                      </td>
-                      <td className="p-4 text-center">
+                      </div>
+                      
+                      {/* Status (Mobile) */}
+                      <div className="md:hidden">
                         {p.status === 'PAGO' ? (
-                          <span className="px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">PAGO</span>
+                          <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">PAGO</span>
                         ) : isLate ? (
-                          <span className="px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">VENCIDO</span>
+                          <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700">VENCIDO</span>
                         ) : (
-                          <span className="px-2 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700">PENDENTE</span>
+                          <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700">PENDENTE</span>
                         )}
-                      </td>
-                      <td className="p-4 text-right space-x-2">
-                        {p.status === 'PENDENTE' && (
-                          <button onClick={() => setPayingId(p.id)} className="px-3 py-1 bg-green-600 text-white text-xs font-bold rounded hover:bg-green-700 transition-colors">
-                            Baixar
-                          </button>
-                        )}
-                        <button onClick={() => handleDelete(p.id)} className="p-1 text-on-surface-variant hover:text-error transition-colors rounded hover:bg-red-50" title="Excluir">
-                          <Trash2 size={16} />
+                      </div>
+                    </div>
+                    
+                    {/* Descrição */}
+                    <div className="md:col-span-3 w-full flex flex-col md:block">
+                      <p className="font-semibold text-sm text-on-surface">{p.description}</p>
+                    </div>
+
+                    {/* Fornecedor / Categoria */}
+                    <div className="md:col-span-2 w-full flex justify-between md:flex-col md:justify-center items-center md:items-start">
+                      <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Detalhes</span>
+                      <div className="text-right md:text-left flex flex-col items-end md:items-start gap-1">
+                        <span className="text-xs font-semibold bg-surface-container text-on-surface-variant px-2 py-0.5 rounded">{p.category?.name}</span>
+                        <span className="text-xs text-on-surface-variant truncate max-w-[150px]">{p.supplier?.name || '-'}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Valor */}
+                    <div className="md:col-span-2 w-full flex justify-between md:block items-center md:text-right">
+                      <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Valor</span>
+                      <span className="font-bold text-on-surface text-lg md:text-sm">R$ {p.amount.toFixed(2)}</span>
+                    </div>
+
+                    {/* Status (Desktop) */}
+                    <div className="hidden md:flex md:col-span-1 justify-center">
+                      {p.status === 'PAGO' ? (
+                        <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">PAGO</span>
+                      ) : isLate ? (
+                        <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700">VENCIDO</span>
+                      ) : (
+                        <span className="px-2 py-1 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700">PENDENTE</span>
+                      )}
+                    </div>
+                    
+                    {/* Ações */}
+                    <div className="md:col-span-2 w-full flex justify-end gap-2 items-center border-t border-outline-variant pt-3 md:pt-0 md:border-0">
+                      {p.status === 'PENDENTE' && (
+                        <button onClick={() => setPayingId(p.id)} className="px-3 py-1.5 bg-green-600 text-white text-xs font-bold rounded-lg hover:bg-green-700 transition-colors w-full md:w-auto text-center">
+                          Baixar
                         </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      )}
+                      <button onClick={() => handleDelete(p.id)} className="p-2 text-on-surface-variant hover:text-error transition-colors rounded-full hover:bg-red-50" title="Excluir">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                    
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
@@ -313,7 +343,7 @@ export default function Payables() {
             <form onSubmit={handlePay} className="p-4 space-y-4">
               <div>
                 <label className="block text-sm font-semibold mb-1 text-on-surface">Forma de Pagamento</label>
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface focus:ring-2 focus:ring-primary/20 outline-none" required>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none" required>
                   <option value="PIX">PIX</option>
                   <option value="BOLETO">Boleto</option>
                   <option value="DINHEIRO">Dinheiro</option>

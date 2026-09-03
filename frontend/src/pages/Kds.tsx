@@ -70,7 +70,7 @@ export default function Kds() {
       {/* Header do KDS */}
       <div className="flex justify-between items-center p-4 bg-gray-950 border-b border-gray-800">
         <div className="flex items-center gap-4">
-          <span className="material-icons text-[#E8461C] text-3xl">soup_kitchen</span>
+          <span className="material-symbols-outlined notranslate text-[#E8461C] text-3xl">soup_kitchen</span>
           <div>
             <h1 className="text-2xl font-bold text-white uppercase tracking-wider">KDS - Cozinha</h1>
             <p className="text-gray-400 text-sm">Visualização de Produção</p>
@@ -93,7 +93,7 @@ export default function Kds() {
       <div className="flex-1 p-4 overflow-x-auto flex gap-4 bg-gray-900">
         {visibleTickets.length === 0 ? (
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-            <span className="material-icons text-6xl mb-4 opacity-50">task_alt</span>
+            <span className="material-symbols-outlined notranslate text-6xl mb-4 opacity-50">task_alt</span>
             <p className="text-xl">Nenhum pedido na fila.</p>
           </div>
         ) : (
@@ -117,7 +117,7 @@ export default function Kds() {
                 }`}>
                   <div>
                     <h3 className="font-bold text-lg leading-tight flex items-center gap-1.5">
-                      {ticket.type === 'DELIVERY' && <span className="material-icons text-[18px]">delivery_dining</span>}
+                      {ticket.type === 'DELIVERY' && <span className="material-symbols-outlined notranslate text-[18px]">delivery_dining</span>}
                       {ticket.type === 'MESA' ? `Mesa ${ticket.tableNumber}` : ticket.type === 'DELIVERY' ? `Delivery: ${ticket.customerName}` : 'Balcão / Viagem'}
                     </h3>
                     {!activeBranch?.id && ticket.branch?.name && (
@@ -168,7 +168,7 @@ export default function Kds() {
                               className="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded shadow flex items-center justify-center transition-colors"
                               title="Iniciar Preparo"
                             >
-                              <span className="material-icons">play_arrow</span>
+                              <span className="material-symbols-outlined notranslate">play_arrow</span>
                             </button>
                           )}
                           <button 
@@ -176,7 +176,7 @@ export default function Kds() {
                             className="bg-green-600 hover:bg-green-500 text-white p-2 rounded shadow flex items-center justify-center transition-colors"
                             title="Marcar como Pronto"
                           >
-                            <span className="material-icons">check</span>
+                            <span className="material-symbols-outlined notranslate">check</span>
                           </button>
                         </div>
                       </div>

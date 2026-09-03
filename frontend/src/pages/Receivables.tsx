@@ -181,33 +181,33 @@ export default function Receivables() {
       {/* Form de Criação */}
       <div className="bg-surface border border-outline-variant rounded-2xl p-6 shadow-sm">
         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-          <Plus size={20} className="text-secondary" /> Novo Recebimento Esperado
+          <Plus size={20} className="text-primary" /> Novo Recebimento Esperado
         </h2>
         <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div className="md:col-span-2">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Descrição *</label>
-            <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-secondary/20 outline-none transition-all" required placeholder="Ex: Fatura Cliente Y, Repasse iFood..." />
+            <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant" required placeholder="Ex: Fatura Cliente Y, Repasse iFood..." />
           </div>
           <div>
             <label className="block text-sm font-semibold mb-1 text-on-surface">Valor (R$) *</label>
-            <input type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-secondary/20 outline-none transition-all" required placeholder="0.00" />
+            <input type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant" required placeholder="0.00" />
           </div>
           <div>
             <label className="block text-sm font-semibold mb-1 text-on-surface">Vencimento (1ª) *</label>
-            <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-secondary/20 outline-none transition-all" required />
+            <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required />
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-semibold mb-1 text-on-surface">Categoria *</label>
-            <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface focus:ring-2 focus:ring-secondary/20 outline-none transition-all" required>
+            <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required>
               <option value="">Selecione...</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-sm font-semibold mb-1 text-on-surface">Qtd Parcelas (Meses)</label>
-            <input type="number" min="1" max="60" value={installments} onChange={e => setInstallments(e.target.value)} className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-secondary/20 outline-none transition-all" required />
+            <input type="number" min="1" max="60" value={installments} onChange={e => setInstallments(e.target.value)} className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none transition-all" required />
           </div>
-          <button type="submit" disabled={submitting} className="px-4 py-2 bg-secondary text-white font-bold rounded-xl hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+          <button type="submit" disabled={submitting} className="px-4 py-2 bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {submitting ? 'Salvando...' : 'Lançar Recebimento'}
           </button>
         </form>
@@ -218,7 +218,7 @@ export default function Receivables() {
         <div className="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
           <h3 className="font-bold text-lg flex items-center gap-2"><Filter size={18} /> Lançamentos a Receber</h3>
           <div className="flex gap-2">
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="px-3 py-1.5 text-sm border rounded-lg bg-surface focus:ring-2 focus:ring-secondary/20 outline-none">
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)} className="px-3 py-1.5 text-sm border border-outline-variant rounded-lg bg-surface text-on-surface focus:ring-2 focus:ring-primary/20 outline-none">
               <option value="TODOS">Todos os Status</option>
               <option value="PENDENTE">Pendentes</option>
               <option value="RECEBIDO">Recebidos</option>
@@ -272,7 +272,7 @@ export default function Receivables() {
                       </td>
                       <td className="p-4 text-right space-x-2">
                         {r.status === 'PENDENTE' && (
-                          <button onClick={() => setReceivingId(r.id)} className="px-3 py-1 bg-secondary text-white text-xs font-bold rounded hover:opacity-90 transition-colors">
+                          <button onClick={() => setReceivingId(r.id)} className="px-3 py-1 bg-primary text-white text-xs font-bold rounded hover:opacity-90 transition-colors">
                             Receber
                           </button>
                         )}
@@ -299,7 +299,7 @@ export default function Receivables() {
             <form onSubmit={handleReceive} className="p-4 space-y-4">
               <div>
                 <label className="block text-sm font-semibold mb-1 text-on-surface">Forma de Recebimento</label>
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-surface focus:ring-2 focus:ring-secondary/20 outline-none" required>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-primary/20 outline-none" required>
                   <option value="PIX">PIX</option>
                   <option value="BOLETO">Boleto</option>
                   <option value="DINHEIRO">Dinheiro</option>
@@ -311,7 +311,7 @@ export default function Receivables() {
                 <button type="button" onClick={() => setReceivingId(null)} className="px-4 py-2 font-bold text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors">
                   Cancelar
                 </button>
-                <button type="submit" className="px-4 py-2 font-bold text-white bg-secondary hover:opacity-90 rounded-xl transition-colors">
+                <button type="submit" className="px-4 py-2 font-bold text-white bg-primary hover:opacity-90 rounded-xl transition-colors">
                   Confirmar Baixa
                 </button>
               </div>

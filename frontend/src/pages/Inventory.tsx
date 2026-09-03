@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import { ArrowLeft, ScanBarcode, X, CheckCircle2, ClipboardList, Play, Trash2 } from 'lucide-react';
 
 export default function Inventory() {
   const { activeBranch, user } = useAuth();
@@ -110,27 +111,64 @@ export default function Inventory() {
       setCurrentInventoryId(res.data.id);
       setIsCounting(true);
       
-      setCountItems(products.map(p => {
+      const initialItems = products.map(p => {
         const balance = stockBalances.find(b => b.productId === p.id);
         return { productId: p.id, physicalQuantity: '', theoreticalQuantity: balance ? balance.quantity : 0 };
-      }));
+      });
+      setCountItems(initialItems);
+      localStorage.setItem(`cozinha_inv_${res.data.id}`, JSON.stringify(initialItems));
+      loadData();
     } catch (err) {
       alert('Erro ao iniciar inventário');
     }
   };
 
+  const resumeInventory = (id: string) => {
+    setCurrentInventoryId(id);
+    setIsCounting(true);
+    const saved = localStorage.getItem(`cozinha_inv_${id}`);
+    if (saved) {
+      setCountItems(JSON.parse(saved));
+    } else {
+      const initialItems = products.map(p => {
+        const balance = stockBalances.find(b => b.productId === p.id);
+        return { productId: p.id, physicalQuantity: '', theoreticalQuantity: balance ? balance.quantity : 0 };
+      });
+      setCountItems(initialItems);
+    }
+  };
+
+  const deleteInventory = async (id: string) => {
+    if (!window.confirm('Tem certeza que deseja excluir este inventário inacabado?')) return;
+    try {
+      await api.delete(`/inventories/${id}`);
+      localStorage.removeItem(`cozinha_inv_${id}`);
+      loadData();
+    } catch (err) {
+      alert('Erro ao excluir inventário');
+    }
+  };
+
   const handleQuantityChange = (productId: string, value: string) => {
-    setCountItems(prev => prev.map(item => 
-      item.productId === productId ? { ...item, physicalQuantity: value } : item
-    ));
+    setCountItems(prev => {
+      const next = prev.map(item => 
+        item.productId === productId ? { ...item, physicalQuantity: value } : item
+      );
+      if (currentInventoryId) localStorage.setItem(`cozinha_inv_${currentInventoryId}`, JSON.stringify(next));
+      return next;
+    });
   };
 
   const autofillAll = () => {
     if (window.confirm("Preencher todos os itens vazios com o Saldo Teórico?")) {
-      setCountItems(prev => prev.map(item => ({
-        ...item,
-        physicalQuantity: item.physicalQuantity === '' ? String(item.theoreticalQuantity) : item.physicalQuantity
-      })));
+      setCountItems(prev => {
+        const next = prev.map(item => ({
+          ...item,
+          physicalQuantity: item.physicalQuantity === '' ? String(item.theoreticalQuantity) : item.physicalQuantity
+        }));
+        if (currentInventoryId) localStorage.setItem(`cozinha_inv_${currentInventoryId}`, JSON.stringify(next));
+        return next;
+      });
     }
   };
 
@@ -154,6 +192,7 @@ export default function Inventory() {
       await api.post(`/inventories/${currentInventoryId}/items`, { items: itemsToSubmit });
       await api.put(`/inventories/${currentInventoryId}/approve`, { userId: user?.id });
       
+      localStorage.removeItem(`cozinha_inv_${currentInventoryId}`);
       setIsCounting(false);
       setCurrentInventoryId(null);
       setIsScannerOpen(false);
@@ -169,20 +208,20 @@ export default function Inventory() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <button onClick={() => setIsCounting(false)} className="p-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors">
-              <span className="material-symbols-outlined notranslate text-[24px]">arrow_back</span>
+              <ArrowLeft size={24} />
             </button>
             <div>
               <h1 className="text-2xl font-bold text-on-surface">Inventário Ativo</h1>
               <p className="text-sm font-semibold text-on-surface-variant mt-0.5">Sessão #{currentInventoryId?.substring(0,8)}</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full sm:w-auto">
             <button 
               onClick={() => setIsScannerOpen(!isScannerOpen)} 
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-colors ${isScannerOpen ? 'bg-error text-on-error hover:bg-error/90' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-container'}`}
+              className={`w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-colors ${isScannerOpen ? 'bg-error text-on-error hover:bg-error/90' : 'bg-surface border border-outline-variant text-on-surface hover:bg-surface-container'}`}
             >
-              <span className="material-symbols-outlined notranslate text-[18px]">{isScannerOpen ? 'close' : 'qr_code_scanner'}</span>
-              {isScannerOpen ? 'Fechar Leitor' : 'Ler Código (Fast Count)'}
+              {isScannerOpen ? <X size={18} /> : <ScanBarcode size={18} />}
+              {isScannerOpen ? 'Fechar Leitor' : 'Ler Código'}
             </button>
           </div>
         </div>
@@ -248,7 +287,7 @@ export default function Inventory() {
               onClick={submitCount}
               className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-hover transition-colors"
             >
-              <span className="material-symbols-outlined notranslate text-[20px]">task_alt</span>
+              <CheckCircle2 size={20} />
               Finalizar e Ajustar Estoque
             </button>
           </div>
@@ -261,14 +300,14 @@ export default function Inventory() {
     <div className="space-y-6 max-w-6xl mx-auto pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-on-surface">Inventários</h1>
-          <p className="text-sm text-on-surface-variant mt-0.5">Conferência física de saldos do estoque.</p>
+          <h1 className="text-3xl font-bold text-on-surface">Inventários</h1>
+          <p className="text-sm text-on-surface-variant mt-1">Conferência física de saldos do estoque.</p>
         </div>
         <button 
           onClick={startInventory}
-          className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:bg-primary-hover transition-colors shadow-sm"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-hover transition-colors shadow-sm"
         >
-          <span className="material-symbols-outlined notranslate text-[18px]">rule</span>
+          <ClipboardList size={20} />
           Iniciar Inventário
         </button>
       </div>
@@ -277,42 +316,71 @@ export default function Inventory() {
         <div className="divide-y divide-outline-variant">
           
           <div className="hidden md:grid md:grid-cols-12 gap-4 px-6 py-3 bg-surface-container-low text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
-            <div className="col-span-3">Sessão</div>
-            <div className="col-span-3">Data</div>
-            <div className="col-span-4">Responsável</div>
-            <div className="col-span-2 text-right">Status</div>
+            <div className="col-span-3">Sessão / Itens</div>
+            <div className="col-span-2">Data</div>
+            <div className="col-span-3">Responsável</div>
+            <div className="col-span-1 text-center">Status</div>
+            <div className="col-span-3 text-right">Ações</div>
           </div>
 
           {inventories.map(inv => (
-            <div key={inv.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center">
-              <div className="col-span-1 md:col-span-3 flex flex-col">
-                <span className="font-semibold text-sm text-on-surface">#{inv.id.substring(0, 8)}</span>
-                <span className="text-[10px] bg-surface-container text-on-surface-variant px-2 py-0.5 rounded-full font-bold w-fit mt-1">
-                  {inv.items.length} itens conferidos
+            <div key={inv.id} className="flex flex-col md:grid md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-start md:items-center">
+              
+              {/* Info Mobile Header & Desktop Col 1 */}
+              <div className="w-full md:col-span-3 flex justify-between md:flex-col items-center md:items-start border-b border-outline-variant md:border-0 pb-3 md:pb-0">
+                <span className="font-bold text-base md:text-sm text-on-surface">#{inv.id.substring(0, 8)}</span>
+                <span className="text-[10px] bg-surface-container text-on-surface-variant px-2 py-0.5 rounded-full font-bold">
+                  {inv.status === 'PENDENTE' ? 'Em andamento' : `${inv.items.length} itens conferidos`}
                 </span>
               </div>
               
-              <div className="col-span-1 md:col-span-3">
-                <span className="text-sm text-on-surface">{new Date(inv.date).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+              {/* Data & Responsável */}
+              <div className="w-full flex md:contents gap-2 mt-2 md:mt-0 text-sm">
+                <div className="w-1/2 md:col-span-2 md:w-auto">
+                  <span className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase block mb-0.5">Data</span>
+                  <span className="text-on-surface font-medium">{new Date(inv.date).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+                
+                <div className="w-1/2 md:col-span-3 md:w-auto text-right md:text-left">
+                  <span className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase block mb-0.5">Responsável</span>
+                  <span className="font-medium text-on-surface-variant">{inv.user.name}</span>
+                </div>
               </div>
               
-              <div className="col-span-1 md:col-span-4">
-                <span className="text-sm font-medium text-on-surface-variant">{inv.user.name}</span>
-              </div>
-              
-              <div className="col-span-1 md:col-span-2 flex md:justify-end">
-                <span className={`text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wider ${
+              {/* Status */}
+              <div className="hidden md:flex md:col-span-1 justify-center">
+                <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider ${
                   inv.status === 'APROVADO' ? 'bg-primary-container text-primary' : 'bg-surface-container text-on-surface-variant'
                 }`}>
                   {inv.status}
                 </span>
+              </div>
+              
+              {/* Ações (Mobile mostra status no lugar das ações se aprovado) */}
+              <div className="w-full md:col-span-3 flex md:justify-end gap-2 items-center mt-3 md:mt-0 pt-3 md:pt-0 border-t border-outline-variant md:border-0">
+                {inv.status === 'PENDENTE' ? (
+                  <>
+                    <button onClick={() => resumeInventory(inv.id)} className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary font-bold rounded-lg hover:bg-primary-hover transition-colors text-xs">
+                      <Play size={14} /> Continuar
+                    </button>
+                    <button onClick={() => deleteInventory(inv.id)} className="flex items-center justify-center p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition-colors" title="Excluir">
+                      <Trash2 size={16} />
+                    </button>
+                  </>
+                ) : (
+                  <div className="md:hidden w-full text-center">
+                    <span className="text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider bg-primary-container text-primary">
+                      {inv.status}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
           
           {inventories.length === 0 && (
             <div className="px-6 py-12 text-center text-on-surface-variant text-sm flex flex-col items-center gap-3">
-              <span className="material-symbols-outlined notranslate text-4xl text-on-surface-variant">rule</span>
+              <ClipboardList size={40} className="text-outline" />
               Nenhum inventário registrado na filial.
             </div>
           )}

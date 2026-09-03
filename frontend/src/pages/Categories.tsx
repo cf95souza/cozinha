@@ -128,15 +128,36 @@ export default function Categories() {
               </div>
 
               {categories.map(cat => (
-                <div key={cat.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center">
-                  <div className="col-span-1 md:col-span-10 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                      <span className="material-symbols-outlined notranslate text-[20px]">sell</span>
+                <div key={cat.id} className="flex md:grid md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center justify-between border-b border-outline-variant md:border-0 last:border-0">
+                  <div className="w-full md:col-span-10 flex items-center justify-between md:justify-start gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
+                        <span className="material-symbols-outlined notranslate text-[20px]">sell</span>
+                      </div>
+                      <p className="font-semibold text-sm text-on-surface">{cat.name}</p>
                     </div>
-                    <p className="font-semibold text-sm text-on-surface">{cat.name}</p>
+                    
+                    {/* Botões Ação (Mobile) */}
+                    <div className="md:hidden flex justify-end gap-1 shrink-0">
+                      <button 
+                        onClick={() => handleEdit(cat)}
+                        className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors"
+                        title="Editar"
+                      >
+                        <span className="material-symbols-outlined notranslate text-[20px]">edit</span>
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(cat.id)}
+                        className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors"
+                        title="Remover"
+                      >
+                        <span className="material-symbols-outlined notranslate text-[20px]">delete</span>
+                      </button>
+                    </div>
                   </div>
                   
-                  <div className="col-span-1 md:col-span-2 flex justify-end gap-1">
+                  {/* Botões Ação (Desktop) */}
+                  <div className="hidden md:flex md:col-span-2 justify-end gap-1">
                     <button 
                       onClick={() => handleEdit(cat)}
                       className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors"

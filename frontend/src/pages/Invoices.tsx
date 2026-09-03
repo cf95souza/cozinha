@@ -127,20 +127,20 @@ export default function Invoices() {
     <div className="max-w-7xl mx-auto space-y-6 pb-20 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-display-sm font-section-title text-on-surface">Notas Fiscais (Consumo)</h1>
-          <p className="text-body text-on-surface-variant mt-1">Lançamento de despesas e notas de consumo por centro de custo.</p>
+          <h1 className="text-3xl font-bold text-on-surface">Notas Fiscais (Consumo)</h1>
+          <p className="text-sm text-on-surface-variant mt-1">Lançamento de despesas e notas de consumo por centro de custo.</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-primary text-on-primary px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-sm"
+          className="w-full sm:w-auto bg-primary text-on-primary px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-sm"
         >
           <Plus className="w-5 h-5" />
           Lançar Nota
         </button>
       </div>
 
-      <div className="bg-surface p-4 rounded-xl shadow-sm border border-outline-variant flex flex-wrap gap-4 items-end">
-        <div className="flex-1 min-w-[200px]">
+      <div className="bg-surface p-4 rounded-xl shadow-sm border border-outline-variant grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <div className="min-w-0">
           <label className="block text-xs font-bold text-on-surface uppercase mb-1">Centro de Custo</label>
           <select 
             value={filterCostCenter}
@@ -151,7 +151,7 @@ export default function Invoices() {
             {costCenters.map(cc => <option key={cc.id} value={cc.id}>{cc.name}</option>)}
           </select>
         </div>
-        <div className="flex-1 min-w-[200px]">
+        <div className="min-w-0">
           <label className="block text-xs font-bold text-on-surface uppercase mb-1">Data Inicial (Emissão)</label>
           <input 
             type="date"
@@ -160,7 +160,7 @@ export default function Invoices() {
             className="w-full px-4 py-2 border border-outline-variant rounded-lg bg-surface focus:ring-2 focus:ring-primary outline-none"
           />
         </div>
-        <div className="flex-1 min-w-[200px]">
+        <div className="min-w-0">
           <label className="block text-xs font-bold text-on-surface uppercase mb-1">Data Final (Emissão)</label>
           <input 
             type="date"
@@ -175,45 +175,45 @@ export default function Invoices() {
         {loading ? (
           <div className="p-8 text-center text-on-surface-variant">Carregando notas...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-surface-container-lowest text-on-surface-variant uppercase text-xs font-bold border-b border-outline-variant">
-                <tr>
-                  <th className="px-6 py-4">Data Emissão</th>
-                  <th className="px-6 py-4">Fornecedor</th>
-                  <th className="px-6 py-4">Nº da Nota</th>
-                  <th className="px-6 py-4">Centro de Custo</th>
-                  <th className="px-6 py-4 text-right">Valor Final</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoices.length === 0 ? (
-                  <tr><td colSpan={5} className="px-6 py-8 text-center text-on-surface-variant">Nenhuma nota encontrada.</td></tr>
-                ) : (
-                  invoices.map(inv => (
-                    <tr key={inv.id} className="border-b border-outline-variant last:border-0 hover:bg-surface-container-lowest transition-colors">
-                      <td className="px-6 py-4 font-medium text-on-surface">
-                        {new Date(inv.issueDate).toLocaleDateString('pt-BR')}
-                      </td>
-                      <td className="px-6 py-4 text-on-surface">
-                        {inv.supplier.name}
-                      </td>
-                      <td className="px-6 py-4 text-on-surface-variant">
-                        {inv.invoiceNumber}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="bg-primary-container text-on-primary-container text-xs px-2 py-1 rounded-md font-semibold">
-                          {inv.costCenter.name}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right font-bold text-primary">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(inv.finalAmount)}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+          <div className="divide-y divide-outline-variant">
+            <div className="hidden md:grid md:grid-cols-12 gap-4 px-6 py-3 bg-surface-container-lowest text-on-surface-variant uppercase text-xs font-bold border-b border-outline-variant">
+              <div className="col-span-2">Data Emissão</div>
+              <div className="col-span-4">Fornecedor</div>
+              <div className="col-span-2">Nº da Nota</div>
+              <div className="col-span-2">Centro de Custo</div>
+              <div className="col-span-2 text-right">Valor Final</div>
+            </div>
+            
+            {invoices.length === 0 ? (
+              <div className="px-6 py-8 text-center text-on-surface-variant">Nenhuma nota encontrada.</div>
+            ) : (
+              invoices.map(inv => (
+                <div key={inv.id} className="flex flex-col md:grid md:grid-cols-12 gap-4 px-6 py-4 border-b border-outline-variant last:border-0 hover:bg-surface-container-lowest transition-colors items-start md:items-center text-sm">
+                  <div className="w-full md:col-span-2 flex justify-between md:block font-medium text-on-surface border-b border-outline-variant md:border-0 pb-2 md:pb-0">
+                    <span className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase">Emissão</span>
+                    <span>{new Date(inv.issueDate).toLocaleDateString('pt-BR')}</span>
+                  </div>
+                  <div className="w-full md:col-span-4 text-on-surface">
+                    <span className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase block mb-1">Fornecedor</span>
+                    <span className="font-bold md:font-normal">{inv.supplier.name}</span>
+                  </div>
+                  <div className="w-full md:col-span-2 flex justify-between md:block text-on-surface-variant">
+                    <span className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase">Nº Nota</span>
+                    <span>{inv.invoiceNumber}</span>
+                  </div>
+                  <div className="w-full md:col-span-2 flex justify-between md:block">
+                    <span className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase">Centro de Custo</span>
+                    <span className="bg-primary-container text-on-primary-container text-[10px] md:text-xs px-2 py-1 rounded-md font-bold">
+                      {inv.costCenter.name}
+                    </span>
+                  </div>
+                  <div className="w-full md:col-span-2 flex justify-between md:block text-right font-bold text-primary text-base md:text-sm border-t border-outline-variant md:border-0 mt-2 md:mt-0 pt-2 md:pt-0">
+                    <span className="md:hidden text-[10px] font-bold text-on-surface-variant uppercase mt-1">Valor Total</span>
+                    <span>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(inv.finalAmount)}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>
@@ -302,19 +302,19 @@ export default function Invoices() {
                     )}
                   </div>
                   
-                  <div>
+                  <div className="min-w-0">
                     <label className="block text-xs font-bold text-on-surface uppercase mb-1">Número da Nota</label>
                     <input required type="text" value={formData.invoiceNumber} onChange={e => setFormData({...formData, invoiceNumber: e.target.value})} className="w-full px-4 py-2.5 border border-outline-variant rounded-lg bg-surface outline-none focus:ring-2 focus:ring-primary" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <label className="block text-xs font-bold text-on-surface uppercase mb-1">Chave de Acesso (Opcional)</label>
                     <input type="text" value={formData.invoiceKey} onChange={e => setFormData({...formData, invoiceKey: e.target.value})} className="w-full px-4 py-2.5 border border-outline-variant rounded-lg bg-surface outline-none focus:ring-2 focus:ring-primary" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <label className="block text-xs font-bold text-on-surface uppercase mb-1">Data Emissão</label>
                     <input required type="date" value={formData.issueDate} onChange={e => setFormData({...formData, issueDate: e.target.value})} className="w-full px-4 py-2.5 border border-outline-variant rounded-lg bg-surface outline-none focus:ring-2 focus:ring-primary" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <label className="block text-xs font-bold text-on-surface uppercase mb-1">Data Vencimento</label>
                     <input required type="date" value={formData.dueDate} onChange={e => setFormData({...formData, dueDate: e.target.value})} className="w-full px-4 py-2.5 border border-outline-variant rounded-lg bg-surface outline-none focus:ring-2 focus:ring-primary" />
                   </div>

@@ -35,7 +35,7 @@ export default function TableOrder() {
         return;
       }
       setTable(currentTable);
-      setProducts(productsRes.data);
+      setProducts(productsRes.data.data || productsRes.data);
     } catch (error) {
       toast.error('Erro ao carregar dados da mesa');
     } finally {
@@ -115,14 +115,14 @@ export default function TableOrder() {
         <div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <div className="flex items-center gap-4">
             <button onClick={() => navigate('/mesas')} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-              <span className="material-icons">arrow_back</span>
+              <span className="material-symbols-outlined notranslate">arrow_back</span>
             </button>
             <h2 className="text-xl font-bold dark:text-white">
               Mesa {table.tableNumber || 'S/N'} {table.customerName ? `- ${table.customerName}` : ''}
             </h2>
           </div>
           <div className="mt-4 relative">
-            <span className="material-icons absolute left-3 top-2.5 text-gray-400">search</span>
+            <span className="material-symbols-outlined notranslate absolute left-3 top-2.5 text-gray-400">search</span>
             <input
               type="text"
               placeholder="Buscar produto para adicionar..."
@@ -142,7 +142,7 @@ export default function TableOrder() {
                 className="flex flex-col items-center justify-center p-4 border rounded-xl hover:border-[#E8461C] hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors text-center dark:border-gray-700"
               >
                 <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-2">
-                  <span className="material-icons text-gray-500 dark:text-gray-400">restaurant</span>
+                  <span className="material-symbols-outlined notranslate text-gray-500 dark:text-gray-400">restaurant</span>
                 </div>
                 <span className="font-medium text-sm text-gray-900 dark:text-white mb-1 line-clamp-2">
                   {product.name}
@@ -172,7 +172,7 @@ export default function TableOrder() {
           {table.items && table.items.length > 0 && (
             <div>
               <h4 className="font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <span className="material-icons text-green-500">check_circle</span>
+                <span className="material-symbols-outlined notranslate text-green-500">check_circle</span>
                 Já Pedidos
               </h4>
               <div className="space-y-2">
@@ -189,7 +189,7 @@ export default function TableOrder() {
                       title="Cancelar item"
                       className="text-red-500 p-1 hover:bg-red-50 rounded"
                     >
-                      <span className="material-icons text-sm">close</span>
+                      <span className="material-symbols-outlined notranslate text-sm">close</span>
                     </button>
                   </div>
                 ))}
@@ -201,7 +201,7 @@ export default function TableOrder() {
           {cart.length > 0 && (
             <div>
                <h4 className="font-bold text-orange-600 mb-3 flex items-center gap-2">
-                <span className="material-icons">hourglass_empty</span>
+                <span className="material-symbols-outlined notranslate">hourglass_empty</span>
                 A Enviar
               </h4>
               <div className="space-y-2">
@@ -217,7 +217,7 @@ export default function TableOrder() {
                       onClick={() => removeFromCart(item.productId)}
                       className="text-red-500 p-1 hover:bg-red-100 rounded"
                     >
-                      <span className="material-icons text-sm">delete</span>
+                      <span className="material-symbols-outlined notranslate text-sm">delete</span>
                     </button>
                   </div>
                 ))}
@@ -236,7 +236,7 @@ export default function TableOrder() {
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700'
             }`}
           >
-            <span className="material-icons">send</span>
+            <span className="material-symbols-outlined notranslate">send</span>
             Enviar Pedido
           </button>
 
@@ -249,31 +249,30 @@ export default function TableOrder() {
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-700'
             }`}
           >
-            <span className="material-icons">payments</span>
+            <span className="material-symbols-outlined notranslate">payments</span>
             Fechar Conta
           </button>
         </div>
       </div>
 
-      {/* Modal de Fechamento */}
       {isCheckoutModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full shadow-2xl">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Pagamento</h2>
+          <div className="bg-surface border border-outline-variant rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95">
+            <h2 className="text-xl font-bold text-on-surface mb-4">Pagamento</h2>
             <form onSubmit={handleCheckout} className="space-y-4">
-              <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400">Total a Pagar</p>
-                <p className="text-3xl font-bold text-[#E8461C]">R$ {table.totalAmount.toFixed(2)}</p>
+              <div className="bg-surface-container-low border border-outline-variant p-4 rounded-xl text-center">
+                <p className="text-sm font-semibold text-on-surface-variant">Total a Pagar</p>
+                <p className="text-3xl font-black text-[#E8461C] mt-1">R$ {table.totalAmount.toFixed(2)}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-on-surface mb-1">
                   Forma de Pagamento
                 </label>
                 <select
                   value={checkoutData.type}
                   onChange={(e) => setCheckoutData({ ...checkoutData, type: e.target.value })}
-                  className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-[#E8461C]/20 outline-none transition-all"
                 >
                   <option value="PIX">PIX</option>
                   <option value="DEBITO">Cartão de Débito</option>
@@ -286,13 +285,13 @@ export default function TableOrder() {
                 <button
                   type="button"
                   onClick={() => setIsCheckoutModalOpen(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg dark:text-gray-400 dark:hover:bg-gray-700"
+                  className="px-4 py-2 font-bold text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  className="px-4 py-2 font-bold bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors"
                 >
                   Confirmar Pagamento
                 </button>

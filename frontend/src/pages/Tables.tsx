@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { useAuth } from '../contexts/AuthContext';
+import { Plus, UtensilsCrossed } from 'lucide-react';
 
 export default function Tables() {
   const [tables, setTables] = useState<any[]>([]);
@@ -47,17 +48,17 @@ export default function Tables() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Mesas & Comandas</h1>
-          <p className="text-gray-600 dark:text-gray-400">Controle de atendimento no restaurante</p>
+          <h1 className="text-3xl font-bold text-on-surface">Mesas & Comandas</h1>
+          <p className="text-on-surface-variant mt-1">Controle de atendimento no restaurante</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-[#E8461C] text-white px-4 py-2 rounded-lg hover:bg-[#c93b16] transition-colors flex items-center gap-2"
+          className="w-full sm:w-auto bg-primary text-on-primary px-5 py-2.5 rounded-xl hover:bg-primary-hover font-bold shadow-sm transition-colors flex items-center justify-center gap-2"
         >
-          <span className="material-icons">add</span>
+          <Plus size={20} />
           Nova Mesa
         </button>
       </div>
@@ -70,33 +71,45 @@ export default function Tables() {
             <div
               key={table.id}
               onClick={() => navigate(`/mesas/${table.id}`)}
-              className="bg-orange-50 dark:bg-orange-900/20 border-2 border-[#E8461C] rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all text-center flex flex-col justify-center min-h-[120px]"
+              className="bg-surface border-2 border-primary/40 rounded-2xl p-4 cursor-pointer hover:border-primary hover:shadow-md transition-all text-center flex flex-col justify-center min-h-[140px] relative overflow-hidden"
             >
-              <span className="material-icons text-[#E8461C] mb-2 text-3xl">table_restaurant</span>
-              <h3 className="font-bold text-gray-900 dark:text-white text-lg">
+              {/* Indicador sutil de mesa ativa */}
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-primary opacity-80" />
+              
+              <div className="flex justify-center mb-2">
+                <div className="p-2 bg-primary-container rounded-full text-primary">
+                  <UtensilsCrossed size={24} />
+                </div>
+              </div>
+              <h3 className="font-bold text-on-surface text-lg leading-tight">
                 Mesa {table.tableNumber || 'S/N'}
               </h3>
               {!activeBranch?.id && table.branch?.name && (
-                <p className="text-xs font-semibold text-[#E8461C] truncate mb-1 border-b border-[#E8461C]/20 pb-1">
+                <p className="text-[10px] font-bold text-primary truncate mt-1">
                   {table.branch.name}
                 </p>
               )}
               {table.customerName && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{table.customerName}</p>
+                <p className="text-xs text-on-surface-variant truncate mt-1 font-medium">{table.customerName}</p>
               )}
-              <p className="font-semibold text-[#E8461C] mt-2">
-                R$ {table.totalAmount.toFixed(2)}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                {new Date(table.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </p>
+              <div className="mt-auto pt-3">
+                <p className="font-bold text-primary text-base">
+                  R$ {table.totalAmount.toFixed(2)}
+                </p>
+                <p className="text-[10px] font-mono text-on-surface-variant mt-0.5">
+                  Abertura: {new Date(table.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
             </div>
           ))}
 
           {tables.length === 0 && (
-            <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
-              <span className="material-icons text-gray-300 dark:text-gray-600 text-6xl mb-4">table_restaurant</span>
-              <p className="text-gray-500 dark:text-gray-400">Nenhuma mesa aberta no momento.</p>
+            <div className="col-span-full flex flex-col items-center justify-center p-12 bg-surface rounded-2xl border border-outline-variant shadow-sm text-center">
+              <div className="w-20 h-20 rounded-full bg-surface-container flex items-center justify-center text-outline mb-4">
+                <UtensilsCrossed size={40} />
+              </div>
+              <h3 className="text-lg font-bold text-on-surface">Nenhuma mesa aberta</h3>
+              <p className="text-on-surface-variant text-sm mt-1 max-w-sm">Toque em "Nova Mesa" para iniciar o atendimento a um cliente.</p>
             </div>
           )}
         </div>
@@ -105,11 +118,11 @@ export default function Tables() {
       {/* Modal Nova Mesa */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-sm w-full shadow-2xl">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Abrir Nova Mesa</h2>
+          <div className="bg-surface border border-outline-variant rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-in zoom-in-95">
+            <h2 className="text-xl font-bold text-on-surface mb-4">Abrir Nova Mesa</h2>
             <form onSubmit={handleOpenTable} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-on-surface mb-1">
                   Número da Mesa
                 </label>
                 <input
@@ -117,19 +130,19 @@ export default function Tables() {
                   required
                   value={newTable.tableNumber}
                   onChange={(e) => setNewTable({ ...newTable, tableNumber: e.target.value })}
-                  className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-[#E8461C]/20 outline-none transition-all placeholder:text-on-surface-variant"
                   placeholder="Ex: 12"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-semibold text-on-surface mb-1">
                   Nome do Cliente (Opcional)
                 </label>
                 <input
                   type="text"
                   value={newTable.customerName}
                   onChange={(e) => setNewTable({ ...newTable, customerName: e.target.value })}
-                  className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-4 py-2 border border-outline-variant bg-surface text-on-surface rounded-xl focus:ring-2 focus:ring-[#E8461C]/20 outline-none transition-all placeholder:text-on-surface-variant"
                   placeholder="Ex: João da Silva"
                 />
               </div>
@@ -137,13 +150,13 @@ export default function Tables() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg dark:text-gray-400 dark:hover:bg-gray-700"
+                  className="px-4 py-2 font-bold text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#E8461C] text-white rounded-lg hover:bg-[#c93b16]"
+                  className="px-4 py-2 font-bold bg-[#E8461C] text-white rounded-xl hover:bg-[#c93b16] transition-colors"
                 >
                   Abrir Mesa
                 </button>

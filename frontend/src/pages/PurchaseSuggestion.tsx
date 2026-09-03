@@ -76,34 +76,58 @@ export default function PurchaseSuggestion() {
                 </div>
 
                 {suggestions.map(item => (
-                  <div key={item.productId} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center text-sm">
-                    <div className="col-span-1 md:col-span-4 flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-error-container text-error flex items-center justify-center shrink-0">
-                        <span className="material-symbols-outlined notranslate text-[20px]">trending_down</span>
+                  <div key={item.productId} className="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-start md:items-center text-sm">
+                    
+                    {/* Header (Mobile & Desktop) */}
+                    <div className="w-full md:col-span-4 flex items-center justify-between gap-4 border-b border-outline-variant pb-3 md:pb-0 md:border-0">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-error-container text-error flex items-center justify-center shrink-0">
+                          <span className="material-symbols-outlined notranslate text-[20px]">trending_down</span>
+                        </div>
+                        <div>
+                          <p className="font-bold text-on-surface">{item.productName}</p>
+                          <p className="text-[10px] text-on-surface-variant font-mono mt-0.5">SKU: {item.sku || 'S/N'}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-bold text-on-surface">{item.productName}</p>
-                        <p className="text-[10px] text-on-surface-variant font-mono mt-0.5">SKU: {item.sku || 'S/N'}</p>
+                      {/* Botão Ação (Apenas Mobile) */}
+                      <div className="md:hidden">
+                        <button 
+                          onClick={() => navigate(`/produto/${item.productId}`)}
+                          className="p-2 text-primary bg-primary-container hover:bg-primary-container/80 rounded-full transition-colors flex items-center justify-center"
+                        >
+                          <span className="material-symbols-outlined notranslate text-[20px]">visibility</span>
+                        </button>
                       </div>
                     </div>
                     
-                    <div className="col-span-1 md:col-span-3">
-                      <span className="text-on-surface-variant font-semibold">{item.supplierName || 'Sem Fornecedor Padrão'}</span>
+                    {/* Fornecedor */}
+                    <div className="md:col-span-3 w-full flex justify-between md:block items-center">
+                      <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Fornecedor</span>
+                      <span className="text-on-surface-variant font-semibold truncate max-w-[150px] md:max-w-none text-right md:text-left">{item.supplierName || 'S/ Fornecedor'}</span>
                     </div>
                     
-                    <div className="col-span-1 md:col-span-2 flex flex-col md:items-end justify-center">
-                      <span className="font-bold text-error">{item.currentQty}</span>
-                      <span className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Min: {item.minStock}</span>
+                    {/* Qtd Atual */}
+                    <div className="md:col-span-2 w-full flex justify-between md:flex-col md:items-end md:justify-center">
+                      <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Estoque Atual</span>
+                      <div className="text-right">
+                        <span className="font-bold text-error text-base">{item.currentQty}</span>
+                        <span className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold ml-1 md:ml-0 md:block">Min: {item.minStock}</span>
+                      </div>
                     </div>
                     
-                    <div className="col-span-1 md:col-span-2 flex flex-col md:items-end justify-center gap-1">
-                      <span className="font-bold text-primary bg-primary-container px-3 py-1 rounded-full text-xs">
-                        + {item.qtyToBuy} {item.unit}
-                      </span>
-                      <span className="text-[10px] text-on-surface-variant font-bold">~ R$ {item.estimatedCost.toFixed(2)}</span>
+                    {/* Sugestão Reposição */}
+                    <div className="md:col-span-2 w-full flex justify-between md:flex-col md:items-end md:justify-center items-center">
+                      <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Reposição Ideal</span>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="font-bold text-primary bg-primary-container px-3 py-1 rounded-full text-xs">
+                          + {item.qtyToBuy} {item.unit}
+                        </span>
+                        <span className="text-[10px] text-on-surface-variant font-bold">~ R$ {item.estimatedCost.toFixed(2)}</span>
+                      </div>
                     </div>
                     
-                    <div className="col-span-1 md:col-span-1 flex justify-center">
+                    {/* Botão Ação (Apenas Desktop) */}
+                    <div className="hidden md:flex md:col-span-1 justify-center">
                       <button 
                         onClick={() => navigate(`/produto/${item.productId}`)}
                         className="p-2 text-primary hover:bg-primary-container rounded-full transition-colors flex items-center justify-center"
@@ -112,6 +136,7 @@ export default function PurchaseSuggestion() {
                         <span className="material-symbols-outlined notranslate text-[20px]">visibility</span>
                       </button>
                     </div>
+                    
                   </div>
                 ))}
               </div>

@@ -55,5 +55,18 @@ O COZINHA+ é um sistema de gestão operacional exclusivo para cozinhas profissi
     - Componentes de UI `Pagination.tsx`, `LoadingSkeleton.tsx` e `EmptyState.tsx`.
     - `react-hot-toast` substituindo `alert()` nativo em formulários e ações de sistema (ex: Suppliers, Products, Categories, Locations, AuditLog).
 
+12. **Fase 12 a 15 (Expansão Financeira e Segurança):**
+    - Correções críticas de segurança (BOLA/IDOR).
+    - Redesign visual premium inspirado no Material 3 Clean + Tons Laranja.
+    - Implementação de Lançamento de Notas de Consumo (Invoices) e Relatórios Consolidados.
+13. **Fase 16 a 20 (Holding e Operação Pesada):**
+    - Contas a Pagar, Receber, Fluxo de Caixa e DRE.
+    - Frente de Caixa (PDV) e Comanda/Mesa com controle de estoque integrado.
+    - KDS Integrado, Cotação de Fornecedores e Dashboard Holding (Multi-Branch).
+14. **Fase 21 (UI Responsiva e Polimento Mobile):**
+    - Refatoração total para *Cards Inteligentes* focados na operação Mobile (100% responsivo) nas telas: Estoque, Validades, Recebimentos, Mesas, Fornecedores, etc.
+    - Substituição de fontes de ícone para `lucide-react` garantindo performance.
+    - Inventário blindado: salvamento offline via `localStorage` (Auto-save e exclusão).
+
 ## Histórico de Alterações
-- **22/08/2026**: Evolução para M-023, M-024 e M-025, integrando UI states premium (Skeletons, Empty States) e paginação completa. Documentação atualizada (M-026).
+- **03/09/2026**: Evolução UI/UX Completa. Todas as tabelas críticas transformadas em Cards Responsivos e proteção de layout (`min-w-0`) em campos tipo data. Sistema de Auto-Save offline e UX de Continuação/Exclusão integrado aos Inventários. Documentação de controle (fase.md e documentacao.md) equalizadas com a Fase 21 (Mobile).

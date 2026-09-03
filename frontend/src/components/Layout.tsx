@@ -130,7 +130,8 @@ export default function Layout() {
   ];
 
   const financeItems = [
-    { path: '/finance/cash', label: 'PDV & Caixa', icon: 'point_of_sale', roles: ['ADMIN', 'GESTOR'] },
+    { path: '/pdv', label: 'Frente de Loja (PDV)', icon: 'point_of_sale', roles: ['ADMIN', 'GESTOR', 'COZINHEIRO'] },
+    { path: '/finance/cash', label: 'Controle de Caixa', icon: 'point_of_sale', roles: ['ADMIN', 'GESTOR'] },
     { path: '/mesas', label: 'Mesas & Comandas', icon: 'table_restaurant', roles: ['ADMIN', 'GESTOR'] },
     { path: '/kds', label: 'KDS (Cozinha)', icon: 'soup_kitchen', roles: ['ADMIN', 'GESTOR', 'COZINHEIRO'] },
     { path: '/finance/payables', label: 'Contas a Pagar', icon: 'payments', roles: ['ADMIN', 'GESTOR'] },
@@ -313,99 +314,37 @@ export default function Layout() {
               <span className="material-symbols-outlined notranslate text-on-surface">menu</span>
             </button>
 
-            {/* Restaurante + Badge Unidade */}
+            {/* Restaurante */}
             <div className="flex items-center gap-2">
-              <span className="text-lg font-section-title font-semibold text-on-surface tracking-tight">{user?.company || 'COZINHA+'}</span>
-              {branches.length > 1 ? (
-                <select 
-                  value={activeBranch?.id || ''}
-                  onChange={e => {
-                    if (e.target.value === '') {
-                      setActiveBranch({ id: '', name: 'Todas as Filiais' });
-                    } else {
-                      const branch = branches.find(b => b.id === e.target.value);
-                      if (branch) setActiveBranch(branch);
-                    }
-                  }}
-                  className="text-xs bg-primary-container text-primary font-semibold px-2.5 py-1 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer appearance-none"
-                >
-                  {user?.role === 'ADMIN' ? (
-                      <option value="">Todas</option>
-                    ) : null}
-                  {branches.map(b => (
-                    <option key={b.id} value={b.id}>{b.name}</option>
-                  ))}
-                </select>
-              ) : (
-                <span className="text-xs bg-primary-container text-primary font-semibold px-2.5 py-1 rounded-full">Unidade</span>
-              )}
+              <span className="hidden sm:block text-lg font-section-title font-semibold text-on-surface tracking-tight truncate max-w-[150px] md:max-w-[400px] xl:max-w-none">{user?.company || 'COZINHA+'}</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Busca */}
-            <div className="relative hidden lg:block w-56">
-              <span className="material-symbols-outlined notranslate absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-              <input 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onBlur={() => setTimeout(() => setShowSearch(false), 200)}
-                onFocus={() => {if(searchQuery.length > 1) setShowSearch(true);}}
-                className="w-full pl-9 pr-3 py-2 bg-surface-container border-0 rounded-xl text-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20" 
-                placeholder="Buscar..." type="text" 
-              />
-              
-              {showSearch && (
-                <div className="absolute top-full mt-2 w-80 bg-surface border border-outline-variant rounded-xl shadow-lg overflow-hidden z-50 max-h-[70vh] overflow-y-auto">
-                  {searchResults.products?.length > 0 && (
-                    <div className="p-2 border-b border-outline-variant">
-                      <p className="text-xs font-semibold text-on-surface-variant mb-1 uppercase px-2">Produtos</p>
-                      {searchResults.products.map(p => (
-                        <div key={p.id} className="p-2 hover:bg-surface-container rounded-lg cursor-pointer" onClick={() => navigate('/produtos')}>
-                          <p className="font-semibold text-sm text-on-surface">{p.name}</p>
-                          <p className="text-xs text-on-surface-variant">SKU: {p.sku || '-'}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {searchResults.lots?.length > 0 && (
-                    <div className="p-2 border-b border-outline-variant">
-                      <p className="text-xs font-semibold text-on-surface-variant mb-1 uppercase px-2">Lotes</p>
-                      {searchResults.lots.map(l => (
-                        <div key={l.id} className="p-2 hover:bg-surface-container rounded-lg cursor-pointer" onClick={() => navigate('/validades')}>
-                          <p className="font-semibold text-sm text-on-surface">{l.product.name}</p>
-                          <p className="text-xs text-on-surface-variant">Lote: {l.number}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {searchResults.suppliers?.length > 0 && (
-                    <div className="p-2 border-b border-outline-variant">
-                      <p className="text-xs font-semibold text-on-surface-variant mb-1 uppercase px-2">Fornecedores</p>
-                      {searchResults.suppliers.map(s => (
-                        <div key={s.id} className="p-2 hover:bg-surface-container rounded-lg cursor-pointer" onClick={() => navigate('/fornecedores')}>
-                          <p className="font-semibold text-sm text-on-surface">{s.name}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {searchResults.receivings?.length > 0 && (
-                    <div className="p-2">
-                      <p className="text-xs font-semibold text-on-surface-variant mb-1 uppercase px-2">Recebimentos</p>
-                      {searchResults.receivings.map(r => (
-                        <div key={r.id} className="p-2 hover:bg-surface-container rounded-lg cursor-pointer" onClick={() => navigate('/recebimentos')}>
-                          <p className="font-semibold text-sm text-on-surface">NF: {r.invoice || 'S/N'}</p>
-                          <p className="text-xs text-on-surface-variant">{r.supplier.name}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {!searchResults.products?.length && !searchResults.lots?.length && !searchResults.suppliers?.length && !searchResults.receivings?.length && (
-                    <div className="p-4 text-center text-sm text-on-surface-variant">Nenhum resultado.</div>
-                  )}
-                </div>
-              )}
-            </div>
+            {/* Seletor de Unidade */}
+            {branches.length > 1 ? (
+              <select 
+                value={activeBranch?.id || ''}
+                onChange={e => {
+                  if (e.target.value === '') {
+                    setActiveBranch({ id: '', name: 'Todas as Filiais' });
+                  } else {
+                    const branch = branches.find(b => b.id === e.target.value);
+                    if (branch) setActiveBranch(branch);
+                  }
+                }}
+                className="text-xs bg-primary-container text-primary font-semibold px-3 py-1.5 rounded-full border border-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/30 cursor-pointer appearance-none truncate max-w-[130px] sm:max-w-[200px] shadow-sm hover:bg-primary-container/80 transition-colors"
+              >
+                {user?.role === 'ADMIN' ? (
+                    <option value="">Todas as Filiais</option>
+                  ) : null}
+                {branches.map(b => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+              </select>
+            ) : (
+              <span className="text-xs bg-primary-container text-primary font-semibold px-3 py-1.5 rounded-full truncate max-w-[130px] sm:max-w-[200px] shadow-sm">{activeBranch?.name || 'Unidade'}</span>
+            )}
 
             {/* Dark mode */}
             <button 

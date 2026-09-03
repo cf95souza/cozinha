@@ -51,11 +51,11 @@ export default function FinanceCategories() {
         <form onSubmit={handleCreate} className="flex gap-4 items-end">
           <div className="flex-1">
             <label className="block text-sm font-semibold mb-1">Nome da Categoria</label>
-            <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-2 border rounded-xl" placeholder="Ex: Aluguel, Vendas, Impostos..." required />
+            <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-4 py-2 border border-outline-variant rounded-xl bg-surface text-on-surface focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-on-surface-variant" placeholder="Ex: Aluguel, Vendas, Impostos..." required />
           </div>
           <div>
             <label className="block text-sm font-semibold mb-1">Tipo</label>
-            <select value={type} onChange={e => setType(e.target.value)} className="w-full px-4 py-2 border rounded-xl bg-white">
+            <select value={type} onChange={e => setType(e.target.value)} className="w-full px-4 py-2 border border-outline-variant rounded-xl bg-surface text-on-surface focus:ring-2 focus:ring-primary/20 outline-none transition-all">
               <option value="RECEITA">Receita</option>
               <option value="DESPESA">Despesa Operacional</option>
               <option value="CUSTO">Custo (CMV/Fornecedor)</option>

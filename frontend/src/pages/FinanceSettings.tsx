@@ -72,24 +72,24 @@ export default function FinanceSettings() {
       </div>
 
       <div className="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden">
-        <div className="flex border-b border-outline-variant bg-surface-container-lowest">
+        <div className="flex border-b border-outline-variant bg-surface-container-lowest overflow-x-auto flex-nowrap hide-scrollbar">
           <button
             onClick={() => setActiveTab('costCenter')}
-            className={`flex-1 py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'costCenter' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
+            className={`flex-1 shrink-0 whitespace-nowrap py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'costCenter' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
           >
-            <Building2 className="w-5 h-5" /> Centros de Custo
+            <Building2 className="w-5 h-5 shrink-0" /> Centros de Custo
           </button>
           <button
             onClick={() => setActiveTab('type')}
-            className={`flex-1 py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'type' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
+            className={`flex-1 shrink-0 whitespace-nowrap py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'type' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
           >
-            <Tag className="w-5 h-5" /> Tipos de Nota
+            <Tag className="w-5 h-5 shrink-0" /> Tipos de Nota
           </button>
           <button
             onClick={() => setActiveTab('origin')}
-            className={`flex-1 py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'origin' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
+            className={`flex-1 shrink-0 whitespace-nowrap py-4 px-6 text-sm font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${activeTab === 'origin' ? 'border-b-2 border-primary text-primary' : 'text-on-surface-variant hover:bg-surface-variant/50'}`}
           >
-            <ArrowRightLeft className="w-5 h-5" /> Origens de Nota
+            <ArrowRightLeft className="w-5 h-5 shrink-0" /> Origens de Nota
           </button>
         </div>
 

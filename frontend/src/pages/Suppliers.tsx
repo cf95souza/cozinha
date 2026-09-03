@@ -168,34 +168,68 @@ export default function Suppliers() {
               </div>
 
               {suppliers.map(sup => (
-                <div key={sup.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-center">
-                  <div className="col-span-1 md:col-span-4 flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
-                      <span className="material-symbols-outlined notranslate text-[20px]">local_shipping</span>
+                <div key={sup.id} className="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-4 px-6 py-4 hover:bg-surface-container-low transition-colors items-start md:items-center text-sm border-b border-outline-variant md:border-0 last:border-0">
+                  
+                  {/* Header Mobile & Desktop */}
+                  <div className="w-full md:col-span-4 flex items-center justify-between gap-4 border-b border-outline-variant pb-3 md:pb-0 md:border-0">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
+                        <span className="material-symbols-outlined notranslate text-[20px]">local_shipping</span>
+                      </div>
+                      <div>
+                        <p className="font-bold text-on-surface">{sup.name}</p>
+                        <p className="text-[10px] text-on-surface-variant mt-0.5 font-mono">CNPJ: {sup.document || '-'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-sm text-on-surface">{sup.name}</p>
-                      <p className="text-xs text-on-surface-variant mt-0.5">CNPJ: {sup.document || '-'}</p>
+                    {/* Botões Ação (Mobile) */}
+                    <div className="md:hidden flex justify-end gap-1">
+                      <button 
+                        onClick={() => handleEdit(sup)}
+                        className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors"
+                        title="Editar"
+                      >
+                        <span className="material-symbols-outlined notranslate text-[20px]">edit</span>
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(sup.id)}
+                        className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-full transition-colors"
+                        title="Remover"
+                      >
+                        <span className="material-symbols-outlined notranslate text-[20px]">delete</span>
+                      </button>
                     </div>
                   </div>
                   
-                  <div className="col-span-1 md:col-span-3">
-                    <p className="font-semibold text-sm text-on-surface">{sup.contact || '-'}</p>
-                    <p className="text-xs text-on-surface-variant mt-0.5">{sup.phone || sup.email || '-'}</p>
-                  </div>
-                  
-                  <div className="col-span-1 md:col-span-3">
-                    {sup.paymentTerms && <p className="text-xs text-on-surface-variant mb-1.5 font-medium">Pgto: {sup.paymentTerms}</p>}
-                    <div className="flex gap-0.5">
-                      {[1,2,3,4,5].map(star => (
-                        <span key={star} className={`material-symbols-outlined notranslate text-[16px] ${star <= (sup.rating || 0) ? 'text-[#eab308]' : 'text-outline-variant'}`} style={{ fontVariationSettings: star <= (sup.rating || 0) ? "'FILL' 1" : "'FILL' 0" }}>
-                          star
-                        </span>
-                      ))}
+                  {/* Contato */}
+                  <div className="md:col-span-3 w-full flex justify-between md:flex-col md:justify-center items-center md:items-start">
+                    <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Contato</span>
+                    <div className="text-right md:text-left">
+                      <p className="font-semibold text-sm text-on-surface">{sup.contact || '-'}</p>
+                      <p className="text-[11px] text-on-surface-variant mt-0.5">{sup.phone || sup.email || '-'}</p>
                     </div>
                   </div>
                   
-                  <div className="col-span-1 md:col-span-2 flex justify-end gap-1">
+                  {/* Condições / Rating */}
+                  <div className="md:col-span-3 w-full flex justify-between md:flex-col md:justify-center items-center md:items-start">
+                    <span className="md:hidden text-[11px] text-on-surface-variant font-semibold uppercase">Condições</span>
+                    <div className="text-right md:text-left flex flex-col md:items-start items-end">
+                      {sup.paymentTerms ? (
+                        <p className="text-[11px] text-on-surface-variant mb-1 md:mb-1.5 font-medium uppercase tracking-wider truncate max-w-[150px]">Pgto: {sup.paymentTerms}</p>
+                      ) : (
+                        <p className="text-[11px] text-on-surface-variant mb-1 md:mb-1.5 font-medium uppercase tracking-wider">Pgto: Padrão</p>
+                      )}
+                      <div className="flex gap-0.5">
+                        {[1,2,3,4,5].map(star => (
+                          <span key={star} className={`material-symbols-outlined notranslate text-[16px] ${star <= (sup.rating || 0) ? 'text-[#eab308]' : 'text-outline-variant'}`} style={{ fontVariationSettings: star <= (sup.rating || 0) ? "'FILL' 1" : "'FILL' 0" }}>
+                            star
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Botões Ação (Desktop) */}
+                  <div className="hidden md:flex md:col-span-2 justify-end gap-1">
                     <button 
                       onClick={() => handleEdit(sup)}
                       className="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-full transition-colors"
@@ -211,6 +245,7 @@ export default function Suppliers() {
                       <span className="material-symbols-outlined notranslate text-[20px]">delete</span>
                     </button>
                   </div>
+                  
                 </div>
               ))}
             </div>
