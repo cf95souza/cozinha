@@ -3,6 +3,7 @@ import { api } from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Tables() {
   const [tables, setTables] = useState<any[]>([]);
@@ -10,15 +11,17 @@ export default function Tables() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTable, setNewTable] = useState({ tableNumber: '', customerName: '' });
   const navigate = useNavigate();
+  const { activeBranch } = useAuth();
 
   useEffect(() => {
     fetchTables();
-  }, []);
+  }, [activeBranch]); // Refetch when active branch changes
 
   const fetchTables = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/tables');
+      const url = activeBranch?.id ? `/tables?branchId=${activeBranch.id}` : '/tables';
+      const res = await api.get(url);
       setTables(res.data);
     } catch (error) {
       toast.error('Erro ao buscar mesas');
@@ -29,8 +32,12 @@ export default function Tables() {
 
   const handleOpenTable = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!activeBranch?.id) {
+       toast.error('Selecione uma filial específica no topo da tela para abrir uma mesa.');
+       return;
+    }
     try {
-      const res = await api.post('/tables', newTable);
+      const res = await api.post('/tables', { ...newTable, branchId: activeBranch.id });
       toast.success('Mesa aberta com sucesso!');
       setIsModalOpen(false);
       navigate(`/mesas/${res.data.id}`);
@@ -69,6 +76,11 @@ export default function Tables() {
               <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                 Mesa {table.tableNumber || 'S/N'}
               </h3>
+              {!activeBranch?.id && table.branch?.name && (
+                <p className="text-xs font-semibold text-[#E8461C] truncate mb-1 border-b border-[#E8461C]/20 pb-1">
+                  {table.branch.name}
+                </p>
+              )}
               {table.customerName && (
                 <p className="text-sm text-gray-600 dark:text-gray-400 truncate">{table.customerName}</p>
               )}

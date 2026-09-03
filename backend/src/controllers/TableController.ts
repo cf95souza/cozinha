@@ -5,7 +5,8 @@ import { z } from 'zod';
 
 const createTableSchema = z.object({
   tableNumber: z.string().optional(),
-  customerName: z.string().optional()
+  customerName: z.string().optional(),
+  branchId: z.string().optional()
 });
 
 const addItemsSchema = z.object({
@@ -33,12 +34,18 @@ export class TableController {
   // Listar Mesas/Comandas Abertas
   async listOpen(req: AuthRequest, res: Response) {
     try {
-      const branchId = req.user?.branchId;
-      if (!branchId) return res.status(400).json({ error: 'Usuário não vinculado a uma filial' });
+      const branchId = (req.query.branchId as string) || req.user?.branchId;
+      
+      const whereClause: any = { status: 'ABERTO', type: { in: ['MESA', 'COMANDA'] } };
+      if (branchId) {
+        whereClause.branchId = branchId;
+      } else if (req.user?.role !== 'ADMIN') {
+        return res.status(400).json({ error: 'Usuário não vinculado a uma filial' });
+      }
 
       const tables = await prisma.sale.findMany({
-        where: { branchId, status: 'ABERTO', type: { in: ['MESA', 'COMANDA'] } },
-        include: { items: { include: { product: true } } },
+        where: whereClause,
+        include: { items: { include: { product: true } }, branch: true },
         orderBy: { createdAt: 'desc' }
       });
 
@@ -55,9 +62,9 @@ export class TableController {
       const parsed = createTableSchema.safeParse(req.body);
       if (!parsed.success) return res.status(400).json({ error: 'Dados inválidos' });
 
-      const branchId = req.user?.branchId;
+      const branchId = parsed.data.branchId || req.user?.branchId;
       const userId = req.user?.id;
-      if (!branchId || !userId) return res.status(400).json({ error: 'Credenciais inválidas' });
+      if (!branchId || !userId) return res.status(400).json({ error: 'Credenciais inválidas ou filial não selecionada' });
 
       const { tableNumber, customerName } = parsed.data;
 
