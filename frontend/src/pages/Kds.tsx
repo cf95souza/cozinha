@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import toast from 'react-hot-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Kds() {
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { activeBranch } = useAuth();
 
   const fetchKds = async () => {
     try {
-      const res = await api.get('/kds');
+      const url = activeBranch?.id ? `/kds?branchId=${activeBranch.id}` : '/kds';
+      const res = await api.get(url);
       setTickets(res.data);
     } catch (error) {
       console.error('Erro ao buscar fila do KDS');
@@ -22,7 +25,7 @@ export default function Kds() {
     fetchKds();
     const interval = setInterval(fetchKds, 10000); // Polling a cada 10s
     return () => clearInterval(interval);
-  }, []);
+  }, [activeBranch]);
 
   useEffect(() => {
     const timeInterval = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -117,6 +120,11 @@ export default function Kds() {
                       {ticket.type === 'DELIVERY' && <span className="material-icons text-[18px]">delivery_dining</span>}
                       {ticket.type === 'MESA' ? `Mesa ${ticket.tableNumber}` : ticket.type === 'DELIVERY' ? `Delivery: ${ticket.customerName}` : 'Balcão / Viagem'}
                     </h3>
+                    {!activeBranch?.id && ticket.branch?.name && (
+                      <p className="text-xs font-semibold text-white/90 truncate bg-black/20 px-2 py-0.5 rounded inline-block mb-1">
+                        {ticket.branch.name}
+                      </p>
+                    )}
                     <p className="text-sm opacity-80">{ticket.user?.name || 'Operador'}</p>
                   </div>
                   <div className="text-right">
