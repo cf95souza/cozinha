@@ -65,7 +65,7 @@ export default function FinanceSettings() {
   const currentDesc = activeTab === 'costCenter' ? 'Cadastre os centros de custo (ex: Administrativo, Operacional, Compartilhado)' : activeTab === 'type' ? 'Tipos de despesa (ex: Material de venda, Energia, Aluguel)' : 'Origem das despesas cadastradas';
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-20 animate-fade-in">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 pb-20 animate-fade-in">
       <div>
         <h1 className="text-display-sm font-section-title text-on-surface">Parâmetros Financeiros</h1>
         <p className="text-body text-on-surface-variant mt-1">Configure Centros de Custo e Classificações para Notas Fiscais de Consumo.</p>
@@ -97,19 +97,19 @@ export default function FinanceSettings() {
           <h2 className="text-lg font-bold text-on-surface mb-1">{currentTitle}</h2>
           <p className="text-sm text-on-surface-variant mb-6">{currentDesc}</p>
 
-          <form onSubmit={handleAddItem} className="flex gap-4 mb-8">
+          <form onSubmit={handleAddItem} className="flex flex-col sm:flex-row gap-4 mb-8">
             <input 
               type="text"
               required
               placeholder="Digite o nome..."
               value={newItemName}
               onChange={(e) => setNewItemName(e.target.value)}
-              className="flex-1 px-4 py-2 border border-outline-variant rounded-xl bg-surface-container focus:ring-2 focus:ring-primary outline-none"
+              className="flex-1 w-full px-4 py-3 sm:py-2 border border-outline-variant rounded-xl bg-surface-container focus:ring-2 focus:ring-primary outline-none"
             />
             <button 
               type="submit" 
               disabled={saving}
-              className="px-6 py-2 bg-primary text-on-primary rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 disabled:opacity-50"
+              className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-primary text-on-primary rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 disabled:opacity-50"
             >
               <Plus className="w-5 h-5" />
               Adicionar

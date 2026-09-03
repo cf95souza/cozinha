@@ -124,7 +124,7 @@ export default function Invoices() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-20 animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6 pb-20 animate-fade-in w-full overflow-hidden">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-on-surface">Notas Fiscais (Consumo)</h1>
@@ -139,7 +139,7 @@ export default function Invoices() {
         </button>
       </div>
 
-      <div className="bg-surface p-4 rounded-xl shadow-sm border border-outline-variant grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div className="bg-surface p-4 rounded-xl shadow-sm border border-outline-variant flex flex-col md:grid md:grid-cols-3 gap-4 items-end w-full">
         <div className="min-w-0">
           <label className="block text-xs font-bold text-on-surface uppercase mb-1">Centro de Custo</label>
           <select 
