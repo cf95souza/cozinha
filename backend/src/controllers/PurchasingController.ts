@@ -6,15 +6,18 @@ export class PurchasingController {
   
   async listPOs(req: AuthRequest, res: Response) {
     try {
-      const branchId = req.user?.branchId;
-      if (!branchId) return res.status(400).json({ error: 'BranchId is required' });
+      const branchId = (req.query.branchId as string) || req.user?.branchId;
+      const isAdmin = req.user?.role === 'ADMIN';
+      
+      if (!branchId && !isAdmin) return res.status(400).json({ error: 'BranchId is required' });
 
       const pos = await prisma.purchaseOrder.findMany({
-        where: { branchId },
+        where: branchId ? { branchId } : {},
         include: {
           supplier: true,
           user: { select: { name: true } },
-          items: { include: { product: true } }
+          items: { include: { product: true } },
+          branch: true
         },
         orderBy: { orderDate: 'desc' }
       });
@@ -27,7 +30,7 @@ export class PurchasingController {
 
   async createPO(req: AuthRequest, res: Response) {
     try {
-      const branchId = req.user?.branchId;
+      const branchId = req.body.branchId || req.user?.branchId;
       const companyId = req.user?.companyId;
       const userId = req.user?.id;
       
@@ -75,9 +78,9 @@ export class PurchasingController {
   async approvePO(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
-      const branchId = req.user?.branchId;
+      const branchId = req.body.branchId || req.user?.branchId;
 
-      const po = await prisma.purchaseOrder.findFirst({ where: { id, branchId } });
+      const po = await prisma.purchaseOrder.findFirst({ where: { id, ...(branchId ? { branchId } : {}) } });
       if (!po) return res.status(404).json({ error: 'PO not found' });
 
       const updated = await prisma.purchaseOrder.update({
@@ -97,9 +100,9 @@ export class PurchasingController {
   async cancelPO(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
-      const branchId = req.user?.branchId;
+      const branchId = req.body.branchId || req.user?.branchId;
 
-      const po = await prisma.purchaseOrder.findFirst({ where: { id, branchId } });
+      const po = await prisma.purchaseOrder.findFirst({ where: { id, ...(branchId ? { branchId } : {}) } });
       if (!po) return res.status(404).json({ error: 'PO not found' });
 
       const updated = await prisma.purchaseOrder.update({

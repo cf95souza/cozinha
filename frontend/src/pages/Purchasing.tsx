@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
 import toast from 'react-hot-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Purchasing() {
+  const { activeBranch } = useAuth();
   const [pos, setPos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPOs = async () => {
     try {
-      const res = await api.get('/purchasing');
+      const url = activeBranch?.id ? `/purchasing?branchId=${activeBranch.id}` : '/purchasing';
+      const res = await api.get(url);
       setPos(res.data);
     } catch (error) {
       console.error(error);
@@ -20,11 +23,11 @@ export default function Purchasing() {
 
   useEffect(() => {
     fetchPOs();
-  }, []);
+  }, [activeBranch]);
 
   const approvePO = async (id: string) => {
     try {
-      await api.post(`/purchasing/${id}/approve`);
+      await api.post(`/purchasing/${id}/approve`, { branchId: activeBranch?.id });
       toast.success('Pedido Aprovado com sucesso!');
       fetchPOs();
     } catch (error) {
@@ -34,7 +37,7 @@ export default function Purchasing() {
 
   const cancelPO = async (id: string) => {
     try {
-      await api.post(`/purchasing/${id}/cancel`);
+      await api.post(`/purchasing/${id}/cancel`, { branchId: activeBranch?.id });
       toast.success('Pedido Cancelado!');
       fetchPOs();
     } catch (error) {
@@ -72,7 +75,12 @@ export default function Purchasing() {
                   {po.status}
                 </span>
                 <h3 className="font-bold text-lg text-on-surface mt-2">{po.supplier?.name || 'Sem Fornecedor'}</h3>
-                <p className="text-xs text-on-surface-variant">Emissão: {new Date(po.orderDate).toLocaleDateString()}</p>
+                {!activeBranch?.id && po.branch?.name && (
+                  <p className="text-xs font-semibold text-white/90 truncate bg-black/20 px-2 py-0.5 rounded inline-block mt-1">
+                    {po.branch.name}
+                  </p>
+                )}
+                <p className="text-xs text-on-surface-variant mt-1">Emissão: {new Date(po.orderDate).toLocaleDateString()}</p>
               </div>
               <div className="text-right">
                 <span className="block text-xl font-bold text-on-surface">R$ {po.totalAmount.toFixed(2)}</span>
