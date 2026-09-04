@@ -139,7 +139,7 @@ export default function Invoices() {
         </button>
       </div>
 
-      <div className="bg-surface p-4 rounded-xl shadow-sm border border-outline-variant flex flex-col md:grid md:grid-cols-3 gap-4 items-end w-full">
+      <div className="bg-surface p-4 rounded-xl shadow-sm border border-outline-variant flex flex-col md:grid md:grid-cols-3 gap-4 items-stretch md:items-end w-full">
         <div className="min-w-0">
           <label className="block text-xs font-bold text-on-surface uppercase mb-1">Centro de Custo</label>
           <select 

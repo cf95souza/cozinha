@@ -4,6 +4,8 @@ import { api } from '../lib/api';
 export interface Branch {
   id: string;
   name: string;
+  document?: string;
+  address?: string;
 }
 
 interface User {

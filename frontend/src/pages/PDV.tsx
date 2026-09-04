@@ -41,13 +41,6 @@ export default function PDV() {
   const barcodeBuffer = useRef('');
   const lastKeystrokeTime = useRef(0);
 
-  useEffect(() => {
-    if (activeBranch) {
-      fetchProducts();
-      fetchActiveRegister();
-    }
-  }, [activeBranch, user]);
-
   const fetchActiveRegister = async () => {
     try {
       const res = await api.get(`/finance/cash-registers?branchId=${activeBranch?.id}`);
@@ -62,6 +55,26 @@ export default function PDV() {
       console.error('Erro ao buscar caixa ativo', error);
     }
   };
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get(`/products?branchId=${activeBranch?.id}&limit=100`);
+      const sellable = (res.data.data || res.data).filter((p: any) => p.sellPrice && p.sellPrice > 0);
+      setProducts(sellable);
+    } catch (error) {
+      toast.error('Erro ao carregar produtos para o PDV');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeBranch) {
+      fetchProducts();
+      fetchActiveRegister();
+    }
+  }, [activeBranch, user]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -105,18 +118,7 @@ export default function PDV() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [products]);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get(`/products?branchId=${activeBranch?.id}&limit=100`);
-      const sellable = (res.data.data || res.data).filter((p: any) => p.sellPrice && p.sellPrice > 0);
-      setProducts(sellable);
-    } catch (error) {
-      toast.error('Erro ao carregar produtos para o PDV');
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const addToCart = (product: Product) => {
     setCart(prev => {
